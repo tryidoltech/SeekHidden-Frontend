@@ -51,7 +51,7 @@ const LoginForm = ({ registerPath, resetPath }) => {
                     </a>
                 </div> */}
                 <div className='w-full py-2 border rounded'>
-                    <a className='flex items-center justify-center text-[1.2vw] gap-[1.2vw]' href="#"> <FcGoogle className='text-[2vw]' /> Signup with Google </a>
+                    <a className='flex items-center justify-center md:text-[1.2vw] gap-[1.2vw] text-[1.8vw]' href="#"> <FcGoogle className='md:text-[2vw]' /> Signup with Google </a>
                 </div>
             </div>
             {/* <div className="mt-5 text-muted">
