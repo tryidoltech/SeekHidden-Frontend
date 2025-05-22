@@ -1,5 +1,6 @@
 import React from 'react'
 import { FiFacebook, FiGithub, FiTwitter } from 'react-icons/fi'
+import { FcGoogle } from "react-icons/fc";
 import { Link } from 'react-router-dom'
 
 const LoginForm = ({ registerPath, resetPath }) => {
@@ -30,9 +31,9 @@ const LoginForm = ({ registerPath, resetPath }) => {
                     <button type="submit" className="btn btn-lg btn-primary w-100">Login</button>
                 </div>
             </form>
-            <div className="w-100 mt-5 text-center mx-auto">
+            <div className="w-100 mt-4 text-center mx-auto">
                 <div className="mb-4 border-bottom position-relative"><span className="small py-1 px-3 text-uppercase text-muted bg-white position-absolute translate-middle">or</span></div>
-                <div className="d-flex align-items-center justify-content-center gap-2">
+                {/* <div className="d-flex align-items-center justify-content-center gap-2">
                     <a href="#" className="btn btn-light-brand flex-fill" data-bs-toggle="tooltip" data-bs-trigger="hover" title="Login with Facebook">
                         <FiFacebook size={16} />
                     </a>
@@ -42,12 +43,21 @@ const LoginForm = ({ registerPath, resetPath }) => {
                     <a href="#" className="btn btn-light-brand flex-fill" data-bs-toggle="tooltip" data-bs-trigger="hover" title="Login with Github">
                         <FiGithub size={16} className='text' />
                     </a>
+                </div> */}
+                {/* <div className='w-full flex flex-row items-center'>
+                    <a href="#" className="" data-bs-toggle="tooltip" data-bs-trigger="hover" title="SignUp with Google">
+                        <FcGoogle size={16}  />
+                        <h3 className=''>SignUp with Google</h3>
+                    </a>
+                </div> */}
+                <div className='w-full py-2 border rounded'>
+                    <a className='flex items-center justify-center text-[1.2vw] gap-[1.2vw]' href="#"> <FcGoogle className='text-[2vw]' /> Signup with Google </a>
                 </div>
             </div>
-            <div className="mt-5 text-muted">
+            {/* <div className="mt-5 text-muted">
                 <span> Don't have an account?</span>
                 <Link to={registerPath} className="fw-bold"> Create an Account</Link>
-            </div>
+            </div> */}
         </>
     )
 }
