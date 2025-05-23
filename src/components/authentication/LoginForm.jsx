@@ -28,7 +28,9 @@ const LoginForm = ({ registerPath, resetPath }) => {
                     </div>
                 </div>
                 <div className="mt-5">
-                    <button type="submit" className="btn btn-lg btn-primary w-100">Login</button>
+                     <Link to="/dashboards"> <button type="submit" className="w-full bg-blue-600 py-2 text-[1vw] text-white ">
+                       Login
+                    </button></Link>
                 </div>
             </form>
             <div className="w-100 mt-4 text-center mx-auto">
@@ -51,7 +53,7 @@ const LoginForm = ({ registerPath, resetPath }) => {
                     </a>
                 </div> */}
                 <div className='w-full py-2 border rounded'>
-                    <a className='flex items-center justify-center md:text-[1.2vw] gap-[1.2vw] text-[1.8vw]' href="#"> <FcGoogle className='md:text-[2vw]' /> Signup with Google </a>
+                    <a className='flex items-center justify-center md:text-[1vw] gap-[1.2vw] text-[1.8vw]' href="#"> <FcGoogle className='md:text-[2vw]' /> Signup with Google </a>
                 </div>
             </div>
             {/* <div className="mt-5 text-muted">
