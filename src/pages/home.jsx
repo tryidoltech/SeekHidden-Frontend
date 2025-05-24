@@ -1,35 +1,38 @@
 import React from 'react'
-import LeadsOverviewChart from '@/components/widgetsCharts/LeadsOverviewChart'
-import LatestLeads from '@/components/widgetsTables/LatestLeads'
-import Schedule from '@/components/widgetsList/Schedule'
-import Project from '@/components/widgetsList/Project'
-import TeamProgress from '@/components/widgetsList/Progress'
-import PaymentRecordChart from '@/components/widgetsCharts/PaymentRecordChart'
-import SiteOverviewStatistics from '@/components/widgetsStatistics/SiteOverviewStatistics'
-import TasksOverviewChart from '@/components/widgetsCharts/TasksOverviewChart'
-import SalesMiscellaneous from '@/components/widgetsMiscellaneous/SalesMiscellaneous'
-import PageHeaderDate from '@/components/shared/pageHeader/PageHeaderDate'
 import PageHeader from '@/components/shared/pageHeader/PageHeader'
 import Footer from '@/components/shared/Footer'
-import { projectsDataTwo } from '@/utils/fackData/projectsDataTwo'
+import { Link } from 'react-router-dom'
+import Stats from '@/components/dashboard/Stats'
+import ClicksChart from '@/components/dashboard/ClicksChart'
+import FeedsChart from '@/components/dashboard/FeedsChart'
+import ClientDataTable from '@/components/dashboard/ClientDataTable'
 
 const Home = () => {
     return (
         <>
             <PageHeader >
-                <PageHeaderDate />
+                {/* <PageHeaderDate /> */}
+
+                <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                    <Link className="btn btn-md btn-light-brand" style={{ paddingTop: "12px", paddingBottom: "12px" }} data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
+                        <span>Job Stats</span>
+                    </Link>
+
+                    <Link className="btn btn-md btn-light-brand" style={{ paddingTop: "12px", paddingBottom: "12px" }} data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
+                        <span>Conversion Tracking</span>
+                    </Link>
+
+                    <Link className="btn btn-md btn-light-brand" style={{ paddingTop: "12px", paddingBottom: "12px" }} data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
+                        <span>Publisher Management</span>
+                    </Link>
+                </div>
             </PageHeader>
             <div className='main-content'>
                 <div className='row'>
-                    <SiteOverviewStatistics />
-                    <PaymentRecordChart />
-                    <SalesMiscellaneous isFooterShow={true} dataList={projectsDataTwo} />
-                    <TasksOverviewChart />
-                    <LeadsOverviewChart chartHeight={315} />
-                    <LatestLeads title={"Latest Leads"} />
-                    <Schedule title={"Upcoming Schedule"} />
-                    <Project cardYSpaceClass="hrozintioal-card" borderShow={true} title="Project Status" />
-                    <TeamProgress title={"Team Progress"} footerShow={true} />
+                    <Stats />
+                    <ClicksChart />
+                    <FeedsChart />
+                    <ClientDataTable />
                 </div>
             </div>
             <Footer />

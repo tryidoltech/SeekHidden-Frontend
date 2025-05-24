@@ -28,9 +28,11 @@ const LoginForm = ({ registerPath, resetPath }) => {
                     </div>
                 </div>
                 <div className="mt-5">
-                     <Link to="/dashboards"> <button type="submit" className="w-full bg-blue-600 py-2 text-[1vw] text-white ">
-                       Login
-                    </button></Link>
+                    <Link to="/dashboards">
+                        <button type="submit" className="w-full bg-blue-600 py-2 text-[1vw] text-white ">
+                            Login
+                        </button>
+                    </Link>
                 </div>
             </form>
             <div className="w-100 mt-4 text-center mx-auto">

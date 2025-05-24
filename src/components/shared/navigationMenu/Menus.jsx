@@ -12,6 +12,7 @@ const Menus = () => {
     const pathName = useLocation().pathname;
 
     const handleMainMenu = (e, name) => {
+        e.preventDefault();
         if (openDropdown === name) {
             setOpenDropdown(null);
         } else {
@@ -20,6 +21,7 @@ const Menus = () => {
     };
 
     const handleDropdownMenu = (e, name) => {
+        e.preventDefault();
         e.stopPropagation();
         if (openSubDropdown === name) {
             setOpenSubDropdown(null);
@@ -47,52 +49,55 @@ const Menus = () => {
                 return (
                     <li
                         key={id}
-                        onClick={(e) => handleMainMenu(e, name)}
                         className={`nxl-item nxl-hasmenu ${activeParent === name ? "active nxl-trigger" : ""}`}
                     >
-                        <Link to={path} className="nxl-link text-capitalize">
-                            <span className="nxl-micon"> {getIcon(icon)} </span>
+                        <Link 
+                            to={path} 
+                            className="nxl-link text-capitalize"
+                            onClick={(e) => handleMainMenu(e, name)}
+                        >
+                            <span className="nxl-micon">{getIcon(icon)}</span>
                             <span className="nxl-mtext" style={{ paddingLeft: "2.5px" }}>
                                 {name}
                             </span>
-                            <span className="nxl-arrow fs-16">
-                                <FiChevronRight />
-                            </span>
+                            {dropdownMenu && dropdownMenu.length > 0 && (
+                                <span className="nxl-arrow fs-16">
+                                    <FiChevronRight />
+                                </span>
+                            )}
                         </Link>
-                        <ul
-                            className={`nxl-submenu ${openDropdown === name ? "nxl-menu-visible" : "nxl-menu-hidden"}`}
-                        >
-                            {dropdownMenu.map(({ id, name, path, subdropdownMenu }) => {
-                                const x = name;
-                                return (
-                                    <Fragment key={id}>
-                                        {subdropdownMenu.length ? (
-                                            <li
-                                                className={`nxl-item nxl-hasmenu ${activeChild === name ? "active" : ""
-                                                    }`}
-                                                onClick={(e) => handleDropdownMenu(e, x)}
-                                            >
-                                                <Link to={path} className={`nxl-link text-capitalize`}>
-                                                    <span className="nxl-mtext">{name}</span>
-                                                    <span className="nxl-arrow">
-                                                        <i>
-                                                            {" "}
+                        {dropdownMenu && dropdownMenu.length > 0 && (
+                            <ul
+                                className={`nxl-submenu ${openDropdown === name ? "nxl-menu-visible" : "nxl-menu-hidden"}`}
+                            >
+                                {dropdownMenu.map(({ id, name, path, subdropdownMenu }) => {
+                                    const x = name;
+                                    return (
+                                        <Fragment key={id}>
+                                            {subdropdownMenu && subdropdownMenu.length > 0 ? (
+                                                <li
+                                                    className={`nxl-item nxl-hasmenu ${activeChild === name ? "active" : ""}`}
+                                                >
+                                                    <Link 
+                                                        to={path} 
+                                                        className="nxl-link text-capitalize"
+                                                        onClick={(e) => handleDropdownMenu(e, x)}
+                                                    >
+                                                        <span className="nxl-mtext">{name}</span>
+                                                        <span className="nxl-arrow">
                                                             <FiChevronRight />
-                                                        </i>
-                                                    </span>
-                                                </Link>
-                                                {subdropdownMenu.map(({ id, name, path }) => {
-                                                    return (
-                                                        <ul
-                                                            key={id}
-                                                            className={`nxl-submenu ${openSubDropdown === x
-                                                                ? "nxl-menu-visible"
-                                                                : "nxl-menu-hidden "
-                                                                }`}
-                                                        >
+                                                        </span>
+                                                    </Link>
+                                                    <ul
+                                                        className={`nxl-submenu ${openSubDropdown === x
+                                                            ? "nxl-menu-visible"
+                                                            : "nxl-menu-hidden"
+                                                            }`}
+                                                    >
+                                                        {subdropdownMenu.map(({ id, name, path }) => (
                                                             <li
-                                                                className={`nxl-item ${pathName === path ? "active" : ""
-                                                                    }`}
+                                                                key={id}
+                                                                className={`nxl-item ${pathName === path ? "active" : ""}`}
                                                             >
                                                                 <Link
                                                                     className="nxl-link text-capitalize"
@@ -101,24 +106,23 @@ const Menus = () => {
                                                                     {name}
                                                                 </Link>
                                                             </li>
-                                                        </ul>
-                                                    );
-                                                })}
-                                            </li>
-                                        ) : (
-                                            <li
-                                                className={`nxl-item ${pathName === path ? "active" : ""
-                                                    }`}
-                                            >
-                                                <Link className="nxl-link" to={path}>
-                                                    {name}
-                                                </Link>
-                                            </li>
-                                        )}
-                                    </Fragment>
-                                );
-                            })}
-                        </ul>
+                                                        ))}
+                                                    </ul>
+                                                </li>
+                                            ) : (
+                                                <li
+                                                    className={`nxl-item ${pathName === path ? "active" : ""}`}
+                                                >
+                                                    <Link className="nxl-link" to={path}>
+                                                        {name}
+                                                    </Link>
+                                                </li>
+                                            )}
+                                        </Fragment>
+                                    );
+                                })}
+                            </ul>
+                        )}
                     </li>
                 );
             })}

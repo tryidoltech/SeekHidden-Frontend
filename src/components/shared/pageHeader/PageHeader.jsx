@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { FiAlignRight, FiArrowLeft } from 'react-icons/fi'
 
-const PageHeader = ({ children }) => {
+const PageHeader = ({ children  }) => {
     const [openSidebar, setOpenSidebar] = useState(false)
     const pathName = useLocation().pathname
     let folderName = ""
@@ -12,7 +12,7 @@ const PageHeader = ({ children }) => {
         fileName = "Dashboard"
     } else {
         folderName = pathName.split("/")[1]
-        fileName = pathName.split("/")[2]
+        fileName = pathName.split("/")[1] 
     }
     return (
         <div className="page-header">
@@ -21,7 +21,7 @@ const PageHeader = ({ children }) => {
                     <h5 className="m-b-10 text-capitalize">{folderName}</h5>
                 </div>
                 <ul className="breadcrumb">
-                    <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+                    <li className="breadcrumb-item"><Link to="/dashboards">Home</Link></li>
                     <li className="breadcrumb-item text-capitalize">{fileName}</li>
                 </ul>
             </div>

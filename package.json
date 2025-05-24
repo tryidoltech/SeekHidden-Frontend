@@ -30,6 +30,7 @@
     "react-apexcharts": "^1.4.1",
     "react-calendar": "^5.0.0",
     "react-circular-progressbar": "^2.1.0",
+    "react-data-table-component": "^7.7.0",
     "react-date-range": "^2.0.1",
     "react-datepicker": "^7.3.0",
     "react-datetime": "^3.2.0",

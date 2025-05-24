@@ -68,20 +68,26 @@ import WidgetsTables from "../pages/widgets-tables";
 import WidgetsCharts from "../pages/widgets-charts";
 import WidgetsStatistics from "../pages/widgets-statistics";
 import WidgetsMiscellaneous from "../pages/widgets-miscellaneous";
+import ClientUsersTable from "../pages/client";
 
 export const router = createBrowserRouter([
 
 
-    {path: "/",
+    {
+        path: "/",
         element: <LoginMinimal />
     },
     {
         path: "/",
-        element: <RootLayout /> ,
+        element: <RootLayout />,
         children: [
             {
                 path: "/dashboards",
-                element: <Home/>
+                element: <Home />
+            },
+            {
+                path: "/clients",
+                element: <ClientUsersTable />
             },
             {
                 path: "/dashboards/analytics",
@@ -177,15 +183,15 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/widgets/charts",
-                element: <WidgetsCharts/>
+                element: <WidgetsCharts />
             },
             {
                 path: "/widgets/statistics",
-                element: <WidgetsStatistics/>
+                element: <WidgetsStatistics />
             },
             {
                 path: "/widgets/miscellaneous",
-                element: <WidgetsMiscellaneous/>
+                element: <WidgetsMiscellaneous />
             },
             {
                 path: "/help/knowledgebase",
