@@ -70,13 +70,18 @@ import WidgetsStatistics from "../pages/widgets-statistics";
 import WidgetsMiscellaneous from "../pages/widgets-miscellaneous";
 
 export const router = createBrowserRouter([
+
+
+    {path: "/",
+        element: <LoginMinimal />
+    },
     {
         path: "/",
-        element: <RootLayout />,
+        element: <RootLayout /> ,
         children: [
             {
-                path: "/",
-                element: <Home />
+                path: "/dashboards",
+                element: <Home/>
             },
             {
                 path: "/dashboards/analytics",
