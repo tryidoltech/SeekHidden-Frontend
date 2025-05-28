@@ -75,7 +75,7 @@ export default function MainLayout() {
             <Outlet />
             <Footer />
           </Container>
-          <Link style={{ textDecoration: 'none' }} href={url} target="_blank">
+          {/* <Link style={{ textDecoration: 'none' }} href={url} target="_blank">
             <Button
               variant="contained"
               color="error"
@@ -84,7 +84,7 @@ export default function MainLayout() {
             >
               Buy Now
             </Button>
-          </Link>
+          </Link> */}
         </Box>
       </Box>
     </AuthGuard>

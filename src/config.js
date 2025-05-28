@@ -8,6 +8,8 @@ export const HEADER_HEIGHT = 74;
 
 export let SimpleLayoutType;
 
+export const GRID_COMMON_SPACING = { xs: 2, md: 2.5 };
+
 (function (SimpleLayoutType) {
   SimpleLayoutType['SIMPLE'] = 'simple';
   SimpleLayoutType['LANDING'] = 'landing';

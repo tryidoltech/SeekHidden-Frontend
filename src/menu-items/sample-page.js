@@ -11,8 +11,8 @@ const icons = {
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const samplePage = {
-  id: 'sample-page',
-  title: 'sample-page',
+  id: 'dashboard',
+  title: 'Dashboard',
   type: 'group',
   url: '/dashboard',
   icon: icons.samplePage
