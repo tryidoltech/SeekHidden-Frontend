@@ -1,5 +1,6 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
+import logo from 'assets/images/logo.png'
 
 /**
  * if you want to use image instead of <svg> uncomment following.
@@ -22,7 +23,7 @@ export default function LogoMain() {
      *
      */
     <>
-      SeekHidden
+      <img src={logo} alt="logo"  width="100" />
     </>
   );
 }
