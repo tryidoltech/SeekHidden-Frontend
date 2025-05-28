@@ -12,7 +12,7 @@ const LoaderWrapper = styled('div')(({ theme }) => ({
   '& > * + *': { marginTop: theme.spacing(2) }
 }));
 
-// ==============================|| Loader ||============================== //
+// ==============================||  --<>< Looader ><>--  ||============================== //
 
 export default function Loader() {
   return (
