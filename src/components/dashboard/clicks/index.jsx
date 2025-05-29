@@ -29,7 +29,7 @@ export default function Clicks() {
   };
 
   return (
-    <MainCard>
+    <MainCard sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Stack direction="row" sx={{ gap: 1, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h5">Clicks</Typography>
         <IconButton

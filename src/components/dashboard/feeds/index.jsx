@@ -109,7 +109,7 @@ export default function Feeds() {
   };
 
   return (
-    <MainCard>
+    <MainCard sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Grid container spacing={GRID_COMMON_SPACING}>
         <Grid size={12}>
           <Stack direction="row" sx={{ gap: 1, alignItems: 'center', justifyContent: 'space-between' }}>
