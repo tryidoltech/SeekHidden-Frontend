@@ -7,6 +7,9 @@ import DashboardLayout from 'layout/Dashboard';
 import PagesLayout from 'layout/Pages';
 import SimpleLayout from 'layout/Simple';
 
+// direct import for testing
+import ClientUserList from 'pages/clients/user-list';
+
 // pages routing
 const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
 const MaintenanceError500 = Loadable(lazy(() => import('pages/maintenance/error/500')));
@@ -32,6 +35,18 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
+          element: <Dashboard />
+        },
+        {
+          path: 'clients/user-list',
+          element: <ClientUserList />
+        },
+        {
+          path: 'clients',
+          element: <ClientUserList />
+        },
+        {
+          index: true,
           element: <Dashboard />
         }
       ]
