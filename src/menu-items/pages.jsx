@@ -1,5 +1,5 @@
 // assets
-import { I24Support, MessageProgramming } from 'iconsax-react';
+import { I24Support, MessageProgramming, User } from 'iconsax-react';
 
 // type
 
@@ -7,7 +7,8 @@ import { I24Support, MessageProgramming } from 'iconsax-react';
 // icons
 const icons = {
   maintenance: MessageProgramming,
-  contactus: I24Support
+  contactus: I24Support,
+  user: User
 };
 
 // ==============================|| MENU ITEMS - PAGES ||============================== //
@@ -28,13 +29,14 @@ const pages = {
           title: 'Clients',
           type: 'item',
           url: '/dashboard/clients',
+          icon: icons.user
         },
-        {
-          id: 'publishers',
-          title: 'Publishers',
-          type: 'item',
-          url: '/dashboard/publishers',
-        },
+        // {
+        //   id: 'publishers',
+        //   title: 'Publishers',
+        //   type: 'item',
+        //   url: '/dashboard/publishers',
+        // },
       ]
     },
   ]

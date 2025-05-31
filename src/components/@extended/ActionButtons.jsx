@@ -1,11 +1,13 @@
 import React from "react";
 import { Box, Button, Stack } from "@mui/material";
+import { useNavigate } from "react-router";
 
 const ActionButtons = () => {
+    const navigate = useNavigate()
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                
+
                 <Stack direction="row" spacing={2}>
                     <Button variant="outlined" color="primary">
                         Job Stats
@@ -13,7 +15,9 @@ const ActionButtons = () => {
                     <Button variant="outlined" color="primary">
                         Conversion Tracking
                     </Button>
-                    <Button variant="outlined" color="primary">
+                    <Button variant="outlined" color="primary" onClick={() => {
+                        navigate('/dashboard/publishers')
+                    }} >
                         Publisher Management
                     </Button>
                 </Stack>
