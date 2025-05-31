@@ -3,8 +3,12 @@ import { lazy } from 'react';
 // project-imports
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
-import Clients from '../pages/clients';
 import Publisher from '../pages/publishers';
+import ClientsPage from '../pages/clients';
+import AddClientUser from '../components/clients/AddClientUser';
+import Campaigns from '../components/campaigns';
+import AddCampaign from '../components/campaigns/AddCampaign';
+import AddClient from '../components/clients/AddClient';
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -32,7 +36,23 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard/clients',
-          element: <Clients />
+          element: <ClientsPage />,
+        },
+        {
+          path: 'dashboard/clients/add-client',
+          element: <AddClient />
+        },
+        {
+          path: 'dashboard/clients/add-client-user',
+          element: <AddClientUser />
+        },
+        {
+          path: 'dashboard/campaigns',
+          element: <Campaigns />
+        },
+        {
+          path: 'dashboard/clients/add-campaign',
+          element: <AddCampaign />
         },
         {
           path: 'dashboard/publishers',

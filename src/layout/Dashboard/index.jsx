@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 // material-ui
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -24,6 +24,8 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 
 // assets
 import { ShoppingCart } from 'iconsax-react';
+import ActionButtons from '../../components/@extended/ActionButtons';
+import AddDropdown from '../../components/@extended/AddDropdown';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -43,6 +45,7 @@ export default function MainLayout() {
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
+  const location = useLocation();
   // set media wise responsive drawer
   useEffect(() => {
     if (!miniDrawer) {
@@ -71,20 +74,14 @@ export default function MainLayout() {
               flexDirection: 'column'
             }}
           >
-            <Breadcrumbs />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              {location.pathname === '/dashboard' && <AddDropdown />}
+              <Breadcrumbs />
+              <ActionButtons />
+            </Box>
             <Outlet />
             <Footer />
           </Container>
-          {/* <Link style={{ textDecoration: 'none' }} href={url} target="_blank">
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<ShoppingCart />}
-              sx={{ zIndex: 1199, position: 'fixed', bottom: 50, right: 30 }}
-            >
-              Buy Now
-            </Button>
-          </Link> */}
         </Box>
       </Box>
     </AuthGuard>

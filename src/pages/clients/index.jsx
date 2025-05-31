@@ -1,9 +1,12 @@
 import React from 'react'
+import Clients from '../../components/clients'
 
-function Clients() {
+function ClientsPage() {
   return (
-    <div>Clients</div>
+    <>
+      <Clients />
+    </>
   )
 }
 
-export default Clients
+export default ClientsPage
