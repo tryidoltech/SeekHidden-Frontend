@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import Clients from '../pages/clients';
+import Publisher from '../pages/publishers';
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -32,6 +33,10 @@ const MainRoutes = {
         {
           path: 'dashboard/clients',
           element: <Clients />
+        },
+        {
+          path: 'dashboard/publishers',
+          element: <Publisher />
         },
       ]
     },

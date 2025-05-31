@@ -29,6 +29,12 @@ const pages = {
           type: 'item',
           url: '/dashboard/clients',
         },
+        {
+          id: 'publishers',
+          title: 'Publishers',
+          type: 'item',
+          url: '/dashboard/publishers',
+        },
       ]
     },
   ]
