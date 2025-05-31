@@ -5,6 +5,8 @@ import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import Clients from '../pages/clients';
 import Publisher from '../pages/publishers';
+import JobStatus from '../pages/dashboard/JobStatus';
+
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -37,6 +39,10 @@ const MainRoutes = {
         {
           path: 'dashboard/publishers',
           element: <Publisher />
+        },
+        {
+          path: 'dashboard/jobstatus',
+          element: <JobStatus />
         },
       ]
     },

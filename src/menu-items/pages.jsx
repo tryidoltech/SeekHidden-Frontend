@@ -35,6 +35,12 @@ const pages = {
           type: 'item',
           url: '/dashboard/publishers',
         },
+        {
+          id: 'jobstatus',
+          title: 'Job Status',
+          type: 'item',
+          url: '/dashboard/jobstatus',
+        },
       ]
     },
   ]

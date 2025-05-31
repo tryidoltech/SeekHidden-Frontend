@@ -16,6 +16,7 @@
     "@mui/material": "6.4.0",
     "@mui/system": "6.4.0",
     "@vitejs/plugin-react": "4.3.4",
+    "apexcharts": "^4.7.0",
     "axios": "1.7.9",
     "chance": "1.1.12",
     "formik": "2.4.6",
