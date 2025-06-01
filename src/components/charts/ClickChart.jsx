@@ -93,15 +93,15 @@ export default function ClickChart() {
 
   const [series] = useState([
     {
-      name: 'Page Views',
+      name: 'Total Clicks',
       data: [30, 60, 40, 70, 50, 90, 50, 55, 45, 60, 50, 65]
     },
     {
-      name: 'Clicks',
+      name: 'Valid Clicks',
       data: [20, 40, 30, 45, 35, 15, 35, 40, 30, 45, 35, 50]
     },
     {
-      name: 'Feeds',
+      name: 'Invalid Clicks',
       data: [50, 30, 35, 10, 20, 10, 50, 35, 65, 20, 30, 15]
     },
   ]);
