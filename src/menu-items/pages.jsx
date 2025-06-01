@@ -31,24 +31,24 @@ const pages = {
           url: '/dashboard/clients',
           icon: icons.user
         },
-        {
-          id: 'publishers',
-          title: 'Publishers',
-          type: 'item',
-          url: '/dashboard/publishers',
-        },
-        {
-          id: 'jobstatus',
-          title: 'Job Status',
-          type: 'item',
-          url: '/dashboard/jobstatus',
-        },
-        {
-          id: 'conversiontracking',
-          title: 'Conversion Tracking',
-          type: 'item',
-          url: '/dashboard/conversiontracking',
-        },
+        // {
+        //   id: 'publishers',
+        //   title: 'Publishers',
+        //   type: 'item',
+        //   url: '/dashboard/publishers',
+        // },
+        // {
+        //   id: 'jobstatus',
+        //   title: 'Job Status',
+        //   type: 'item',
+        //   url: '/dashboard/jobstatus',
+        // },
+        // {
+        //   id: 'conversiontracking',
+        //   title: 'Conversion Tracking',
+        //   type: 'item',
+        //   url: '/dashboard/conversiontracking',
+        // },
       ]
     },
   ]

@@ -9,10 +9,14 @@ const ActionButtons = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
 
                 <Stack direction="row" spacing={2}>
-                    <Button variant="outlined" color="primary">
+                    <Button variant="outlined" color="primary" onClick={()=>{
+                        navigate('/dashboard/jobstatus')
+                    }} >
                         Job Stats
                     </Button>
-                    <Button variant="outlined" color="primary">
+                    <Button variant="outlined" color="primary" onClick={()=>{
+                        navigate('/dashboard/conversiontracking')
+                    }} >
                         Conversion Tracking
                     </Button>
                     <Button variant="outlined" color="primary" onClick={() => {
