@@ -6,6 +6,7 @@ import DashboardLayout from 'layout/Dashboard';
 import Clients from '../pages/clients';
 import Publisher from '../pages/publishers';
 import JobStatus from '../pages/dashboard/JobStatus';
+import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
 
 
 // render - sample page
@@ -43,6 +44,10 @@ const MainRoutes = {
         {
           path: 'dashboard/jobstatus',
           element: <JobStatus />
+        },
+        {
+          path: 'dashboard/conversiontracking',
+          element: <ConversionTracking />
         },
       ]
     },

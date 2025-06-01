@@ -5,6 +5,7 @@ import Select from '@mui/material/Select';
 import { Stack, Box } from '@mui/material';
 import MainCard from 'components/MainCard';
 import Button from '@mui/material/Button';
+import CustomDatePicker from '../../shareComponents/CustomDatePicker';
 
 const ApplyFilters = () => {
   const [currency, setCurrency] = useState('');
@@ -15,7 +16,7 @@ const ApplyFilters = () => {
   const placeholderStyle = { color: '#9e9e9e' }; // grey[500]
 
   return (
-    <MainCard>
+    <MainCard sx={{ overflow: 'visible' }}> {/* <-- Fix here */}
       <Stack
         direction="row"
         spacing={2}
@@ -109,13 +110,14 @@ const ApplyFilters = () => {
       </Stack>
 
       {/* Button Row */}
-      <Stack
-        direction="row"
-        spacing={2}
-        justifyContent="flex-end"
-        sx={{ mt: 3 }}
-      >
-        <Box>Date Range :</Box>
+    <Stack
+  direction="row"
+  spacing={2}
+  justifyContent="flex-end"
+  alignItems="center"  // use this instead of alignContent
+  sx={{ mt: 3 }}
+>
+        <CustomDatePicker />
         <Button
           variant="contained"
           sx={{

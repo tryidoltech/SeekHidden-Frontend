@@ -41,6 +41,12 @@ const pages = {
           type: 'item',
           url: '/dashboard/jobstatus',
         },
+        {
+          id: 'conversiontracking',
+          title: 'Conversion Tracking',
+          type: 'item',
+          url: '/dashboard/conversiontracking',
+        },
       ]
     },
   ]
