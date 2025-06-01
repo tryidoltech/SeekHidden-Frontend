@@ -9,6 +9,9 @@ import AddClientUser from '../components/clients/AddClientUser';
 import Campaigns from '../components/campaigns';
 import AddCampaign from '../components/campaigns/AddCampaign';
 import AddClient from '../components/clients/AddClient';
+import JobStatus from '../pages/dashboard/JobStatus';
+import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
+
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -57,6 +60,14 @@ const MainRoutes = {
         {
           path: 'dashboard/publishers',
           element: <Publisher />
+        },
+        {
+          path: 'dashboard/jobstatus',
+          element: <JobStatus />
+        },
+        {
+          path: 'dashboard/conversiontracking',
+          element: <ConversionTracking />
         },
       ]
     },
