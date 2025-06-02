@@ -2,22 +2,25 @@ import React, { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { Stack, Box, TextField } from '@mui/material';
+import { Stack, Box, TextField, InputAdornment } from '@mui/material';
 import MainCard from 'components/MainCard';
 import Button from '@mui/material/Button';
 import { Grid } from '@mui/system';
-
+import { Copy } from 'iconsax-react';
 
 const ConversionTracking = () => {
-  const [client, setClient] = useState('');
+const [client, setClient] = useState('');
+const handleCopy = (text) => {
+    alert(text)
+  };
  
 
-  const placeholderStyle = { color: '#9e9e9e' }; // grey[500]
+  const placeholderStyle = { color: '#9e9e9e' }; 
 
   return (
     
     <Stack spacing={2}>
-    <MainCard sx={{ overflow: 'visible' }}> {/* <-- Fix here */}
+    <MainCard sx={{ overflow: 'visible' }}> 
       <Stack
         direction="row"
         spacing={2}
@@ -51,7 +54,7 @@ const ConversionTracking = () => {
   direction="row"
   spacing={2}
   justifyContent="flex-end"
-  alignItems="center"  // use this instead of alignContent
+  alignItems="center"  
   
 >  <Box >
     <Button
@@ -79,11 +82,25 @@ const ConversionTracking = () => {
       <Box display="flex" alignItems="center" width="100%">
         <InputLabel
           htmlFor="ViewJSPixel"
-          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} // increased to 5
+          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
         >
           View JS Pixel
         </InputLabel>
-        <TextField fullWidth id="ViewJSPixel" placeholder="URL" autoFocus />
+         <TextField
+        fullWidth
+        id="ViewJSPixel"
+        placeholder="URL"
+        autoFocus
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+            <Box sx={{ cursor: 'pointer' }} onClick={() => handleCopy('copy url')}>
+    <Copy size="20" color="#FF8A65" />
+  </Box>
+            </InputAdornment>
+          ),
+        }}
+      />
       </Box>
     </Grid>
 
@@ -91,11 +108,25 @@ const ConversionTracking = () => {
       <Box display="flex" alignItems="center" width="100%">
         <InputLabel
           htmlFor="ApplyStartJSPixel"
-          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} // increased to 5
+          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
         >
           Apply Start JS Pixel
         </InputLabel>
-        <TextField fullWidth id="ApplyStartJSPixel" placeholder="URL" autoFocus />
+          <TextField
+        fullWidth
+        id="ApplyStartJSPixel"
+        placeholder="URL"
+        autoFocus
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+            <Box sx={{ cursor: 'pointer' }} onClick={() => handleCopy('url')}>
+    <Copy size="20" color="#FF8A65" />
+  </Box>
+            </InputAdornment>
+          ),
+        }}
+      />
       </Box>
     </Grid>
 
@@ -103,11 +134,25 @@ const ConversionTracking = () => {
       <Box display="flex" alignItems="center" width="100%">
         <InputLabel
           htmlFor="ApplyEndJSPixel"
-          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} // increased to 5
+          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
         >
           Apply End JS Pixel
         </InputLabel>
-        <TextField fullWidth id="ApplyEndJSPixel" placeholder="URL" autoFocus />
+        <TextField
+        fullWidth
+        id="ApplyEndJSPixel"
+        placeholder="URL"
+        autoFocus
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Box sx={{ cursor: 'pointer' }} onClick={() => handleCopy('url')}>
+    <Copy size="20" color="#FF8A65" />
+  </Box>
+            </InputAdornment>
+          ),
+        }}
+      />
       </Box>
     </Grid>
   </Grid>
@@ -123,6 +168,7 @@ const ConversionTracking = () => {
      View Image Pixel
         </InputLabel>
         <TextField fullWidth id="ViewImagePixel" placeholder="URL" autoFocus />
+        
       </Box>
     </Grid>
 
@@ -142,7 +188,7 @@ const ConversionTracking = () => {
       <Box display="flex" alignItems="center" width="100%">
         <InputLabel
           htmlFor="ApplyEndImagePixel"
-          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} // increased to 5
+          sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
         >
           Apply End Image Pixel
         </InputLabel>

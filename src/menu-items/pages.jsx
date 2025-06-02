@@ -49,6 +49,12 @@ const pages = {
         //   type: 'item',
         //   url: '/dashboard/conversiontracking',
         // },
+        {
+          id: 'inspect feed',
+          title: 'Inspect Feed',
+          type: 'item',
+          url: '/dashboard/inspectfeed',
+        },
       ]
     },
   ]

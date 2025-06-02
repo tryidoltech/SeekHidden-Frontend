@@ -11,6 +11,7 @@ import AddCampaign from '../components/campaigns/AddCampaign';
 import AddClient from '../components/clients/AddClient';
 import JobStatus from '../pages/dashboard/JobStatus';
 import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
+import InspectFeed from '../pages/dashboard/InspectFeed/InspectFeed';
 
 
 // render - sample page
@@ -68,6 +69,10 @@ const MainRoutes = {
         {
           path: 'dashboard/conversiontracking',
           element: <ConversionTracking />
+        },
+         {
+          path: 'dashboard/inspectfeed',
+          element: <InspectFeed />
         },
       ]
     },
