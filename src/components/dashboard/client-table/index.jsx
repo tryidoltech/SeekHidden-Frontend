@@ -6,14 +6,176 @@ import { useNavigate } from 'react-router';
 const ClientTable = () => {
   const navigate = useNavigate();
   const clientData = [
-    { id: 1, clientName: 'Acme Corp', clientType: 'CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5 },
-    { id: 2, clientName: 'Tech Solutions', clientType: 'CPC', status: 'inactive', budgetCap: 2000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
-    { id: 3, clientName: 'Marketing Plus', clientType: 'CPA', status: 'active', budgetCap: 1500.00, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5 },
-    { id: 4, clientName: 'Digital Agency', clientType: 'CPC', status: 'paused', budgetCap: 5000.00, spend: 2500.00, reconSpend: 2480.00, clicks: 500, validClicks: 485, invalidClicks: 15 },
-    { id: 5, clientName: 'Global Advisors', clientType: 'CPA', status: 'active', budgetCap: 3000.00, spend: 1200.00, reconSpend: 1180.00, clicks: 300, validClicks: 290, invalidClicks: 10 },
-    { id: 6, clientName: 'Media Partners', clientType: 'CPC', status: 'active', budgetCap: 2500.00, spend: 1800.00, reconSpend: 1750.00, clicks: 400, validClicks: 390, invalidClicks: 10 },
-    { id: 7, clientName: 'Creative Solutions', clientType: 'CPA', status: 'paused', budgetCap: 1800.00, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
-    { id: 8, clientName: 'Data Insights', clientType: 'CPC', status: 'inactive', budgetCap: 2200.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+    { 
+      id: 1, 
+      clientName: 'Acme Corp', 
+      clientType: 'CPA', 
+      status: 'active', 
+      budgetCap: 10000.00, 
+      advertiserName: 'Global Ads Inc.',
+      spend: 4500.00, 
+      reconSpend: 4300.00,
+      reconNetSpend: 4200.00,
+      clicks: 1500, 
+      validClicks: 1450, 
+      invalidClicks: 50,
+      botClicks: 10,
+      latentClicks: 15,
+      duplicateClicks: 12,
+      foreignClicks: 13,
+      reconClicks: 1480,
+      reconValidClicks: 1430,
+      reconBotClicks: 8,
+      reconInvalidClicks: 42,
+      reconLatentClicks: 14,
+      reconDuplicateClicks: 11,
+      reconForeignClicks: 12,
+      applies: 1200,
+      cp: 3.75,
+      cpc: 3.00,
+      ctaPercent: 25.5,
+      startDate: '2023-01-15',
+      frequency: 'daily',
+      country: 'US',
+      markUpPercent: 15.0,
+      markDownPercent: 5.0
+    },
+    { 
+      id: 2, 
+      clientName: 'Tech Solutions', 
+      clientType: 'CPC', 
+      status: 'inactive', 
+      budgetCap: 20000.00,
+      advertiserName: 'Digital Marketing Co.',
+      spend: 0.00, 
+      reconSpend: 0.00,
+      reconNetSpend: 0.00,
+      clicks: 0, 
+      validClicks: 0, 
+      invalidClicks: 0,
+      botClicks: 0,
+      latentClicks: 0,
+      duplicateClicks: 0,
+      foreignClicks: 0,
+      reconClicks: 0,
+      reconValidClicks: 0,
+      reconBotClicks: 0,
+      reconInvalidClicks: 0,
+      reconLatentClicks: 0,
+      reconDuplicateClicks: 0,
+      reconForeignClicks: 0,
+      applies: 0,
+      cp: 0,
+      cpc: 0,
+      ctaPercent: 0,
+      startDate: '2023-03-10',
+      frequency: 'weekly',
+      country: 'UK',
+      markUpPercent: 12.0,
+      markDownPercent: 3.0
+    },
+    { 
+      id: 3, 
+      clientName: 'Marketing Plus', 
+      clientType: 'CPA', 
+      status: 'active', 
+      budgetCap: 15000.00,
+      advertiserName: 'Ad Network Partners',
+      spend: 8000.00, 
+      reconSpend: 7900.00,
+      reconNetSpend: 7800.00,
+      clicks: 2000, 
+      validClicks: 1950, 
+      invalidClicks: 50,
+      botClicks: 15,
+      latentClicks: 20,
+      duplicateClicks: 15,
+      foreignClicks: 10,
+      reconClicks: 1980,
+      reconValidClicks: 1930,
+      reconBotClicks: 12,
+      reconInvalidClicks: 47,
+      reconLatentClicks: 18,
+      reconDuplicateClicks: 13,
+      reconForeignClicks: 9,
+      applies: 1600,
+      cp: 4.00,
+      cpc: 3.20,
+      ctaPercent: 28.0,
+      startDate: '2023-02-20',
+      frequency: 'daily',
+      country: 'CA',
+      markUpPercent: 18.0,
+      markDownPercent: 6.0
+    },
+    { 
+      id: 4, 
+      clientName: 'Digital Agency', 
+      clientType: 'CPC', 
+      status: 'paused', 
+      budgetCap: 50000.00,
+      advertiserName: 'Performance Marketing Ltd',
+      spend: 25000.00, 
+      reconSpend: 24800.00,
+      reconNetSpend: 24500.00,
+      clicks: 5000, 
+      validClicks: 4850, 
+      invalidClicks: 150,
+      botClicks: 30,
+      latentClicks: 40,
+      duplicateClicks: 35,
+      foreignClicks: 45,
+      reconClicks: 4950,
+      reconValidClicks: 4800,
+      reconBotClicks: 25,
+      reconInvalidClicks: 140,
+      reconLatentClicks: 38,
+      reconDuplicateClicks: 33,
+      reconForeignClicks: 42,
+      applies: 4000,
+      cp: 5.00,
+      cpc: 4.00,
+      ctaPercent: 30.5,
+      startDate: '2023-01-05',
+      frequency: 'monthly',
+      country: 'AU',
+      markUpPercent: 20.0,
+      markDownPercent: 8.0
+    },
+    { 
+      id: 5, 
+      clientName: 'Global Advisors', 
+      clientType: 'CPA', 
+      status: 'active', 
+      budgetCap: 30000.00,
+      advertiserName: 'Worldwide Advertisers',
+      spend: 12000.00, 
+      reconSpend: 11800.00,
+      reconNetSpend: 11500.00,
+      clicks: 3000, 
+      validClicks: 2900, 
+      invalidClicks: 100,
+      botClicks: 20,
+      latentClicks: 25,
+      duplicateClicks: 20,
+      foreignClicks: 35,
+      reconClicks: 2950,
+      reconValidClicks: 2850,
+      reconBotClicks: 18,
+      reconInvalidClicks: 95,
+      reconLatentClicks: 23,
+      reconDuplicateClicks: 18,
+      reconForeignClicks: 32,
+      applies: 2500,
+      cp: 4.20,
+      cpc: 3.50,
+      ctaPercent: 27.3,
+      startDate: '2023-04-15',
+      frequency: 'weekly',
+      country: 'US',
+      markUpPercent: 17.5,
+      markDownPercent: 7.0
+    }
   ];
 
   const columns = [
@@ -53,6 +215,10 @@ const ClientTable = () => {
       currency: 'USD'
     },
     { 
+      id: 'advertiserName', 
+      label: 'Advertiser Name', 
+    },
+    { 
       id: 'spend', 
       label: 'Spend', 
       numeric: true, 
@@ -63,8 +229,15 @@ const ClientTable = () => {
       id: 'reconSpend', 
       label: 'Recon Spend', 
       numeric: true, 
-      type: 'number',
-      decimals: 2
+      type: 'currency',
+      currency: 'USD'
+    },
+    { 
+      id: 'reconNetSpend', 
+      label: 'Recon Net Spend', 
+      numeric: true, 
+      type: 'currency',
+      currency: 'USD'
     },
     { 
       id: 'clicks', 
@@ -80,6 +253,113 @@ const ClientTable = () => {
       id: 'invalidClicks', 
       label: 'Invalid Clicks', 
       numeric: true 
+    },
+    { 
+      id: 'botClicks', 
+      label: 'Bot Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'latentClicks', 
+      label: 'Latent Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'duplicateClicks', 
+      label: 'Duplicate Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'foreignClicks', 
+      label: 'Foreign Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconClicks', 
+      label: 'Recon Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconValidClicks', 
+      label: 'Recon Valid Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconBotClicks', 
+      label: 'Recon Bot Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconInvalidClicks', 
+      label: 'Recon Invalid Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconLatentClicks', 
+      label: 'Recon Latent Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconDuplicateClicks', 
+      label: 'Recon Duplicate Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'reconForeignClicks', 
+      label: 'Recon Foreign Clicks', 
+      numeric: true 
+    },
+    { 
+      id: 'applies', 
+      label: 'Applies', 
+      numeric: true 
+    },
+    { 
+      id: 'cp', 
+      label: 'CP', 
+      numeric: true,
+      type: 'number',
+      decimals: 2
+    },
+    { 
+      id: 'cpc', 
+      label: 'CPC', 
+      numeric: true,
+      type: 'number',
+      decimals: 2
+    },
+    { 
+      id: 'ctaPercent', 
+      label: 'CTA%', 
+      numeric: true,
+      type: 'number',
+      decimals: 1
+    },
+    { 
+      id: 'startDate', 
+      label: 'Start Date', 
+    },
+    { 
+      id: 'frequency', 
+      label: 'Frequency', 
+    },
+    { 
+      id: 'country', 
+      label: 'Country', 
+    },
+    { 
+      id: 'markUpPercent', 
+      label: 'Mark Up %', 
+      numeric: true,
+      type: 'number',
+      decimals: 1
+    },
+    { 
+      id: 'markDownPercent', 
+      label: 'Mark Down %', 
+      numeric: true,
+      type: 'number',
+      decimals: 1
     }
   ];
 
@@ -103,9 +383,9 @@ const ClientTable = () => {
           placeholder: 'Budget Cap',
           minWidth: 140,
           options: [
-            { value: '0-500', label: '$0 - $500' },
-            { value: '500-1000', label: '$500 - $1000' },
-            { value: '1000+', label: '$1000+' }
+            { value: '0-10000', label: '$0 - $10K' },
+            { value: '10000-50000', label: '$10K - $50K' },
+            { value: '50000+', label: '$50K+' }
           ]
         }
       ],
@@ -197,8 +477,6 @@ const ClientTable = () => {
     return true;
   };
 
-
-
   return (
     <DynamicTable
       data={clientData}
@@ -210,7 +488,7 @@ const ClientTable = () => {
         rowsPerPage: 10
       }}
       title="Clients"
-      searchFields={['clientName', 'clientType']}
+      searchFields={['clientName', 'clientType', 'advertiserName', 'country']}
       getRowId={(row) => row.id}
       onRowClick={(row) => navigate('/dashboard/campaigns')}
       onRowSelect={(selected) => console.log('Selected rows:', selected)}

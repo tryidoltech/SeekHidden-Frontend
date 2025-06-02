@@ -20,7 +20,7 @@ const ActionButtons = () => {
                         Conversion Tracking
                     </Button>
                     <Button variant="outlined" color="primary" onClick={() => {
-                        navigate('/dashboard/publishers')
+                        navigate('/dashboard/publisher-management')
                     }} >
                         Publisher Management
                     </Button>

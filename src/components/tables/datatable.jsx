@@ -233,7 +233,18 @@ function DynamicTableHead({
     <TableHead>
       <TableRow>
         {selectable && (
-          <TableCell padding="checkbox" sx={{ pl: 3 }}>
+          <TableCell 
+            padding="checkbox" 
+            sx={{ 
+              pl: 3,
+              position: 'sticky',
+              left: 0,
+              backgroundColor: 'background.paper',
+              zIndex: 2,
+              borderRight: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
             <Checkbox
               color="primary"
               indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -242,12 +253,24 @@ function DynamicTableHead({
             />
           </TableCell>
         )}
-        {columns.map((column) => (
+        {columns.map((column, index) => (
           <TableCell
             key={column.id}
             align={column.align || (column.numeric ? 'right' : 'left')}
             padding={column.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === column.id ? order : false}
+            sx={{
+              minWidth: column.minWidth || 120,
+              whiteSpace: 'nowrap',
+              ...(column.sticky && {
+                position: 'sticky',
+                left: selectable ? 58 : 0, // Account for checkbox column width
+                backgroundColor: 'background.paper',
+                zIndex: 1,
+                borderRight: '1px solid',
+                borderColor: 'divider'
+              })
+            }}
           >
             {column.sortable !== false ? (
               <TableSortLabel
@@ -267,7 +290,19 @@ function DynamicTableHead({
             )}
           </TableCell>
         ))}
-        {actionsEnabled && <TableCell />}
+        {actionsEnabled && (
+          <TableCell 
+            sx={{ 
+              minWidth: 60,
+              position: 'sticky',
+              right: 0,
+              backgroundColor: 'background.paper',
+              zIndex: 1,
+              borderLeft: '1px solid',
+              borderColor: 'divider'
+            }} 
+          />
+        )}
       </TableRow>
     </TableHead>
   );
@@ -363,7 +398,8 @@ export default function DynamicTable({
   title = "Records",
   rowsPerPageOptions = [5, 10, 25, 50],
   defaultRowsPerPage = 10,
-  getRowId = (row, index) => row.id || `row-${index}`
+  getRowId = (row, index) => row.id || `row-${index}`,
+  maxHeight = 'none' // Add maxHeight prop for vertical scrolling
 }) {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState(columns[0]?.id || '');
@@ -497,8 +533,37 @@ export default function DynamicTable({
       )}
 
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+        <TableContainer 
+          sx={{ 
+            overflowX: 'auto',
+            maxHeight: maxHeight,
+            // Add scrollbar styling for better UX
+            '&::-webkit-scrollbar': {
+              height: 8,
+              width: 8,
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: 'rgba(0,0,0,0.1)',
+              borderRadius: 4,
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              borderRadius: 4,
+              '&:hover': {
+                backgroundColor: 'rgba(0,0,0,0.5)',
+              },
+            },
+          }}
+        >
+          <Table 
+            sx={{ 
+              minWidth: 750,
+              // Calculate minimum width based on columns
+              width: columns.length > 8 ? 'max-content' : '100%'
+            }} 
+            aria-labelledby="tableTitle"
+            stickyHeader={maxHeight !== 'none'}
+          >
             <DynamicTableHead
               columns={columns}
               numSelected={selected.length}
@@ -530,7 +595,18 @@ export default function DynamicTable({
                       sx={{ cursor: 'pointer' }}
                     >
                       {selectable && (
-                        <TableCell padding="checkbox" sx={{ pl: 3 }}>
+                        <TableCell 
+                          padding="checkbox" 
+                          sx={{ 
+                            pl: 3,
+                            position: 'sticky',
+                            left: 0,
+                            backgroundColor: isItemSelected ? 'action.selected' : 'background.paper',
+                            zIndex: 1,
+                            borderRight: '1px solid',
+                            borderColor: 'divider'
+                          }}
+                        >
                           <Checkbox
                             color="primary"
                             checked={isItemSelected}
@@ -550,6 +626,18 @@ export default function DynamicTable({
                           scope={colIndex === 0 ? "row" : undefined}
                           padding={column.disablePadding ? 'none' : 'normal'}
                           align={column.align || (column.numeric ? 'right' : 'left')}
+                          sx={{
+                            minWidth: column.minWidth || 120,
+                            whiteSpace: 'nowrap',
+                            ...(column.sticky && {
+                              position: 'sticky',
+                              left: selectable ? 58 : 0,
+                              backgroundColor: isItemSelected ? 'action.selected' : 'background.paper',
+                              zIndex: 1,
+                              borderRight: '1px solid',
+                              borderColor: 'divider'
+                            })
+                          }}
                         >
                           <CellRenderer
                             column={column}
@@ -560,7 +648,17 @@ export default function DynamicTable({
                       ))}
 
                       {actionsEnabled && (
-                        <TableCell>
+                        <TableCell
+                          sx={{
+                            minWidth: 60,
+                            position: 'sticky',
+                            right: 0,
+                            backgroundColor: isItemSelected ? 'action.selected' : 'background.paper',
+                            zIndex: 1,
+                            borderLeft: '1px solid',
+                            borderColor: 'divider'
+                          }}
+                        >
                           <IconButton
                             size="small"
                             onClick={(event) => event.stopPropagation()}
@@ -608,7 +706,9 @@ DynamicTable.propTypes = {
     getChipStyle: PropTypes.func,
     getStatusColor: PropTypes.func,
     currency: PropTypes.string,
-    decimals: PropTypes.number
+    decimals: PropTypes.number,
+    minWidth: PropTypes.number,
+    sticky: PropTypes.bool // New prop for sticky columns
   })).isRequired,
   filterConfig: PropTypes.array,
   initialFilters: PropTypes.object,
@@ -623,5 +723,6 @@ DynamicTable.propTypes = {
   title: PropTypes.string,
   rowsPerPageOptions: PropTypes.array,
   defaultRowsPerPage: PropTypes.number,
-  getRowId: PropTypes.func
+  getRowId: PropTypes.func,
+  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) // New prop for vertical scrolling
 };
