@@ -55,6 +55,12 @@ const pages = {
           type: 'item',
           url: '/dashboard/inspectfeed',
         },
+        {
+          id: 'job-group',
+          title: 'Job Group',
+          type: 'item',
+          url: '/dashboard/job-group',
+        }
       ]
     },
   ]

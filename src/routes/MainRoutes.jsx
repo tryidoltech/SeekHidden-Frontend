@@ -9,6 +9,9 @@ import AddClientUser from '../components/clients/AddClientUser';
 import Campaigns from '../components/campaigns';
 import AddCampaign from '../components/campaigns/AddCampaign';
 import AddClient from '../components/clients/AddClient';
+import JobGroupPage from '../pages/job-group';
+import EditCampaign from '../components/campaigns/EditCampaign';
+import JobGroupForm from '../components/job-group/JobGroupForm';
 import JobStatus from '../pages/dashboard/JobStatus';
 import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
 import InspectFeed from '../pages/dashboard/InspectFeed/InspectFeed';
@@ -70,10 +73,22 @@ const MainRoutes = {
           path: 'dashboard/conversiontracking',
           element: <ConversionTracking />
         },
-         {
+        {
           path: 'dashboard/inspectfeed',
           element: <InspectFeed />
         },
+        {
+          path: 'dashboard/job-group',
+          element: <JobGroupPage />
+        },
+        {
+          path: 'dashboard/clients/edit-campaign',
+          element: <EditCampaign />
+        },
+        {
+          path: 'dashboard/job-group/job-group-form',
+          element: <JobGroupForm />
+        }
       ]
     },
   ]
