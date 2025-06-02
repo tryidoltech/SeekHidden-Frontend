@@ -9,41 +9,31 @@ const CampaignsTable = () => {
     const [selected, setSelected] = useState([]);
 
     const clientData = [
-        { id: 1, clientName: 'Acme Corp', clientType: 'CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5 },
-        { id: 2, clientName: 'Tech Solutions', clientType: 'CPC', status: 'inactive', budgetCap: 2000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
-        { id: 3, clientName: 'Marketing Plus', clientType: 'CPA', status: 'active', budgetCap: 1500.00, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5 },
-        { id: 4, clientName: 'Digital Agency', clientType: 'CPC', status: 'paused', budgetCap: 5000.00, spend: 2500.00, reconSpend: 2480.00, clicks: 500, validClicks: 485, invalidClicks: 15 },
-        { id: 5, clientName: 'Global Advisors', clientType: 'CPA', status: 'active', budgetCap: 3000.00, spend: 1200.00, reconSpend: 1180.00, clicks: 300, validClicks: 290, invalidClicks: 10 },
-        { id: 6, clientName: 'Media Partners', clientType: 'CPC', status: 'active', budgetCap: 2500.00, spend: 1800.00, reconSpend: 1750.00, clicks: 400, validClicks: 390, invalidClicks: 10 },
-        { id: 7, clientName: 'Creative Solutions', clientType: 'CPA', status: 'paused', budgetCap: 1800.00, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
-        { id: 8, clientName: 'Data Insights', clientType: 'CPC', status: 'inactive', budgetCap: 2200.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 1, jobGroupName: '+12 CPA', status: 'active', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 2, jobGroupName: 'Tech Solutions Group', status: 'inactive', budgetCap: 2000.00, spend: 850.00, reconSpend: 840.00, clicks: 120, validClicks: 115, invalidClicks: 5 },
+        { id: 3, jobGroupName: 'Marketing Plus CPA', status: 'active', budgetCap: 1500.00, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5 },
+        { id: 4, jobGroupName: 'Digital Agency CPC', status: 'paused', budgetCap: 5000.00, spend: 2500.00, reconSpend: 2480.00, clicks: 500, validClicks: 485, invalidClicks: 15 },
+        { id: 5, jobGroupName: 'Global Advisors', status: 'active', budgetCap: 3000.00, spend: 1200.00, reconSpend: 1180.00, clicks: 300, validClicks: 290, invalidClicks: 10 },
+        { id: 6, jobGroupName: 'Media Partners', status: 'active', budgetCap: 2500.00, spend: 1800.00, reconSpend: 1750.00, clicks: 400, validClicks: 390, invalidClicks: 10 },
+        { id: 7, jobGroupName: 'Creative Solutions', status: 'paused', budgetCap: 1800.00, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
+        { id: 8, jobGroupName: 'Data Insights', status: 'inactive', budgetCap: 2200.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
     ];
 
     const columns = [
         {
-            id: 'clientName',
-            label: 'Client Name',
+            id: 'jobGroupName',
+            label: 'Job Group Name',
             disablePadding: true
-        },
-        {
-            id: 'clientType',
-            label: 'Client Type',
-            type: 'chip',
-            getChipStyle: (type) => ({
-                backgroundColor: type === 'CPA' ? '#e1bee7' : '#bbdefb',
-                color: type === 'CPA' ? '#7b1fa2' : '#1976d2',
-                fontWeight: 500
-            })
         },
         {
             id: 'status',
             label: 'Status',
-            type: 'status',
+            type: 'statusDot',
             getStatusColor: (status) => {
                 switch (status) {
                     case 'active': return '#4caf50';
                     case 'inactive': return '#f44336';
-                    case 'paused': return '#9e9e9e';
+                    case 'paused': return '#ff9800';
                     default: return '#9e9e9e';
                 }
             }
@@ -66,8 +56,8 @@ const CampaignsTable = () => {
             id: 'reconSpend',
             label: 'Recon Spend',
             numeric: true,
-            type: 'number',
-            decimals: 2
+            type: 'currency',
+            currency: 'USD'
         },
         {
             id: 'clicks',
@@ -88,11 +78,11 @@ const CampaignsTable = () => {
 
     const handleActionChange = (action) => {
         if (!action) return; // Ignore empty selection
-        
+
         switch (action) {
             case 'edit':
                 if (selected.length === 1) {
-                    navigate(`/dashboard/clients/edit-campaign`);
+                    navigate(`/dashboard/job-group/job-group-form`);
                 } else if (selected.length === 0) {
                     toast.error('Please select a campaign to edit');
                 } else {
@@ -141,21 +131,41 @@ const CampaignsTable = () => {
                     placeholder: 'Budget Cap',
                     minWidth: 140,
                     options: [
-                        { value: '0-500', label: '$0 - $500' },
-                        { value: '500-1000', label: '$500 - $1000' },
-                        { value: '1000+', label: '$1000+' }
+                        { value: '0-1000', label: '$0 - $1000' },
+                        { value: '1000-3000', label: '$1000 - $3000' },
+                        { value: '3000+', label: '$3000+' }
+                    ]
+                },
+                {
+                    type: 'select',
+                    key: 'margin',
+                    placeholder: 'Margin',
+                    minWidth: 120,
+                    options: [
+                        { value: '0-10', label: '0% - 10%' },
+                        { value: '10-25', label: '10% - 25%' },
+                        { value: '25+', label: '25%+' }
                     ]
                 }
             ],
             rightFilters: [
                 {
+                    type: 'dateRange',
+                    key: 'dateRange',
+                    placeholder: 'Date Range',
+                    minWidth: 200,
+                    defaultValue: '01-01-2000 to 01-01-2020'
+                },
+
+                {
                     type: 'button',
-                    label: 'Add Campaign',
+                    label: 'Add Job Group',
                     icon: <AddSquare size="20" />,
                     variant: 'contained',
                     color: 'primary',
-                    onClick: () => navigate('/dashboard/clients/add-campaign')
+                    onClick: () => navigate('/dashboard/job-group/job-group-form')
                 },
+
             ]
         },
         {
@@ -165,7 +175,7 @@ const CampaignsTable = () => {
                 },
                 {
                     type: 'search',
-                    placeholder: 'Search clients...',
+                    placeholder: 'Search...',
                     minWidth: 200
                 }
             ],
@@ -173,8 +183,8 @@ const CampaignsTable = () => {
                 {
                     type: 'select',
                     key: 'currency',
-                    placeholder: 'Currency',
-                    minWidth: 100,
+                    placeholder: 'USD',
+                    minWidth: 80,
                     options: [
                         { value: 'USD', label: 'USD - $' },
                         { value: 'EUR', label: 'EUR - €' },
@@ -193,9 +203,33 @@ const CampaignsTable = () => {
                     ]
                 },
                 {
+                    type: 'select',
+                    key: 'columns',
+                    placeholder: 'Columns',
+                    minWidth: 100,
+                    options: [
+                        { value: 'all', label: 'Show All' },
+                        { value: 'basic', label: 'Basic View' },
+                        { value: 'detailed', label: 'Detailed View' }
+                    ]
+                },
+                {
                     type: 'button',
                     label: 'Apply Filters',
-                    icon: <Filter size="20" />
+                    icon: <Filter size="20" />,
+                    variant: 'outlined'
+                },
+                {
+                    type: 'select',
+                    key: 'rowsPerPage',
+                    placeholder: 'Rows per page',
+                    minWidth: 60,
+                    options: [
+                        { value: '10', label: '10' },
+                        { value: '25', label: '25' },
+                        { value: '50', label: '50' },
+                        { value: '100', label: '100' }
+                    ]
                 }
             ]
         }
@@ -204,8 +238,8 @@ const CampaignsTable = () => {
     const customFilter = (row, filters) => {
         // Budget range filter
         if (filters.budgetRange) {
-            if (filters.budgetRange === '1000+') {
-                if (row.budgetCap < 1000) return false;
+            if (filters.budgetRange === '3000+') {
+                if (row.budgetCap < 3000) return false;
             } else {
                 const [min, max] = filters.budgetRange.split('-').map(Number);
                 if (row.budgetCap < min || row.budgetCap > max) return false;
@@ -232,10 +266,11 @@ const CampaignsTable = () => {
             customFilter={customFilter}
             onRowSelect={handleRowSelect}
             searchEnabled={true}
-            searchFields={['clientName', 'clientType']}
+            searchFields={['jobGroupName']}
             title="Campaigns"
             selectable={true}
             actionsEnabled={false}
+            recordsFoundText="Records Found"
         />
     );
 };
