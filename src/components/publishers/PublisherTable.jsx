@@ -4,36 +4,26 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DynamicTable from '../tables/datatable';
 
-const CampaignsTable = () => {
+const PublisherTable = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
 
-    const clientData = [
-        { id: 1, clientName: 'Acme Corp', clientType: 'CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5 },
-        { id: 2, clientName: 'Tech Solutions', clientType: 'CPC', status: 'inactive', budgetCap: 2000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
-        { id: 3, clientName: 'Marketing Plus', clientType: 'CPA', status: 'active', budgetCap: 1500.00, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5 },
-        { id: 4, clientName: 'Digital Agency', clientType: 'CPC', status: 'paused', budgetCap: 5000.00, spend: 2500.00, reconSpend: 2480.00, clicks: 500, validClicks: 485, invalidClicks: 15 },
-        { id: 5, clientName: 'Global Advisors', clientType: 'CPA', status: 'active', budgetCap: 3000.00, spend: 1200.00, reconSpend: 1180.00, clicks: 300, validClicks: 290, invalidClicks: 10 },
-        { id: 6, clientName: 'Media Partners', clientType: 'CPC', status: 'active', budgetCap: 2500.00, spend: 1800.00, reconSpend: 1750.00, clicks: 400, validClicks: 390, invalidClicks: 10 },
-        { id: 7, clientName: 'Creative Solutions', clientType: 'CPA', status: 'paused', budgetCap: 1800.00, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
-        { id: 8, clientName: 'Data Insights', clientType: 'CPC', status: 'inactive', budgetCap: 2200.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+    const publisherData = [
+        { id: 1, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 2, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 3, publisherName: 'ATTB US CPA', status: 'paused', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 4, publisherName: 'ATTB US CPA', status: 'inactive', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 5, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 6, publisherName: 'ATTB US CPA', status: 'inactive', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 7, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 8, publisherName: 'ATTB US CPA', status: 'paused', budgetCap: 1000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
     ];
 
     const columns = [
         {
-            id: 'clientName',
-            label: 'Client Name',
+            id: 'publisherName',
+            label: 'Publisher Name',
             disablePadding: true
-        },
-        {
-            id: 'clientType',
-            label: 'Client Type',
-            type: 'chip',
-            getChipStyle: (type) => ({
-                backgroundColor: type === 'CPA' ? '#e1bee7' : '#bbdefb',
-                color: type === 'CPA' ? '#7b1fa2' : '#1976d2',
-                fontWeight: 500
-            })
         },
         {
             id: 'status',
@@ -94,27 +84,35 @@ const CampaignsTable = () => {
                 if (selected.length === 1) {
                     navigate(`/dashboard/clients/edit-campaign`);
                 } else if (selected.length === 0) {
-                    toast.error('Please select a campaign to edit');
+                    toast.error('Please select a publisher to edit');
                 } else {
-                    toast.error('Please select only one campaign to edit');
+                    toast.error('Please select only one publisher to edit');
                 }
                 break;
             case 'delete':
                 if (selected.length === 0) {
-                    toast.error('Please select campaigns to delete');
+                    toast.error('Please select publishers to delete');
                 } else {
                     // Handle delete logic
-                    toast.success(`${selected.length} campaign(s) will be deleted`);
+                    toast.success(`${selected.length} publisher(s) will be deleted`);
                 }
                 break;
             case 'duplicate':
                 if (selected.length === 0) {
-                    toast.error('Please select campaigns to duplicate');
+                    toast.error('Please select publishers to duplicate');
                 } else {
                     // Handle duplicate logic
-                    toast.success(`${selected.length} campaign(s) will be duplicated`);
+                    toast.success(`${selected.length} publisher(s) will be duplicated`);
                 }
                 break;
+            case 'clickLogs':
+                if (selected.length === 1) {
+                    navigate(`/dashboard/click-logs`);
+                } else if (selected.length === 0) {
+                    toast.error('Please select publishers to click logs');
+                }else{
+                    toast.success(`${selected.length} publishers to click logs`);
+                }
             default:
                 break;
         }
@@ -131,7 +129,8 @@ const CampaignsTable = () => {
                     options: [
                         { value: 'edit', label: 'Edit' },
                         { value: 'delete', label: 'Delete' },
-                        { value: 'duplicate', label: 'Duplicate' }
+                        { value: 'duplicate', label: 'Duplicate' },
+                        { value: 'clickLogs', label: 'Click Logs'}
                     ],
                     onChange: handleActionChange
                 },
@@ -145,17 +144,26 @@ const CampaignsTable = () => {
                         { value: '500-1000', label: '$500 - $1000' },
                         { value: '1000+', label: '$1000+' }
                     ]
+                },
+                {
+                    type: 'select',
+                    key: 'margin',
+                    placeholder: 'Margin',
+                    minWidth: 120,
+                    options: [
+                        { value: '0-10', label: '0% - 10%' },
+                        { value: '10-20', label: '10% - 20%' },
+                        { value: '20+', label: '20%+' }
+                    ]
                 }
             ],
             rightFilters: [
                 {
-                    type: 'button',
-                    label: 'Add Campaign',
-                    icon: <AddSquare size="20" />,
-                    variant: 'contained',
-                    color: 'primary',
-                    onClick: () => navigate('/dashboard/clients/add-campaign')
-                },
+                    type: 'dateRange',
+                    label: 'Date Range',
+                    placeholder: '01-01-2000 to 01-01-2020',
+                    minWidth: 200
+                }
             ]
         },
         {
@@ -165,7 +173,7 @@ const CampaignsTable = () => {
                 },
                 {
                     type: 'search',
-                    placeholder: 'Search clients...',
+                    placeholder: 'Search...',
                     minWidth: 200
                 }
             ],
@@ -173,7 +181,7 @@ const CampaignsTable = () => {
                 {
                     type: 'select',
                     key: 'currency',
-                    placeholder: 'Currency',
+                    placeholder: 'USD - $',
                     minWidth: 100,
                     options: [
                         { value: 'USD', label: 'USD - $' },
@@ -193,9 +201,32 @@ const CampaignsTable = () => {
                     ]
                 },
                 {
+                    type: 'select',
+                    key: 'columns',
+                    placeholder: 'Columns',
+                    minWidth: 100,
+                    options: [
+                        { value: 'all', label: 'Show All' },
+                        { value: 'basic', label: 'Basic View' },
+                        { value: 'detailed', label: 'Detailed View' }
+                    ]
+                },
+                {
                     type: 'button',
                     label: 'Apply Filters',
                     icon: <Filter size="20" />
+                },
+                {
+                    type: 'select',
+                    key: 'rowsPerPage',
+                    placeholder: '10',
+                    minWidth: 70,
+                    options: [
+                        { value: '10', label: '10' },
+                        { value: '25', label: '25' },
+                        { value: '50', label: '50' },
+                        { value: '100', label: '100' }
+                    ]
                 }
             ]
         }
@@ -217,6 +248,11 @@ const CampaignsTable = () => {
             return false;
         }
 
+        // Margin filter (placeholder logic)
+        if (filters.margin) {
+            // Add margin calculation logic here if needed
+        }
+
         return true;
     };
 
@@ -226,19 +262,19 @@ const CampaignsTable = () => {
 
     return (
         <DynamicTable
-            data={clientData}
+            data={publisherData}
             columns={columns}
             filterConfig={filterConfig}
             customFilter={customFilter}
             onRowSelect={handleRowSelect}
             searchEnabled={true}
-            searchFields={['clientName', 'clientType']}
-            title="Campaigns"
-            onRowClick={(row) => navigate('/dashboard/job-group')}
+            searchFields={['publisherName']}
+            title="Publishers"
+            // onRowClick={(row) => navigate('/dashboard/job-group')}
             selectable={true}
             actionsEnabled={false}
         />
     );
 };
 
-export default CampaignsTable;
+export default PublisherTable;

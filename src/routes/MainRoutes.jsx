@@ -3,7 +3,7 @@ import { lazy } from 'react';
 // project-imports
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
-import Publisher from '../pages/publishers';
+import Publisher from '../pages/publisher-management';
 import ClientsPage from '../pages/clients';
 import AddClientUser from '../components/clients/AddClientUser';
 import Campaigns from '../components/campaigns';
@@ -15,6 +15,9 @@ import JobGroupForm from '../components/job-group/JobGroupForm';
 import JobStatus from '../pages/dashboard/JobStatus';
 import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
 import InspectFeed from '../pages/dashboard/InspectFeed/InspectFeed';
+import PublisherManagement from '../pages/publisher-management';
+import Publishers from '../components/publishers';
+import ClickLogsPage from '../pages/click-logs';
 
 
 // render - sample page
@@ -62,8 +65,8 @@ const MainRoutes = {
           element: <AddCampaign />
         },
         {
-          path: 'dashboard/publishers',
-          element: <Publisher />
+          path: 'dashboard/publisher-management',
+          element: <PublisherManagement />
         },
         {
           path: 'dashboard/jobstatus',
@@ -88,6 +91,14 @@ const MainRoutes = {
         {
           path: 'dashboard/job-group/job-group-form',
           element: <JobGroupForm />
+        },
+        {
+          path: 'dashboard/publishers',
+          element: <Publishers />
+        },
+        {
+          path: 'dashboard/click-logs',
+          element: <ClickLogsPage />
         }
       ]
     },

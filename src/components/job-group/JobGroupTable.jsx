@@ -268,6 +268,7 @@ const CampaignsTable = () => {
             searchEnabled={true}
             searchFields={['jobGroupName']}
             title="Campaigns"
+            onRowClick={(row) => navigate('/dashboard/publishers')}
             selectable={true}
             actionsEnabled={false}
             recordsFoundText="Records Found"

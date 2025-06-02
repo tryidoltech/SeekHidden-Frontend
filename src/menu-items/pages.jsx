@@ -49,18 +49,18 @@ const pages = {
         //   type: 'item',
         //   url: '/dashboard/conversiontracking',
         // },
-        {
-          id: 'inspect feed',
-          title: 'Inspect Feed',
-          type: 'item',
-          url: '/dashboard/inspectfeed',
-        },
-        {
-          id: 'job-group',
-          title: 'Job Group',
-          type: 'item',
-          url: '/dashboard/job-group',
-        }
+        // {
+        //   id: 'inspect feed',
+        //   title: 'Inspect Feed',
+        //   type: 'item',
+        //   url: '/dashboard/inspectfeed',
+        // },
+        // {
+        //   id: 'job-group',
+        //   title: 'Job Group',
+        //   type: 'item',
+        //   url: '/dashboard/job-group',
+        // }
       ]
     },
   ]
