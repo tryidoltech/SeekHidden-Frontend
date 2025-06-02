@@ -37,7 +37,7 @@ const pages = {
         },
         {
           id: 'jobstatus',
-          title: 'Job Status',
+          title: 'Job Stats',
           type: 'item',
           url: '/dashboard/jobstatus',
         },
