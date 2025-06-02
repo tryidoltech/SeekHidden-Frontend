@@ -5,17 +5,18 @@ import { DocumentCode2 } from 'iconsax-react';
 
 // icons
 const icons = {
-  samplePage: DocumentCode2
+  dashboardPage: DocumentCode2
 };
 
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
-const samplePage = {
+const dashboardPage = {
   id: 'dashboard',
   title: 'Dashboard',
   type: 'group',
   url: '/dashboard',
-  icon: icons.samplePage
+  icon: icons.dashboardPage,
+  breadcrumbs: false,
 };
 
-export default samplePage;
+export default dashboardPage;

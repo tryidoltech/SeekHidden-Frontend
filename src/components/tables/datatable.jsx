@@ -21,7 +21,8 @@ import {
   TextField,
   Typography,
   Paper,
-  Stack
+  Stack,
+  Tooltip
 } from '@mui/material';
 import { SearchNormal1, Filter, Calendar, More } from 'iconsax-react';
 import { visuallyHidden } from '@mui/utils';
@@ -45,11 +46,11 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function DynamicTableHeader({ 
+function DynamicTableHeader({
   filterConfig = [],
-  filters, 
-  onFilterChange, 
-  onSearch, 
+  filters,
+  onFilterChange,
+  onSearch,
   onApplyFilters,
   recordsFound,
   searchEnabled = true,
@@ -67,9 +68,15 @@ function DynamicTableHeader({
                     <FormControl size="small" sx={{ minWidth: filter.minWidth || 120 }}>
                       <Select
                         value={filters[filter.key] || ''}
-                        onChange={(e) => onFilterChange(filter.key, e.target.value)}
+                        onChange={(e) => {
+                          onFilterChange(filter.key, e.target.value);
+                          // Call the specific onChange handler if provided
+                          if (filter.onChange) {
+                            filter.onChange(e.target.value);
+                          }
+                        }}
                         displayEmpty
-                        sx={{ 
+                        sx={{
                           '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
                           backgroundColor: 'white'
                         }}
@@ -83,7 +90,7 @@ function DynamicTableHeader({
                       </Select>
                     </FormControl>
                   )}
-                  
+
                   {filter.type === 'text' && (
                     <TextField
                       size="small"
@@ -97,7 +104,7 @@ function DynamicTableHeader({
                           </InputAdornment>
                         ),
                       } : undefined}
-                      sx={{ 
+                      sx={{
                         minWidth: filter.minWidth || 120,
                         '& .MuiOutlinedInput-root': {
                           backgroundColor: 'white'
@@ -131,7 +138,7 @@ function DynamicTableHeader({
                           </InputAdornment>
                         ),
                       }}
-                      sx={{ 
+                      sx={{
                         minWidth: filter.minWidth || 200,
                         '& .MuiOutlinedInput-root': {
                           backgroundColor: 'white'
@@ -150,9 +157,15 @@ function DynamicTableHeader({
                     <FormControl size="small" sx={{ minWidth: filter.minWidth || 120 }}>
                       <Select
                         value={filters[filter.key] || ''}
-                        onChange={(e) => onFilterChange(filter.key, e.target.value)}
+                        onChange={(e) => {
+                          onFilterChange(filter.key, e.target.value);
+                          // Call the specific onChange handler if provided
+                          if (filter.onChange) {
+                            filter.onChange(e.target.value);
+                          }
+                        }}
                         displayEmpty
-                        sx={{ 
+                        sx={{
                           '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
                           backgroundColor: 'white'
                         }}
@@ -170,11 +183,18 @@ function DynamicTableHeader({
                   {filter.type === 'button' && (
                     <Button
                       variant={filter.variant || "outlined"}
+                      color={filter.color || "primary"}
                       startIcon={filter.icon}
-                      onClick={() => onApplyFilters()}
-                      sx={{ 
-                        borderColor: '#ddd',
-                        color: 'text.primary',
+                      onClick={() => {
+                        if (filter.onClick) {
+                          filter.onClick();
+                        } else {
+                          onApplyFilters();
+                        }
+                      }}
+                      sx={{
+                        borderColor: filter.color ? undefined : '#ddd',
+                        color: filter.color ? undefined : 'text.primary',
                         '&:hover': {
                           borderColor: '#1976d2',
                           backgroundColor: 'rgba(25, 118, 210, 0.04)'
@@ -194,13 +214,13 @@ function DynamicTableHeader({
   );
 }
 
-function DynamicTableHead({ 
+function DynamicTableHead({
   columns,
-  onSelectAllClick, 
-  order, 
-  orderBy, 
-  numSelected, 
-  rowCount, 
+  onSelectAllClick,
+  order,
+  orderBy,
+  numSelected,
+  rowCount,
   onRequestSort,
   selectable = true,
   actionsEnabled = true
@@ -267,21 +287,21 @@ function CellRenderer({ column, value, row }) {
           sx={column.getChipStyle ? column.getChipStyle(value) : undefined}
         />
       );
-    
+
     case 'status':
       return (
-        <Box 
-          sx={{ 
-            width: 12, 
-            height: 12, 
-            borderRadius: '50%', 
+        <Box
+          sx={{
+            width: 12,
+            height: 12,
+            borderRadius: '50%',
             backgroundColor: column.getStatusColor ? column.getStatusColor(value) : '#9e9e9e',
             display: 'inline-block',
             mr: 1
-          }} 
+          }}
         />
       );
-    
+
     case 'currency':
       return (
         <Typography variant="body2">
@@ -291,10 +311,37 @@ function CellRenderer({ column, value, row }) {
           }) : value}
         </Typography>
       );
-    
+
     case 'number':
       return typeof value === 'number' ? value.toFixed(column.decimals || 0) : value;
-    
+
+    case 'actions':
+      return (
+        <Stack direction="row" spacing={1}>
+          {column.actions?.map((action, index) => (
+            <Tooltip key={index} title={action.tooltip || ''}>
+              <IconButton
+                size="small"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (action.onClick) {
+                    action.onClick(row);
+                  }
+                }}
+                sx={{
+                  color: action.color || 'inherit',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                  }
+                }}
+              >
+                {action.icon}
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Stack>
+      );
+
     default:
       return value;
   }
@@ -308,6 +355,7 @@ export default function DynamicTable({
   onRowClick,
   onRowSelect,
   onApplyFilters,
+  customFilter,
   selectable = true,
   searchEnabled = true,
   searchFields = [],
@@ -329,6 +377,7 @@ export default function DynamicTable({
 
   const filteredRows = useMemo(() => {
     return data.filter(row => {
+      // Search filter
       if (filters.search && searchEnabled) {
         const searchFields_ = searchFields.length > 0 ? searchFields : columns.map(col => col.id);
         const matchesSearch = searchFields_.some(field => {
@@ -337,9 +386,15 @@ export default function DynamicTable({
         });
         if (!matchesSearch) return false;
       }
+
+      // Custom filter logic
+      if (customFilter && !customFilter(row, filters)) {
+        return false;
+      }
+
       return true;
     });
-  }, [data, filters, searchEnabled, searchFields, columns]);
+  }, [data, filters, searchEnabled, searchFields, columns, customFilter]);
 
   const handleFilterChange = (filterName, value) => {
     setFilters(prev => ({
@@ -382,7 +437,7 @@ export default function DynamicTable({
 
   const handleCheckboxClick = (event, rowId, row) => {
     event.stopPropagation();
-    
+
     const selectedIndex = selected.indexOf(rowId);
     let newSelected = [];
 
@@ -391,7 +446,7 @@ export default function DynamicTable({
     } else {
       newSelected = selected.filter(id => id !== rowId);
     }
-    
+
     setSelected(newSelected);
     if (onRowSelect) onRowSelect(newSelected);
   };
@@ -400,11 +455,11 @@ export default function DynamicTable({
     if (event.target.type === 'checkbox' || event.target.closest('button')) {
       return;
     }
-    
+
     if (selectable) {
       handleCheckboxClick(event, rowId, row);
     }
-    
+
     if (onRowClick) {
       onRowClick(row, rowId);
     }
@@ -440,7 +495,7 @@ export default function DynamicTable({
           title={title}
         />
       )}
-      
+
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -486,7 +541,7 @@ export default function DynamicTable({
                           />
                         </TableCell>
                       )}
-                      
+
                       {columns.map((column, colIndex) => (
                         <TableCell
                           key={column.id}
@@ -496,17 +551,17 @@ export default function DynamicTable({
                           padding={column.disablePadding ? 'none' : 'normal'}
                           align={column.align || (column.numeric ? 'right' : 'left')}
                         >
-                          <CellRenderer 
-                            column={column} 
-                            value={row[column.id]} 
-                            row={row} 
+                          <CellRenderer
+                            column={column}
+                            value={row[column.id]}
+                            row={row}
                           />
                         </TableCell>
                       ))}
-                      
+
                       {actionsEnabled && (
                         <TableCell>
-                          <IconButton 
+                          <IconButton
                             size="small"
                             onClick={(event) => event.stopPropagation()}
                           >
@@ -560,6 +615,7 @@ DynamicTable.propTypes = {
   onRowClick: PropTypes.func,
   onRowSelect: PropTypes.func,
   onApplyFilters: PropTypes.func,
+  customFilter: PropTypes.func,
   selectable: PropTypes.bool,
   searchEnabled: PropTypes.bool,
   searchFields: PropTypes.array,

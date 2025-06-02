@@ -2,21 +2,25 @@ import { lazy } from 'react';
 
 // project-imports
 import Loadable from 'components/Loadable';
-import { SimpleLayoutType } from 'config';
 import DashboardLayout from 'layout/Dashboard';
-import PagesLayout from 'layout/Pages';
-import SimpleLayout from 'layout/Simple';
+import Publisher from '../pages/publisher-management';
+import ClientsPage from '../pages/clients';
+import AddClientUser from '../components/clients/AddClientUser';
+import Campaigns from '../components/campaigns';
+import AddCampaign from '../components/campaigns/AddCampaign';
+import AddClient from '../components/clients/AddClient';
+import JobGroupPage from '../pages/job-group';
+import EditCampaign from '../components/campaigns/EditCampaign';
+import JobGroupForm from '../components/job-group/JobGroupForm';
+import JobStatus from '../pages/dashboard/JobStatus';
+import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
+import InspectFeed from '../pages/dashboard/InspectFeed/InspectFeed';
+import PublisherManagement from '../pages/publisher-management';
+import Publishers from '../components/publishers';
+import ClickLogsPage from '../pages/click-logs';
 
-// pages routing
-const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
-const MaintenanceError500 = Loadable(lazy(() => import('pages/maintenance/error/500')));
-const MaintenanceUnderConstruction = Loadable(lazy(() => import('pages/maintenance/under-construction/under-construction')));
-const MaintenanceUnderConstruction2 = Loadable(lazy(() => import('pages/maintenance/under-construction/under-construction2')));
-const MaintenanceComingSoon = Loadable(lazy(() => import('pages/maintenance/coming-soon/coming-soon')));
-const MaintenanceComingSoon2 = Loadable(lazy(() => import('pages/maintenance/coming-soon/coming-soon2')));
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
 
 const ContactUS = Loadable(lazy(() => import('pages/contact-us')));
@@ -38,45 +42,66 @@ const MainRoutes = {
     },
     {
       path: '/',
-      element: <SimpleLayout layout={SimpleLayoutType.SIMPLE} />,
+      element: <DashboardLayout />,
       children: [
         {
-          path: 'contact-us',
-          element: <ContactUS />
+          path: 'dashboard/clients',
+          element: <ClientsPage />,
+        },
+        {
+          path: 'dashboard/clients/add-client',
+          element: <AddClient />
+        },
+        {
+          path: 'dashboard/clients/add-client-user',
+          element: <AddClientUser />
+        },
+        {
+          path: 'dashboard/campaigns',
+          element: <Campaigns />
+        },
+        {
+          path: 'dashboard/clients/add-campaign',
+          element: <AddCampaign />
+        },
+        {
+          path: 'dashboard/publisher-management',
+          element: <PublisherManagement />
+        },
+        {
+          path: 'dashboard/jobstatus',
+          element: <JobStatus />
+        },
+        {
+          path: 'dashboard/conversiontracking',
+          element: <ConversionTracking />
+        },
+        {
+          path: 'dashboard/inspectfeed',
+          element: <InspectFeed />
+        },
+        {
+          path: 'dashboard/job-group',
+          element: <JobGroupPage />
+        },
+        {
+          path: 'dashboard/clients/edit-campaign',
+          element: <EditCampaign />
+        },
+        {
+          path: 'dashboard/job-group/job-group-form',
+          element: <JobGroupForm />
+        },
+        {
+          path: 'dashboard/publishers',
+          element: <Publishers />
+        },
+        {
+          path: 'dashboard/click-logs',
+          element: <ClickLogsPage />
         }
       ]
     },
-    {
-      path: '/maintenance',
-      element: <PagesLayout />,
-      children: [
-        {
-          path: '404',
-          element: <MaintenanceError />
-        },
-        {
-          path: '500',
-          element: <MaintenanceError500 />
-        },
-        {
-          path: 'under-construction',
-          element: <MaintenanceUnderConstruction />
-        },
-        {
-          path: 'under-construction2',
-          element: <MaintenanceUnderConstruction2 />
-        },
-        {
-          path: 'coming-soon',
-          element: <MaintenanceComingSoon />
-        },
-        {
-          path: 'coming-soon-2',
-          element: <MaintenanceComingSoon2 />
-        }
-      ]
-    },
-    { path: '*', element: <MaintenanceError /> }
   ]
 };
 

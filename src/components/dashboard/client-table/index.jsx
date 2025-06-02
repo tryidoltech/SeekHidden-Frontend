@@ -1,8 +1,10 @@
 import React from 'react';
 import { Calendar, Filter } from 'iconsax-react';
 import DynamicTable from '../../tables/datatable';
+import { useNavigate } from 'react-router';
 
 const ClientTable = () => {
+  const navigate = useNavigate();
   const clientData = [
     { id: 1, clientName: 'Acme Corp', clientType: 'CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5 },
     { id: 2, clientName: 'Tech Solutions', clientType: 'CPC', status: 'inactive', budgetCap: 2000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
@@ -195,6 +197,8 @@ const ClientTable = () => {
     return true;
   };
 
+
+
   return (
     <DynamicTable
       data={clientData}
@@ -208,7 +212,7 @@ const ClientTable = () => {
       title="Clients"
       searchFields={['clientName', 'clientType']}
       getRowId={(row) => row.id}
-      onRowClick={(row) => console.log('Row clicked:', row)}
+      onRowClick={(row) => navigate('/dashboard/campaigns')}
       onRowSelect={(selected) => console.log('Selected rows:', selected)}
       onApplyFilters={(filters) => console.log('Applied filters:', filters)}
       customFilter={customFilter}

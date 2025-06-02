@@ -22,7 +22,7 @@ const LoginRoutes = {
       element: <AuthLayout />,
       children: [
         {
-          path: '/',
+          path: '/login',
           element: <AuthLogin />
         },
         {
