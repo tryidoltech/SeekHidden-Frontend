@@ -9,7 +9,7 @@ import RTLLayout from 'components/RTLLayout';
 import ScrollTop from 'components/ScrollTop';
 import Snackbar from 'components/@extended/Snackbar';
 
-// auth-provider
+// auth provider
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
