@@ -9,9 +9,9 @@ import {
   Select,
   Typography
 } from "@mui/material";
-import FilterBy from "../../../components/inspectfeed/filterBy";
-import BarChartComponent from "../../../components/shareComponents/BarChartComponent";
 import CareerFeeds from "../../../components/inspectfeed/CareerFields";
+import BarChart from "../../../components/shareComponents/BarChartComponent";
+import FilterBy from "../../../components/inspectfeed/FilterBy";
 
 const InspectFeed = () => {
   const [filterBy, setFilterBy] = useState('');
@@ -42,7 +42,7 @@ const InspectFeed = () => {
   {/* Right side - Bar Chart in MainCard */}
   <Box sx={{ flex: 1 }} width="100%">
     <MainCard>
-      <BarChartComponent />
+      <BarChart />
     </MainCard>
   </Box>
 </Stack>
