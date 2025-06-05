@@ -6,8 +6,17 @@ import { useNavigate } from 'react-router';
 const ClientTable = () => {
   const navigate = useNavigate();
   
-  // Add state for visible columns
-  const [visibleColumns, setVisibleColumns] = useState([]);
+  // Add state for visible columns with default important columns
+  const [visibleColumns, setVisibleColumns] = useState([
+    'clientName', 
+    'clientType', 
+    'status', 
+    'budgetCap', 
+    'spend', 
+    'clicks', 
+    'applies',
+    'country'
+  ]);
 
   const clientData = [
     { 
@@ -428,14 +437,29 @@ const ClientTable = () => {
         {
           type: 'select',
           key: 'columns',
-          placeholder: 'Columns',
-          minWidth: 120,
-          options: columnOptions,
+          placeholder: 'Select Columns',
+          minWidth: 140,
+          options: [
+            { value: '', label: 'Default Columns' },
+            { value: 'all', label: 'All Columns' },
+            ...columnOptions
+          ],
           onChange: (value) => {
-            if (value) {
-              setVisibleColumns([value]);
+            if (value === 'all') {
+              setVisibleColumns(columns.map(col => col.id));
+            } else if (value === '' || !value) {
+              setVisibleColumns([
+                'clientName', 
+                'clientType', 
+                'status', 
+                'budgetCap', 
+                'spend', 
+                'clicks', 
+                'applies',
+                'country'
+              ]);
             } else {
-              setVisibleColumns([]);
+              setVisibleColumns([value]);
             }
           }
         },
@@ -481,10 +505,19 @@ const ClientTable = () => {
     }
   ];
 
-  // Filter columns based on selection
+  // Filter columns based on selection - show default important columns if none selected
   const displayColumns = visibleColumns.length > 0 
     ? columns.filter(column => visibleColumns.includes(column.id))
-    : columns;
+    : columns.filter(column => [
+        'clientName', 
+        'clientType', 
+        'status', 
+        'budgetCap', 
+        'spend', 
+        'clicks', 
+        'applies',
+        'country'
+      ].includes(column.id));
 
   const customFilter = (row, filters) => {
     if (filters.budgetRange) {
@@ -523,6 +556,21 @@ const ClientTable = () => {
       onRowSelect={(selected) => console.log('Selected rows:', selected)}
       onApplyFilters={(filters) => console.log('Applied filters:', filters)}
       customFilter={customFilter}
+      actionsEnabled= {true}
+      actions={[
+        {
+          label: 'Go to Campaigns',
+          onClick: () => navigate(`/dashboard/campaigns`)
+        },
+        {
+          label: 'Go to Job Groups',
+          onClick: (row) => navigate(`/dashboard/job-group`)
+        },
+        {
+          label: 'Go to publishers',
+          onClick: (row) => navigate(`/dashboard/publishers`)
+        }
+      ]}
     />
   );
 };

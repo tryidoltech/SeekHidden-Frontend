@@ -22,7 +22,8 @@ import {
   Typography,
   Paper,
   Stack,
-  Tooltip
+  Tooltip,
+  Menu
 } from '@mui/material';
 import { SearchNormal1, Filter, Calendar, More } from 'iconsax-react';
 import { visuallyHidden } from '@mui/utils';
@@ -256,7 +257,7 @@ function DynamicTableHead({
         {columns.map((column, index) => (
           <TableCell
             key={column.id}
-            align={column.align || (column.numeric ? 'right' : 'left')}
+            align={column.align}
             padding={column.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === column.id ? order : false}
             sx={{
@@ -394,17 +395,20 @@ export default function DynamicTable({
   selectable = true,
   searchEnabled = true,
   searchFields = [],
-  actionsEnabled = true,
+  actionsEnabled = false,
+  actions = [], // Add actions prop
   title = "Records",
   rowsPerPageOptions = [5, 10, 25, 50],
   defaultRowsPerPage = 10,
   getRowId = (row, index) => row.id || `row-${index}`,
-  maxHeight = 'none' // Add maxHeight prop for vertical scrolling
+  maxHeight = 'none'
 }) {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState(columns[0]?.id || '');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     rowsPerPage: defaultRowsPerPage,
@@ -492,9 +496,10 @@ export default function DynamicTable({
       return;
     }
 
-    if (selectable) {
-      handleCheckboxClick(event, rowId, row);
-    }
+    // Remove the selection logic from row click
+    // if (selectable) {
+    //   handleCheckboxClick(event, rowId, row);
+    // }
 
     if (onRowClick) {
       onRowClick(row, rowId);
@@ -512,6 +517,24 @@ export default function DynamicTable({
       rowsPerPage: newRowsPerPage
     }));
     setPage(0);
+  };
+
+  const handleActionClick = (event, row) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
+  };
+
+  const handleActionClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  const handleMenuItemClick = (action) => {
+    if (action.onClick && selectedRow) {
+      action.onClick(selectedRow);
+    }
+    handleActionClose();
   };
 
   const isSelected = (rowId) => selected.indexOf(rowId) !== -1;
@@ -587,13 +610,14 @@ export default function DynamicTable({
                     <TableRow
                       hover
                       onClick={(event) => handleRowClick(event, rowId, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={rowId}
                       selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
+                      sx={{ 
+                        cursor: onRowClick ? 'pointer' : 'default' // Only show pointer cursor if onRowClick is provided
+                      }}
                     >
+                      {/* Remove role="checkbox" and aria-checked since row clicking doesn't select anymore */}
                       {selectable && (
                         <TableCell 
                           padding="checkbox" 
@@ -625,7 +649,7 @@ export default function DynamicTable({
                           id={colIndex === 0 ? labelId : undefined}
                           scope={colIndex === 0 ? "row" : undefined}
                           padding={column.disablePadding ? 'none' : 'normal'}
-                          align={column.align || (column.numeric ? 'right' : 'left')}
+                          align={column.align}
                           sx={{
                             minWidth: column.minWidth || 120,
                             whiteSpace: 'nowrap',
@@ -647,7 +671,7 @@ export default function DynamicTable({
                         </TableCell>
                       ))}
 
-                      {actionsEnabled && (
+                      {actionsEnabled && actions.length > 0 && (
                         <TableCell
                           sx={{
                             minWidth: 60,
@@ -661,9 +685,15 @@ export default function DynamicTable({
                         >
                           <IconButton
                             size="small"
-                            onClick={(event) => event.stopPropagation()}
+                            onClick={(event) => handleActionClick(event, row)}
+                            sx={{
+                              color: 'text.secondary',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                              }
+                            }}
                           >
-                            <More size="20" />
+                            <More size="16" />
                           </IconButton>
                         </TableCell>
                       )}
@@ -678,6 +708,38 @@ export default function DynamicTable({
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Actions Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleActionClose}
+          PaperProps={{
+            sx: {
+              minWidth: 150,
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+            }
+          }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          {actions.map((action, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => handleMenuItemClick(action)}
+              sx={{
+                fontSize: '0.875rem',
+                py: 1,
+                '&:hover': {
+                  backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                }
+              }}
+            >
+              {action.label}
+            </MenuItem>
+          ))}
+        </Menu>
+
         <TablePagination
           rowsPerPageOptions={rowsPerPageOptions}
           component="div"
@@ -708,7 +770,7 @@ DynamicTable.propTypes = {
     currency: PropTypes.string,
     decimals: PropTypes.number,
     minWidth: PropTypes.number,
-    sticky: PropTypes.bool // New prop for sticky columns
+    sticky: PropTypes.bool
   })).isRequired,
   filterConfig: PropTypes.array,
   initialFilters: PropTypes.object,
@@ -720,9 +782,13 @@ DynamicTable.propTypes = {
   searchEnabled: PropTypes.bool,
   searchFields: PropTypes.array,
   actionsEnabled: PropTypes.bool,
+  actions: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
+  })), // Add actions prop type
   title: PropTypes.string,
   rowsPerPageOptions: PropTypes.array,
   defaultRowsPerPage: PropTypes.number,
   getRowId: PropTypes.func,
-  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) // New prop for vertical scrolling
+  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

@@ -26,6 +26,7 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 import { ShoppingCart } from 'iconsax-react';
 import ActionButtons from '../../components/@extended/ActionButtons';
 import AddDropdown from '../../components/@extended/AddDropdown';
+import ScrollTop from '../../components/ScrollTop';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -58,6 +59,7 @@ export default function MainLayout() {
 
   return (
     <AuthGuard>
+      <ScrollTop />
       <Box sx={{ display: 'flex', width: '100%' }}>
         <Header />
         {!isHorizontal ? <Drawer /> : <HorizontalBar />}

@@ -41,13 +41,13 @@ const pages = {
         //   id: 'jobstatus',
         //   title: 'Job Status',
         //   type: 'item',
-        //   url: '/dashboard/jobstatus',
+        //   url: '/dashboard/job-status',
         // },
         // {
         //   id: 'conversiontracking',
         //   title: 'Conversion Tracking',
         //   type: 'item',
-        //   url: '/dashboard/conversiontracking',
+        //   url: '/dashboard/conversion-tracking',
         // },
         // {
         //   id: 'inspect feed',

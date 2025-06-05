@@ -63,11 +63,11 @@ const MainRoutes = {
           element: <PublisherManagement />
         },
         {
-          path: 'dashboard/jobstatus',
+          path: 'dashboard/job-status',
           element: <JobStatus />
         },
         {
-          path: 'dashboard/conversiontracking',
+          path: 'dashboard/conversion-tracking',
           element: <ConversionTracking />
         },
         {

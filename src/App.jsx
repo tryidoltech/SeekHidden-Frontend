@@ -20,14 +20,12 @@ export default function App() {
       <ThemeCustomization>
         <RTLLayout>
           <Locales>
-            <ScrollTop>
-              <AuthProvider>
-                <>
-                  <RouterProvider router={router} />
-                  <Snackbar />
-                </>
-              </AuthProvider>
-            </ScrollTop>
+            <AuthProvider>
+              <>
+                <RouterProvider router={router} />
+                <Snackbar />
+              </>
+            </AuthProvider>
           </Locales>
         </RTLLayout>
       </ThemeCustomization>
