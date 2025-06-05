@@ -14,7 +14,7 @@ const dashboardPage = {
   id: 'dashboard',
   title: 'Dashboard',
   type: 'group',
-  url: '/dashboard',
+  url: '/',
   icon: icons.dashboardPage,
   breadcrumbs: false,
 };

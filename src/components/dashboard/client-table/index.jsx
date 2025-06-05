@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, Filter } from 'iconsax-react';
 import DynamicTable from '../../tables/datatable';
 import { useNavigate } from 'react-router';
 
 const ClientTable = () => {
   const navigate = useNavigate();
+  
+  // Add state for visible columns
+  const [visibleColumns, setVisibleColumns] = useState([]);
+
   const clientData = [
     { 
       id: 1, 
@@ -363,6 +367,12 @@ const ClientTable = () => {
     }
   ];
 
+  // Generate column options for the dropdown
+  const columnOptions = columns.map(column => ({
+    value: column.id,
+    label: column.label
+  }));
+
   const filterConfig = [
     {
       leftFilters: [
@@ -417,6 +427,20 @@ const ClientTable = () => {
       rightFilters: [
         {
           type: 'select',
+          key: 'columns',
+          placeholder: 'Columns',
+          minWidth: 120,
+          options: columnOptions,
+          onChange: (value) => {
+            if (value) {
+              setVisibleColumns([value]);
+            } else {
+              setVisibleColumns([]);
+            }
+          }
+        },
+        {
+          type: 'select',
           key: 'currency',
           placeholder: 'Currency',
           minWidth: 100,
@@ -457,6 +481,11 @@ const ClientTable = () => {
     }
   ];
 
+  // Filter columns based on selection
+  const displayColumns = visibleColumns.length > 0 
+    ? columns.filter(column => visibleColumns.includes(column.id))
+    : columns;
+
   const customFilter = (row, filters) => {
     if (filters.budgetRange) {
       const [min, max] = filters.budgetRange.split('-').map(Number);
@@ -480,7 +509,7 @@ const ClientTable = () => {
   return (
     <DynamicTable
       data={clientData}
-      columns={columns}
+      columns={displayColumns}
       filterConfig={filterConfig}
       initialFilters={{
         currency: 'USD',

@@ -35,15 +35,9 @@ const MainRoutes = {
       element: <DashboardLayout />,
       children: [
         {
-          path: 'dashboard',
+          index: true,
           element: <Dashboard />
-        }
-      ]
-    },
-    {
-      path: '/',
-      element: <DashboardLayout />,
-      children: [
+        },
         {
           path: 'dashboard/clients',
           element: <ClientsPage />,
@@ -101,7 +95,7 @@ const MainRoutes = {
           element: <ClickLogsPage />
         }
       ]
-    },
+    }
   ]
 };
 
