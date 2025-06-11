@@ -79,7 +79,7 @@ export default function MainLayout() {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               {location.pathname === '/dashboard' && <AddDropdown />}
               <Breadcrumbs />
-              <ActionButtons />
+              {/* <ActionButtons /> */}
             </Box>
             <Outlet />
             <Footer />

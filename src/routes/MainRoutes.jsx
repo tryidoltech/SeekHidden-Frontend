@@ -17,6 +17,7 @@ import InspectFeed from '../pages/dashboard/InspectFeed/InspectFeed';
 import PublisherManagement from '../pages/publisher-management';
 import Publishers from '../components/publishers';
 import ClickLogsPage from '../pages/click-logs';
+import AddUser from '../components/clients/AddUser';
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -55,6 +56,10 @@ const MainRoutes = {
         {
           path: 'dashboard/campaigns/add-campaign',
           element: <CampaignForm />
+        },
+        {
+          path: '/dashboard/clients/add-user',
+          element: <AddUser/>
         },
         {
           path: 'dashboard/campaigns/edit-campaign/:id',
