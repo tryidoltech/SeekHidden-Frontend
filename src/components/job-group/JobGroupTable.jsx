@@ -3,10 +3,35 @@ import { AddSquare, Filter } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DynamicTable from '../tables/datatable';
+// Add these imports for the budget popup
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Box,
+    Typography
+} from '@mui/material';
 
 const JobGroupTable = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
+    
+    // Add state for budget popup
+    const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
+    const [budgetSettings, setBudgetSettings] = useState({
+        pacing: '',
+        threshold: '',
+        budgetTarget: '',
+        frequency: ''
+    });
+
     const [clientData, setClientData] = useState([
         { id: 1, jobGroupName: '+12 CPA', status: 'active', budgetCap: 1000.00, markup: 15.0, markdown: 5.0, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
         { id: 2, jobGroupName: 'Tech Solutions Group', status: 'inactive', budgetCap: 2000.00, markup: 20.0, markdown: 8.0, spend: 850.00, reconSpend: 840.00, clicks: 120, validClicks: 115, invalidClicks: 5 },
@@ -40,18 +65,44 @@ const JobGroupTable = () => {
         // Here you would typically make an API call to update the data
         console.log(`Updating ${field} for ID ${id} to ${value}`);
         toast.success(`${field} updated successfully`);
+    };
+
+    // Add budget update handler
+    const handleBudgetUpdate = () => {
+        if (selected.length === 0) {
+            toast.error('Please select job groups to update budget settings');
+            return;
+        }
+
+        if (!budgetSettings.pacing || !budgetSettings.threshold || !budgetSettings.budgetTarget || !budgetSettings.frequency) {
+            toast.error('Please fill in all budget fields');
+            return;
+        }
+
+        // Update selected job groups with new budget settings
+        const updatedData = clientData.map(item => 
+            selected.includes(item.id) ? { 
+                ...item, 
+                budgetCap: parseFloat(budgetSettings.budgetTarget),
+                frequency: budgetSettings.frequency,
+                // Add pacing and threshold to the data model if needed
+                pacing: budgetSettings.pacing,
+                threshold: parseFloat(budgetSettings.threshold)
+            } : item
+        );
         
-        // API call example:
-        // try {
-        //     await updateJobGroup(id, { [field]: value });
-        //     toast.success(`${field} updated successfully`);
-        // } catch (error) {
-        //     toast.error(`Failed to update ${field}`);
-        //     // Revert the change if API call fails
-        //     setClientData(prev => prev.map(item => 
-        //         item.id === id ? { ...item, [field]: originalValue } : item
-        //     ));
-        // }
+        setClientData(updatedData);
+        toast.success(`Budget settings updated for ${selected.length} job group(s)`);
+        
+        // Reset and close popup
+        setBudgetSettings({
+            pacing: '',
+            threshold: '',
+            budgetTarget: '',
+            frequency: ''
+        });
+        setBudgetPopupOpen(false);
+        setSelected([]);
     };
 
     const columns = [
@@ -309,17 +360,17 @@ const JobGroupTable = () => {
                     ],
                     onChange: handleActionChange
                 },
-                {
-                    type: 'select',
-                    key: 'budgetRange',
-                    placeholder: 'Budget Cap',
-                    minWidth: 140,
-                    options: [
-                        { value: '0-1000', label: '$0 - $1000' },
-                        { value: '1000-3000', label: '$1000 - $3000' },
-                        { value: '3000+', label: '$3000+' }
-                    ]
-                },
+                // {
+                //     type: 'select',
+                //     key: 'budgetRange',
+                //     placeholder: 'Budget Cap',
+                //     minWidth: 140,
+                //     options: [
+                //         { value: '0-1000', label: '$0 - $1000' },
+                //         { value: '1000-3000', label: '$1000 - $3000' },
+                //         { value: '3000+', label: '$3000+' }
+                //     ]
+                // },
                 {
                     type: 'select',
                     key: 'margin',
@@ -338,6 +389,19 @@ const JobGroupTable = () => {
                     placeholder: 'Date Range',
                     minWidth: 200,
                     defaultValue: '01-01-2000 to 01-01-2020'
+                },
+                {
+                    type: 'button',
+                    label: 'Update Budget',
+                    variant: 'outlined',
+                    color: 'secondary',
+                    onClick: () => {
+                        if (selected.length === 0) {
+                            toast.error('Please select job groups to update budget settings');
+                        } else {
+                            setBudgetPopupOpen(true);
+                        }
+                    }
                 },
                 {
                     type: 'button',
@@ -472,19 +536,106 @@ const JobGroupTable = () => {
     };
 
     return (
-        <DynamicTable
-            data={clientData}
-            columns={displayColumns}
-            filterConfig={filterConfig}
-            customFilter={customFilter}
-            onRowSelect={handleRowSelect}
-            searchEnabled={true}
-            searchFields={['jobGroupName']}
-            title="Job Groups"
-            selectable={true}
-            actionsEnabled={false}
-            recordsFoundText="Records Found"
-        />
+        <>
+            <DynamicTable
+                data={clientData}
+                columns={displayColumns}
+                filterConfig={filterConfig}
+                customFilter={customFilter}
+                onRowSelect={handleRowSelect}
+                searchEnabled={true}
+                searchFields={['jobGroupName']}
+                title="Job Groups"
+                selectable={true}
+                actionsEnabled={false}
+                recordsFoundText="Records Found"
+            />
+
+            {/* Budget Settings Popup */}
+            <Dialog 
+                open={budgetPopupOpen} 
+                onClose={() => setBudgetPopupOpen(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>
+                    Update Budget Settings
+                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                        Updating budget settings for {selected.length} selected job group(s)
+                    </Typography>
+                </DialogTitle>
+                
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Pacing</InputLabel>
+                            <Select
+                                value={budgetSettings.pacing}
+                                label="Pacing"
+                                onChange={(e) => setBudgetSettings(prev => ({ ...prev, pacing: e.target.value }))}
+                            >
+                                <MenuItem value="even">Even</MenuItem>
+                                <MenuItem value="aggressive">Aggressive</MenuItem>
+                                <MenuItem value="conservative">Conservative</MenuItem>
+                                <MenuItem value="frontloaded">Front-loaded</MenuItem>
+                                <MenuItem value="backloaded">Back-loaded</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <TextField
+                            fullWidth
+                            label="Threshold (%)"
+                            type="number"
+                            value={budgetSettings.threshold}
+                            onChange={(e) => setBudgetSettings(prev => ({ ...prev, threshold: e.target.value }))}
+                            helperText="Budget threshold percentage for alerts"
+                            inputProps={{ min: 0, max: 100, step: 0.1 }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Budget Target ($)"
+                            type="number"
+                            value={budgetSettings.budgetTarget}
+                            onChange={(e) => setBudgetSettings(prev => ({ ...prev, budgetTarget: e.target.value }))}
+                            helperText="Total budget allocation for the job group"
+                            inputProps={{ min: 0, step: 0.01 }}
+                        />
+
+                        <FormControl fullWidth>
+                            <InputLabel>Frequency</InputLabel>
+                            <Select
+                                value={budgetSettings.frequency}
+                                label="Frequency"
+                                onChange={(e) => setBudgetSettings(prev => ({ ...prev, frequency: e.target.value }))}
+                            >
+                                <MenuItem value="daily">Daily</MenuItem>
+                                <MenuItem value="weekly">Weekly</MenuItem>
+                                <MenuItem value="bi-weekly">Bi-weekly</MenuItem>
+                                <MenuItem value="monthly">Monthly</MenuItem>
+                                <MenuItem value="quarterly">Quarterly</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions sx={{ p: 3 }}>
+                    <Button 
+                        onClick={() => setBudgetPopupOpen(false)}
+                        variant="outlined"
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleBudgetUpdate}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Update Budget Settings
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 
