@@ -40,6 +40,15 @@ const AddClient = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [spendTypeCpa, setSpendTypeCpa] = useState('');
+  const { search } = useLocation();
+const queryParams = new URLSearchParams(search);
+const userType = queryParams.get('type');
+
+useEffect(() => {
+  if (userType === 'publisher') {
+    setTabValue(1);
+  }
+}, [userType]);
 
   // Publisher Feed Tags
   const [feedTags, setFeedTags] = useState([]);

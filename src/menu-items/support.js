@@ -144,6 +144,33 @@ const support = {
       external: true,
       target: true
     }
+    ,
+    {
+      id: 'job stats',
+      title: 'Job Stats',
+      type: 'item',
+      url: 'dashboard/job-status',
+      icon: icons.roadmap,
+
+    }
+    ,
+    {
+      id: 'conversion tracking',
+      title: 'Conversion Tracking',
+      type: 'item',
+      url: 'dashboard/conversion-tracking',
+      icon: icons.roadmap,
+  
+    }
+    ,
+    {
+      id: 'publisher management',
+      title: 'Publisher Management',
+      type: 'item',
+      url: 'dashboard/publisher-management',
+      icon: icons.roadmap,
+    
+    }
   ]
 };
 
