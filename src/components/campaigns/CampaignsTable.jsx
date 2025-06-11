@@ -3,6 +3,21 @@ import { AddSquare, Filter } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DynamicTable from '../tables/datatable';
+// Add these imports for the budget popup
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Box,
+    Typography
+} from '@mui/material';
 
 const CampaignsTable = () => {
     const navigate = useNavigate();
@@ -20,6 +35,15 @@ const CampaignsTable = () => {
         'applies',
         'country'
     ]);
+
+    // Add state for budget popup
+    const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
+    const [budgetSettings, setBudgetSettings] = useState({
+        pacing: '',
+        threshold: '',
+        budgetTarget: '',
+        frequency: ''
+    });
 
     const [campaignData, setCampaignData] = useState([
         {
@@ -314,6 +338,44 @@ const CampaignsTable = () => {
         // Here you would typically make an API call to update the data
         console.log(`Updating ${field} for ID ${id} to ${value}`);
         toast.success(`${field} updated successfully`);
+    };
+
+    // Add budget update handler
+    const handleBudgetUpdate = () => {
+        if (selected.length === 0) {
+            toast.error('Please select campaigns to update budget settings');
+            return;
+        }
+
+        if (!budgetSettings.pacing || !budgetSettings.threshold || !budgetSettings.budgetTarget || !budgetSettings.frequency) {
+            toast.error('Please fill in all budget fields');
+            return;
+        }
+
+        // Update selected campaigns with new budget settings
+        const updatedData = campaignData.map(item => 
+            selected.includes(item.id) ? { 
+                ...item, 
+                budgetCap: parseFloat(budgetSettings.budgetTarget),
+                frequency: budgetSettings.frequency,
+                // Add pacing and threshold to the data model if needed
+                pacing: budgetSettings.pacing,
+                threshold: parseFloat(budgetSettings.threshold)
+            } : item
+        );
+        
+        setCampaignData(updatedData);
+        toast.success(`Budget settings updated for ${selected.length} campaign(s)`);
+        
+        // Reset and close popup
+        setBudgetSettings({
+            pacing: '',
+            threshold: '',
+            budgetTarget: '',
+            frequency: ''
+        });
+        setBudgetPopupOpen(false);
+        setSelected([]);
     };
 
     const columns = [
@@ -731,17 +793,17 @@ const CampaignsTable = () => {
                     ],
                     onChange: handleActionChange
                 },
-                {
-                    type: 'select',
-                    key: 'budgetRange',
-                    placeholder: 'Budget Cap',
-                    minWidth: 140,
-                    options: [
-                        { value: '0-1000', label: '$0 - $1K' },
-                        { value: '1000-5000', label: '$1K - $5K' },
-                        { value: '5000+', label: '$5K+' }
-                    ]
-                },
+                // {
+                //     type: 'select',
+                //     key: 'budgetRange',
+                //     placeholder: 'Budget Cap',
+                //     minWidth: 140,
+                //     options: [
+                //         { value: '0-1000', label: '$0 - $1K' },
+                //         { value: '1000-5000', label: '$1K - $5K' },
+                //         { value: '5000+', label: '$5K+' }
+                //     ]
+                // },
                 {
                     type: 'select',
                     key: 'margin',
@@ -760,6 +822,19 @@ const CampaignsTable = () => {
                     placeholder: 'Date Range',
                     minWidth: 200,
                     defaultValue: '01-01-2024 to 12-31-2024'
+                },
+                {
+                    type: 'button',
+                    label: 'Update Budget',
+                    variant: 'outlined',
+                    color: 'secondary',
+                    onClick: () => {
+                        if (selected.length === 0) {
+                            toast.error('Please select campaigns to update budget settings');
+                        } else {
+                            setBudgetPopupOpen(true);
+                        }
+                    }
                 },
                 {
                     type: 'button',
@@ -902,20 +977,106 @@ const CampaignsTable = () => {
     };
 
     return (
-        <DynamicTable
-            data={campaignData}
-            columns={displayColumns}
-            filterConfig={filterConfig}
-            customFilter={customFilter}
-            onRowSelect={handleRowSelect}
-            searchEnabled={true}
-            searchFields={['campaignName', 'clientName', 'clientType', 'advertiserName']}
-            title="Campaigns"
-            onRowClick={(row) => navigate('/dashboard/job-group')}
-            selectable={true}
-            actionsEnabled={false}
-            recordsFoundText="Records Found"
-        />
+        <>
+            <DynamicTable
+                data={campaignData}
+                columns={displayColumns}
+                filterConfig={filterConfig}
+                customFilter={customFilter}
+                onRowSelect={handleRowSelect}
+                searchEnabled={true}
+                searchFields={['campaignName', 'clientName', 'clientType', 'advertiserName']}
+                title="Campaigns"
+                selectable={true}
+                actionsEnabled={false}
+                recordsFoundText="Records Found"
+            />
+
+            {/* Budget Settings Popup */}
+            <Dialog 
+                open={budgetPopupOpen} 
+                onClose={() => setBudgetPopupOpen(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>
+                    Update Budget Settings
+                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                        Updating budget settings for {selected.length} selected campaign(s)
+                    </Typography>
+                </DialogTitle>
+                
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Pacing</InputLabel>
+                            <Select
+                                value={budgetSettings.pacing}
+                                label="Pacing"
+                                onChange={(e) => setBudgetSettings(prev => ({ ...prev, pacing: e.target.value }))}
+                            >
+                                <MenuItem value="even">Even</MenuItem>
+                                <MenuItem value="aggressive">Aggressive</MenuItem>
+                                <MenuItem value="conservative">Conservative</MenuItem>
+                                <MenuItem value="frontloaded">Front-loaded</MenuItem>
+                                <MenuItem value="backloaded">Back-loaded</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <TextField
+                            fullWidth
+                            label="Threshold (%)"
+                            type="number"
+                            value={budgetSettings.threshold}
+                            onChange={(e) => setBudgetSettings(prev => ({ ...prev, threshold: e.target.value }))}
+                            helperText="Budget threshold percentage for alerts"
+                            inputProps={{ min: 0, max: 100, step: 0.1 }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Budget Target ($)"
+                            type="number"
+                            value={budgetSettings.budgetTarget}
+                            onChange={(e) => setBudgetSettings(prev => ({ ...prev, budgetTarget: e.target.value }))}
+                            helperText="Total budget allocation for the campaign"
+                            inputProps={{ min: 0, step: 0.01 }}
+                        />
+
+                        <FormControl fullWidth>
+                            <InputLabel>Frequency</InputLabel>
+                            <Select
+                                value={budgetSettings.frequency}
+                                label="Frequency"
+                                onChange={(e) => setBudgetSettings(prev => ({ ...prev, frequency: e.target.value }))}
+                            >
+                                <MenuItem value="Daily">Daily</MenuItem>
+                                <MenuItem value="Weekly">Weekly</MenuItem>
+                                <MenuItem value="Bi-weekly">Bi-weekly</MenuItem>
+                                <MenuItem value="Monthly">Monthly</MenuItem>
+                                <MenuItem value="Quarterly">Quarterly</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions sx={{ p: 3 }}>
+                    <Button 
+                        onClick={() => setBudgetPopupOpen(false)}
+                        variant="outlined"
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleBudgetUpdate}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Update Budget Settings
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 

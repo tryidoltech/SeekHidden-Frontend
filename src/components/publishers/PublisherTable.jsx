@@ -3,6 +3,21 @@ import { AddSquare, Filter } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DynamicTable from '../tables/datatable';
+// Add these imports for the budget popup
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Box,
+    Typography
+} from '@mui/material';
 
 const PublisherTable = () => {
     const navigate = useNavigate();
@@ -20,6 +35,15 @@ const PublisherTable = () => {
         'markUpPercent',
         'markDownPercent'
     ]);
+
+    // Add state for budget popup
+    const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
+    const [budgetSettings, setBudgetSettings] = useState({
+        pacing: '',
+        threshold: '',
+        budgetTarget: '',
+        frequency: ''
+    });
 
     const [publisherData, setPublisherData] = useState([
         { id: 1, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5, markUpPercent: 15.0, markDownPercent: 5.0 },
@@ -42,6 +66,44 @@ const PublisherTable = () => {
         // Here you would typically make an API call to update the data
         console.log(`Updating ${field} for ID ${id} to ${value}`);
         toast.success(`${field} updated successfully`);
+    };
+
+    // Add budget update handler
+    const handleBudgetUpdate = () => {
+        if (selected.length === 0) {
+            toast.error('Please select publishers to update budget settings');
+            return;
+        }
+
+        if (!budgetSettings.pacing || !budgetSettings.threshold || !budgetSettings.budgetTarget || !budgetSettings.frequency) {
+            toast.error('Please fill in all budget fields');
+            return;
+        }
+
+        // Update selected publishers with new budget settings
+        const updatedData = publisherData.map(item => 
+            selected.includes(item.id) ? { 
+                ...item, 
+                budgetCap: parseFloat(budgetSettings.budgetTarget),
+                frequency: budgetSettings.frequency,
+                // Add pacing and threshold to the data model if needed
+                pacing: budgetSettings.pacing,
+                threshold: parseFloat(budgetSettings.threshold)
+            } : item
+        );
+        
+        setPublisherData(updatedData);
+        toast.success(`Budget settings updated for ${selected.length} publisher(s)`);
+        
+        // Reset and close popup
+        setBudgetSettings({
+            pacing: '',
+            threshold: '',
+            budgetTarget: '',
+            frequency: ''
+        });
+        setBudgetPopupOpen(false);
+        setSelected([]);
     };
 
     const columns = [
@@ -316,17 +378,17 @@ const PublisherTable = () => {
                     ],
                     onChange: handleActionChange
                 },
-                {
-                    type: 'select',
-                    key: 'budgetRange',
-                    placeholder: 'Budget Cap',
-                    minWidth: 140,
-                    options: [
-                        { value: '0-1000', label: '$0 - $1K' },
-                        { value: '1000-2000', label: '$1K - $2K' },
-                        { value: '2000+', label: '$2K+' }
-                    ]
-                },
+                // {
+                //     type: 'select',
+                //     key: 'budgetRange',
+                //     placeholder: 'Budget Cap',
+                //     minWidth: 140,
+                //     options: [
+                //         { value: '0-1000', label: '$0 - $1K' },
+                //         { value: '1000-2000', label: '$1K - $2K' },
+                //         { value: '2000+', label: '$2K+' }
+                //     ]
+                // },
                 {
                     type: 'select',
                     key: 'margin',
@@ -346,6 +408,27 @@ const PublisherTable = () => {
                     minWidth: 200,
                     defaultValue: '01-01-2024 to 12-31-2024'
                 },
+                {
+                    type: 'button',
+                    label: 'Update Budget',
+                    variant: 'outlined',
+                    color: 'secondary',
+                    onClick: () => {
+                        if (selected.length === 0) {
+                            toast.error('Please select publishers to update budget settings');
+                        } else {
+                            setBudgetPopupOpen(true);
+                        }
+                    }
+                },
+                {
+                    type: 'button',
+                    label: 'Add Publisher',
+                    icon: <AddSquare size="20" />,
+                    variant: 'contained',
+                    color: 'primary',
+                    onClick: () => navigate('/dashboard/publishers/publisher-form')
+                }
             ]
         },
         {
@@ -496,20 +579,106 @@ const PublisherTable = () => {
     };
 
     return (
-        <DynamicTable
-            data={publisherData}
-            columns={displayColumns}
-            filterConfig={filterConfig}
-            customFilter={customFilter}
-            onRowSelect={handleRowSelect}
-            searchEnabled={true}
-            searchFields={['publisherName']}
-            title="Publishers"
-            onRowClick={(row) => navigate('/dashboard/job-group')}
-            selectable={true}
-            actionsEnabled={false}
-            recordsFoundText="Records Found"
-        />
+        <>
+            <DynamicTable
+                data={publisherData}
+                columns={displayColumns}
+                filterConfig={filterConfig}
+                customFilter={customFilter}
+                onRowSelect={handleRowSelect}
+                searchEnabled={true}
+                searchFields={['publisherName']}
+                title="Publishers"
+                selectable={true}
+                actionsEnabled={false}
+                recordsFoundText="Records Found"
+            />
+
+            {/* Budget Settings Popup */}
+            <Dialog 
+                open={budgetPopupOpen} 
+                onClose={() => setBudgetPopupOpen(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>
+                    Update Budget Settings
+                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                        Updating budget settings for {selected.length} selected publisher(s)
+                    </Typography>
+                </DialogTitle>
+                
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <FormControl fullWidth>
+                            <InputLabel>Pacing</InputLabel>
+                            <Select
+                                value={budgetSettings.pacing}
+                                label="Pacing"
+                                onChange={(e) => setBudgetSettings(prev => ({ ...prev, pacing: e.target.value }))}
+                            >
+                                <MenuItem value="even">Even</MenuItem>
+                                <MenuItem value="aggressive">Aggressive</MenuItem>
+                                <MenuItem value="conservative">Conservative</MenuItem>
+                                <MenuItem value="frontloaded">Front-loaded</MenuItem>
+                                <MenuItem value="backloaded">Back-loaded</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <TextField
+                            fullWidth
+                            label="Threshold (%)"
+                            type="number"
+                            value={budgetSettings.threshold}
+                            onChange={(e) => setBudgetSettings(prev => ({ ...prev, threshold: e.target.value }))}
+                            helperText="Budget threshold percentage for alerts"
+                            inputProps={{ min: 0, max: 100, step: 0.1 }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Budget Target ($)"
+                            type="number"
+                            value={budgetSettings.budgetTarget}
+                            onChange={(e) => setBudgetSettings(prev => ({ ...prev, budgetTarget: e.target.value }))}
+                            helperText="Total budget allocation for the publisher"
+                            inputProps={{ min: 0, step: 0.01 }}
+                        />
+
+                        <FormControl fullWidth>
+                            <InputLabel>Frequency</InputLabel>
+                            <Select
+                                value={budgetSettings.frequency}
+                                label="Frequency"
+                                onChange={(e) => setBudgetSettings(prev => ({ ...prev, frequency: e.target.value }))}
+                            >
+                                <MenuItem value="daily">Daily</MenuItem>
+                                <MenuItem value="weekly">Weekly</MenuItem>
+                                <MenuItem value="bi-weekly">Bi-weekly</MenuItem>
+                                <MenuItem value="monthly">Monthly</MenuItem>
+                                <MenuItem value="quarterly">Quarterly</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions sx={{ p: 3 }}>
+                    <Button 
+                        onClick={() => setBudgetPopupOpen(false)}
+                        variant="outlined"
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleBudgetUpdate}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Update Budget Settings
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 
