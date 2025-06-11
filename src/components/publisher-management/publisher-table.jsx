@@ -403,6 +403,36 @@ export function PublishersTable() {
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [selectedRows, setSelectedRows] = useState([])
+  
+  // Add state for visible columns with default important columns
+  const [visibleColumns, setVisibleColumns] = useState([
+    'name',
+    'status',
+    'currency',
+    'country',
+    'bidType',
+    'minBid',
+    'industry',
+    'creationDate'
+  ])
+
+  // Define all available columns for the stats dropdown
+  const allColumns = [
+    { id: 'name', label: 'Publisher Name' },
+    { id: 'status', label: 'Status' },
+    { id: 'currency', label: 'Currency' },
+    { id: 'country', label: 'Country' },
+    { id: 'bidType', label: 'Bid Type' },
+    { id: 'minBid', label: 'Min Bid' },
+    { id: 'industry', label: 'Industry' },
+    { id: 'creationDate', label: 'Creation Date' },
+  ]
+
+  // Generate column options for the dropdown
+  const columnOptions = allColumns.map(column => ({
+    value: column.id,
+    label: column.label
+  }))
 
   // Working search and filter functionality
   const filteredPublishers = useMemo(() => {
@@ -459,6 +489,33 @@ export function PublishersTable() {
   const applyFilters = () => {
     setPage(0) // Reset to first page when applying filters
     console.log("Filters applied:", { searchTerm, statusFilter, currencyFilter, startDate, endDate })
+  }
+
+  // Handle stats column selection
+  const handleStatsChange = (value) => {
+    if (value === 'all') {
+      setVisibleColumns(allColumns.map(col => col.id))
+    } else if (value === '' || !value) {
+      // Default columns
+      setVisibleColumns([
+        'name',
+        'status',
+        'currency',
+        'country',
+        'bidType',
+        'minBid',
+        'industry',
+        'creationDate'
+      ])
+    } else {
+      // Single column selection
+      setVisibleColumns([value])
+    }
+  }
+
+  // Filter columns based on visibility
+  const getVisibleColumns = () => {
+    return allColumns.filter(column => visibleColumns.includes(column.id))
   }
 
   return (
@@ -540,6 +597,23 @@ export function PublishersTable() {
               }}
             />
 
+            <FormControl size="small" sx={{ minWidth: 140 }}>
+              <InputLabel>Select Stats</InputLabel>
+              <Select 
+                value="" 
+                label="Select Stats" 
+                onChange={(e) => handleStatsChange(e.target.value)}
+              >
+                <MenuItem value="">Default Stats</MenuItem>
+                <MenuItem value="all">All Stats</MenuItem>
+                {columnOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Currency</InputLabel>
               <Select value={currencyFilter} label="Currency" onChange={(e) => setCurrencyFilter(e.target.value)}>
@@ -562,9 +636,7 @@ export function PublishersTable() {
             <Button variant="outlined" size="small" startIcon={<Filter size="16" />} onClick={applyFilters}>
               Apply Filters
             </Button>
-          </Stack>
 
-          <Stack direction="row" spacing={2} alignItems="center">
             <Typography variant="body2">Rows per page :</Typography>
             <FormControl size="small" sx={{ minWidth: 80 }}>
               <Select value={rowsPerPage} onChange={(e) => setRowsPerPage(e.target.value)}>
@@ -589,14 +661,11 @@ export function PublishersTable() {
                     onChange={handleSelectAll}
                   />
                 </th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Publisher Name</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Status</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Currency</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Country</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Bid Type</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Min Bid</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Industry</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Creation Date</th>
+                {getVisibleColumns().map((column) => (
+                  <th key={column.id} style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>
+                    {column.label}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -605,45 +674,32 @@ export function PublishersTable() {
                   <td style={{ padding: "12px" }}>
                     <Checkbox checked={isSelected(row.id)} onChange={() => handleSelectRow(row.id)} />
                   </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      {row.name}
-                    </Typography>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: "50%",
-                          backgroundColor: row.status === "active" ? "success.main" : "error.main",
-                          mr: 1,
-                        }}
-                      />
-                      <Typography variant="body2" sx={{ textTransform: "capitalize" }}>
-                        {row.status}
-                      </Typography>
-                    </Box>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2">{row.currency}</Typography>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2">{row.country}</Typography>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2">{row.bidType}</Typography>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2">{row.minBid}</Typography>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2">{row.industry}</Typography>
-                  </td>
-                  <td style={{ padding: "12px" }}>
-                    <Typography variant="body2">{row.creationDate}</Typography>
-                  </td>
+                  {getVisibleColumns().map((column) => (
+                    <td key={column.id} style={{ padding: "12px" }}>
+                      {column.id === 'name' ? (
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {row[column.id]}
+                        </Typography>
+                      ) : column.id === 'status' ? (
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: "50%",
+                              backgroundColor: row.status === "active" ? "success.main" : "error.main",
+                              mr: 1,
+                            }}
+                          />
+                          <Typography variant="body2" sx={{ textTransform: "capitalize" }}>
+                            {row.status}
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Typography variant="body2">{row[column.id]}</Typography>
+                      )}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
