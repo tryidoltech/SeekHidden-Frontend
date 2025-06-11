@@ -26,10 +26,11 @@ import { useNavigate } from 'react-router';
 // For this example, I'll create a simplified table component
 const JobTable = ({ data, onSelectionChange }) => {
   const [selected, setSelected] = useState([]);
+  const [tableData, setTableData] = useState(data);
 
   const handleSelectAll = (event) => {
     if (event.target.checked) {
-      const allIds = data.map((_, index) => index);
+      const allIds = tableData.map((_, index) => index);
       setSelected(allIds);
       onSelectionChange(allIds);
     } else {
@@ -46,6 +47,78 @@ const JobTable = ({ data, onSelectionChange }) => {
     onSelectionChange(newSelected);
   };
 
+  const handleCellEdit = (rowIndex, field, value) => {
+    const updatedData = tableData.map((row, index) => {
+      if (index === rowIndex) {
+        return { ...row, [field]: value };
+      }
+      return row;
+    });
+    setTableData(updatedData);
+  };
+
+  const EditableCell = ({ value, onSave, type = 'text', placeholder }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editValue, setEditValue] = useState(value);
+
+    const handleSave = () => {
+      onSave(editValue);
+      setIsEditing(false);
+    };
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        handleSave();
+      } else if (e.key === 'Escape') {
+        setEditValue(value);
+        setIsEditing(false);
+      }
+    };
+
+    if (isEditing) {
+      return (
+        <TextField
+          size="small"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={handleKeyPress}
+          autoFocus
+          sx={{ width: '100px' }}
+          type={type}
+          InputProps={{
+            endAdornment: type === 'percentage' ? <InputAdornment position="end">%</InputAdornment> : 
+                         type === 'currency' ? <InputAdornment position="end">USD</InputAdornment> : null
+          }}
+        />
+      );
+    }
+
+    return (
+      <Box
+        onClick={() => setIsEditing(true)}
+        sx={{
+          cursor: 'pointer',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          '&:hover': {
+            backgroundColor: '#f5f5f5'
+          },
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1
+        }}
+      >
+        <Typography variant="body2">
+          {type === 'currency' ? `$${value}` : 
+           type === 'percentage' ? `${value}%` : 
+           value || placeholder}
+        </Typography>
+        <Edit size="14" color="#666" />
+      </Box>
+    );
+  };
+
   return (
     <Paper sx={{ mt: 3 }}>
       <Box sx={{ overflowX: 'auto' }}>
@@ -54,8 +127,8 @@ const JobTable = ({ data, onSelectionChange }) => {
             <tr style={{ backgroundColor: '#f5f5f5' }}>
               <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>
                 <Checkbox
-                  checked={selected.length === data.length && data.length > 0}
-                  indeterminate={selected.length > 0 && selected.length < data.length}
+                  checked={selected.length === tableData.length && tableData.length > 0}
+                  indeterminate={selected.length > 0 && selected.length < tableData.length}
                   onChange={handleSelectAll}
                 />
               </th>
@@ -63,11 +136,13 @@ const JobTable = ({ data, onSelectionChange }) => {
               <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Type</th>
               <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Budget</th>
               <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Bid</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Mark Up (%)</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Mark Down (%)</th>
               <th style={{ padding: '12px 16px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Minimum Bid</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((row, index) => (
+            {tableData.map((row, index) => (
               <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '12px 16px' }}>
                   <Checkbox
@@ -79,8 +154,38 @@ const JobTable = ({ data, onSelectionChange }) => {
                 <td style={{ padding: '12px 16px' }}>
                   <Chip label={row.type} size="small" sx={{ backgroundColor: '#e1f5fe', color: '#0277bd' }} />
                 </td>
-                <td style={{ padding: '12px 16px' }}>{row.budget}</td>
-                <td style={{ padding: '12px 16px' }}>{row.bid}</td>
+                <td style={{ padding: '12px 16px' }}>
+                  <EditableCell
+                    value={row.budget}
+                    onSave={(value) => handleCellEdit(index, 'budget', value)}
+                    type="currency"
+                    placeholder="0.00"
+                  />
+                </td>
+                <td style={{ padding: '12px 16px' }}>
+                  <EditableCell
+                    value={row.bid}
+                    onSave={(value) => handleCellEdit(index, 'bid', value)}
+                    type="currency"
+                    placeholder="0.00"
+                  />
+                </td>
+                <td style={{ padding: '12px 16px' }}>
+                  <EditableCell
+                    value={row.markUp}
+                    onSave={(value) => handleCellEdit(index, 'markUp', value)}
+                    type="percentage"
+                    placeholder="0.0"
+                  />
+                </td>
+                <td style={{ padding: '12px 16px' }}>
+                  <EditableCell
+                    value={row.markDown}
+                    onSave={(value) => handleCellEdit(index, 'markDown', value)}
+                    type="percentage"
+                    placeholder="0.0"
+                  />
+                </td>
                 <td style={{ padding: '12px 16px' }}>{row.minimumBid}</td>
               </tr>
             ))}
@@ -124,16 +229,16 @@ const JobGroupForm = () => {
   const [threshold, setThreshold] = useState('');
   const [frequencyEnabled, setFrequencyEnabled] = useState(false);
 
-  // Sample table data
+  // Sample table data - updated with markUp and markDown
   const [tableData] = useState([
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: 'eg. 00.00', bid: 'eg. 00.00', minimumBid: '00.00 USD' }
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '100.00', bid: '2.50', markUp: '15.0', markDown: '5.0', minimumBid: '1.00 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '200.00', bid: '3.00', markUp: '20.0', markDown: '3.0', minimumBid: '1.50 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '150.00', bid: '2.75', markUp: '12.5', markDown: '4.0', minimumBid: '1.25 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '300.00', bid: '4.00', markUp: '25.0', markDown: '7.0', minimumBid: '2.00 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '175.00', bid: '2.25', markUp: '18.0', markDown: '6.0', minimumBid: '1.10 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '250.00', bid: '3.50', markUp: '22.0', markDown: '4.5', minimumBid: '1.75 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '120.00', bid: '2.00', markUp: '10.0', markDown: '2.5', minimumBid: '0.90 USD' },
+    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '400.00', bid: '5.00', markUp: '30.0', markDown: '8.0', minimumBid: '2.50 USD' }
   ]);
 
   const handleInputChange = (field, value) => {
@@ -235,8 +340,18 @@ const JobGroupForm = () => {
                   label="Operator"
                 >
                   <MenuItem value="">Select an option</MenuItem>
-                  <MenuItem value="equals">Equals</MenuItem>
-                  <MenuItem value="contains">Contains</MenuItem>
+                  <MenuItem value="equal">Equal</MenuItem>
+                  <MenuItem value="notEqual">Not Equal</MenuItem>
+                  <MenuItem value="moreThan">More than</MenuItem>
+                  <MenuItem value="lessThan">Less than</MenuItem>
+                  <MenuItem value="between">Between</MenuItem>
+                  <MenuItem value="inContains">In/Contains</MenuItem>
+                  <MenuItem value="notInContains">Not in/Contains</MenuItem>
+                  <MenuItem value="beginsWith">Begins with</MenuItem>
+                  <MenuItem value="notBeginsWith">Not begins with</MenuItem>
+                  <MenuItem value="moreThanOrEqual">More than or Equal to</MenuItem>
+                  <MenuItem value="lessThanOrEqual">Less than or Equal to</MenuItem>
+                  <MenuItem value="searchString">Search String</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

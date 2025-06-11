@@ -7,10 +7,9 @@ import Publisher from '../pages/publisher-management';
 import ClientsPage from '../pages/clients';
 import AddClientUser from '../components/clients/AddClientUser';
 import Campaigns from '../components/campaigns';
-import AddCampaign from '../components/campaigns/AddCampaign';
+import CampaignForm from '../components/campaigns/CampaignForm';
 import AddClient from '../components/clients/AddClient';
 import JobGroupPage from '../pages/job-group';
-import EditCampaign from '../components/campaigns/EditCampaign';
 import JobGroupForm from '../components/job-group/JobGroupForm';
 import JobStatus from '../pages/dashboard/JobStatus';
 import ConversionTracking from '../pages/dashboard/ConversionTracking/ConversionTracking';
@@ -18,7 +17,6 @@ import InspectFeed from '../pages/dashboard/InspectFeed/InspectFeed';
 import PublisherManagement from '../pages/publisher-management';
 import Publishers from '../components/publishers';
 import ClickLogsPage from '../pages/click-logs';
-
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -55,8 +53,12 @@ const MainRoutes = {
           element: <Campaigns />
         },
         {
-          path: 'dashboard/clients/add-campaign',
-          element: <AddCampaign />
+          path: 'dashboard/campaigns/add-campaign',
+          element: <CampaignForm />
+        },
+        {
+          path: 'dashboard/campaigns/edit-campaign/:id',
+          element: <CampaignForm />
         },
         {
           path: 'dashboard/publisher-management',
@@ -77,10 +79,6 @@ const MainRoutes = {
         {
           path: 'dashboard/job-group',
           element: <JobGroupPage />
-        },
-        {
-          path: 'dashboard/clients/edit-campaign',
-          element: <EditCampaign />
         },
         {
           path: 'dashboard/job-group/job-group-form',

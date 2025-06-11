@@ -25,7 +25,7 @@ import {
   Tooltip,
   Menu
 } from '@mui/material';
-import { SearchNormal1, Filter, Calendar, More } from 'iconsax-react';
+import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare } from 'iconsax-react';
 import { visuallyHidden } from '@mui/utils';
 
 function descendingComparator(a, b, orderBy) {
@@ -309,9 +309,126 @@ function DynamicTableHead({
   );
 }
 
+function EditableCell({ column, value, row, onUpdate }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value || '');
+
+  const handleSave = () => {
+    let processedValue = editValue;
+    
+    // Process value based on type
+    if (column.type === 'editableCurrency' || column.type === 'editablePercentage') {
+      processedValue = parseFloat(editValue) || 0;
+    }
+    
+    if (onUpdate) {
+      onUpdate(row.id, processedValue);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditValue(value || '');
+    setIsEditing(false);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSave();
+    } else if (event.key === 'Escape') {
+      handleCancel();
+    }
+  };
+
+  if (!isEditing) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="body2">
+          {column.type === 'editableCurrency' 
+            ? (typeof value === 'number' ? value.toLocaleString('en-US', {
+                style: 'currency',
+                currency: column.currency || 'USD'
+              }) : value)
+            : column.type === 'editablePercentage'
+            ? `${value}%`
+            : value
+          }
+        </Typography>
+        <IconButton
+          size="small"
+          onClick={() => setIsEditing(true)}
+          sx={{ 
+            opacity: 0.6,
+            '&:hover': { opacity: 1 },
+            p: 0.5
+          }}
+        >
+          <Edit size="14" />
+        </IconButton>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <TextField
+        size="small"
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onKeyDown={handleKeyPress}
+        onBlur={handleSave}
+        type="number"
+        autoFocus
+        InputProps={{
+          startAdornment: column.type === 'editableCurrency' ? (
+            <InputAdornment position="start">
+              {column.currency === 'EUR' ? '€' : column.currency === 'GBP' ? '£' : '$'}
+            </InputAdornment>
+          ) : undefined,
+          endAdornment: column.type === 'editablePercentage' ? (
+            <InputAdornment position="end">%</InputAdornment>
+          ) : undefined,
+        }}
+        sx={{
+          width: 100,
+          '& .MuiOutlinedInput-root': {
+            fontSize: '0.875rem'
+          }
+        }}
+      />
+      <IconButton
+        size="small"
+        onClick={handleSave}
+        sx={{ p: 0.5, color: 'success.main' }}
+      >
+        <TickSquare size="14" />
+      </IconButton>
+      <IconButton
+        size="small"
+        onClick={handleCancel}
+        sx={{ p: 0.5, color: 'error.main' }}
+      >
+        <CloseSquare size="14" />
+      </IconButton>
+    </Box>
+  );
+}
+
 function CellRenderer({ column, value, row }) {
   if (column.render) {
     return column.render(value, row);
+  }
+
+  // Handle editable fields
+  if (column.editable && (column.type === 'editableCurrency' || column.type === 'editablePercentage')) {
+    return (
+      <EditableCell
+        column={column}
+        value={value}
+        row={row}
+        onUpdate={column.onUpdate}
+      />
+    );
   }
 
   switch (column.type) {
@@ -322,6 +439,23 @@ function CellRenderer({ column, value, row }) {
           size="small"
           sx={column.getChipStyle ? column.getChipStyle(value) : undefined}
         />
+      );
+
+    case 'statusDot':
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: column.getStatusColor ? column.getStatusColor(value) : '#9e9e9e',
+            }}
+          />
+          <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+            {value}
+          </Typography>
+        </Box>
       );
 
     case 'status':
@@ -339,12 +473,20 @@ function CellRenderer({ column, value, row }) {
       );
 
     case 'currency':
+    case 'editableCurrency':
       return (
         <Typography variant="body2">
           {typeof value === 'number' ? value.toLocaleString('en-US', {
             style: 'currency',
             currency: column.currency || 'USD'
           }) : value}
+        </Typography>
+      );
+
+    case 'editablePercentage':
+      return (
+        <Typography variant="body2">
+          {value}%
         </Typography>
       );
 

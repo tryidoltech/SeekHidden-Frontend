@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { Calendar, Filter } from 'iconsax-react';
+import { AddSquare, Filter } from 'iconsax-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import DynamicTable from '../../tables/datatable';
-import { useNavigate } from 'react-router';
 
 const ClientTable = () => {
   const navigate = useNavigate();
+  const [selected, setSelected] = useState([]);
   
   // Add state for visible columns with default important columns
   const [visibleColumns, setVisibleColumns] = useState([
     'clientName', 
+    'status',
     'clientType', 
-    'status', 
     'budgetCap', 
     'spend', 
     'clicks', 
@@ -18,7 +20,7 @@ const ClientTable = () => {
     'country'
   ]);
 
-  const clientData = [
+  const [clientData, setClientData] = useState([
     { 
       id: 1, 
       clientName: 'Acme Corp', 
@@ -189,18 +191,94 @@ const ClientTable = () => {
       markUpPercent: 17.5,
       markDownPercent: 7.0
     }
-  ];
+  ]);
+
+  // Handle field updates - updates the actual data
+  const handleFieldUpdate = (id, field, value) => {
+    // Update local state
+    setClientData(prev => prev.map(item => 
+      item.id === id ? { ...item, [field]: value } : item
+    ));
+    
+    // Here you would typically make an API call to update the data
+    console.log(`Updating ${field} for ID ${id} to ${value}`);
+    toast.success(`${field} updated successfully`);
+  };
 
   const columns = [
+    {
+      id: 'status',
+      label: 'Status',
+      type: 'statusDot',
+      sortable: false,
+      editable: true,
+      editType: 'select',
+      editOptions: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'paused', label: 'Paused' }
+      ],
+      onUpdate: (id, value) => handleFieldUpdate(id, 'status', value),
+      getStatusColor: (status) => {
+        switch (status) {
+          case 'active': return '#4caf50';
+          case 'inactive': return '#f44336';
+          case 'paused': return '#ff9800';
+          default: return '#9e9e9e';
+        }
+      },
+      render: (value, row) => (
+        <div
+          style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            backgroundColor: (() => {
+              switch (value) {
+                case 'active': return '#4caf50';
+                case 'inactive': return '#f44336';
+                case 'paused': return '#ff9800';
+                default: return '#9e9e9e';
+              }
+            })(),
+            display: 'inline-block'
+          }}
+        />
+      )
+    },
     { 
       id: 'clientName', 
       label: 'Client Name', 
-      disablePadding: true 
+      disablePadding: true,
+      editable: true,
+      type: 'editableText',
+      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value),
+      render: (value, row) => (
+        <span
+          onClick={() => navigate('/dashboard/campaigns')}
+          style={{
+            color: '#1976d2',
+            cursor: 'pointer',
+            textDecoration: 'underline'
+          }}
+          onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
+          onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
+        >
+          {value}
+        </span>
+      )
     },
     { 
       id: 'clientType', 
       label: 'Client Type', 
       type: 'chip',
+      editable: true,
+      editType: 'select',
+      editOptions: [
+        { value: 'CPA', label: 'CPA' },
+        { value: 'CPC', label: 'CPC' }
+      ],
+      onUpdate: (id, value) => handleFieldUpdate(id, 'clientType', value),
       getChipStyle: (type) => ({
         backgroundColor: type === 'CPA' ? '#e1bee7' : '#bbdefb',
         color: type === 'CPA' ? '#7b1fa2' : '#1976d2',
@@ -208,28 +286,20 @@ const ClientTable = () => {
       })
     },
     { 
-      id: 'status', 
-      label: 'Status', 
-      type: 'status',
-      getStatusColor: (status) => {
-        switch (status) {
-          case 'active': return '#4caf50';
-          case 'inactive': return '#f44336';
-          case 'paused': return '#9e9e9e';
-          default: return '#9e9e9e';
-        }
-      }
-    },
-    { 
       id: 'budgetCap', 
       label: 'Budget Cap', 
       numeric: true, 
-      type: 'currency',
-      currency: 'USD'
+      type: 'editableCurrency',
+      currency: 'USD',
+      editable: true,
+      onUpdate: (id, value) => handleFieldUpdate(id, 'budgetCap', value)
     },
     { 
       id: 'advertiserName', 
-      label: 'Advertiser Name', 
+      label: 'Advertiser Name',
+      editable: true,
+      type: 'editableText',
+      onUpdate: (id, value) => handleFieldUpdate(id, 'advertiserName', value)
     },
     { 
       id: 'spend', 
@@ -331,56 +401,194 @@ const ClientTable = () => {
       id: 'cp', 
       label: 'CP', 
       numeric: true,
-      type: 'number',
-      decimals: 2
+      type: 'currency',
+      currency: 'USD'
     },
     { 
       id: 'cpc', 
       label: 'CPC', 
       numeric: true,
-      type: 'number',
-      decimals: 2
+      type: 'currency',
+      currency: 'USD'
     },
     { 
       id: 'ctaPercent', 
       label: 'CTA%', 
       numeric: true,
-      type: 'number',
-      decimals: 1
+      type: 'percentage'
     },
     { 
       id: 'startDate', 
-      label: 'Start Date', 
+      label: 'Start Date',
+      type: 'date'
     },
     { 
       id: 'frequency', 
-      label: 'Frequency', 
+      label: 'Frequency',
+      editable: true,
+      editType: 'select',
+      editOptions: [
+        { value: 'daily', label: 'Daily' },
+        { value: 'weekly', label: 'Weekly' },
+        { value: 'bi-weekly', label: 'Bi-weekly' },
+        { value: 'monthly', label: 'Monthly' }
+      ],
+      onUpdate: (id, value) => handleFieldUpdate(id, 'frequency', value)
     },
     { 
       id: 'country', 
-      label: 'Country', 
+      label: 'Country',
+      editable: true,
+      type: 'editableText',
+      onUpdate: (id, value) => handleFieldUpdate(id, 'country', value)
     },
     { 
       id: 'markUpPercent', 
       label: 'Mark Up %', 
       numeric: true,
-      type: 'number',
-      decimals: 1
+      type: 'editablePercentage',
+      editable: true,
+      onUpdate: (id, value) => handleFieldUpdate(id, 'markUpPercent', value)
     },
     { 
       id: 'markDownPercent', 
       label: 'Mark Down %', 
       numeric: true,
-      type: 'number',
-      decimals: 1
+      type: 'editablePercentage',
+      editable: true,
+      onUpdate: (id, value) => handleFieldUpdate(id, 'markDownPercent', value)
     }
   ];
 
   // Generate column options for the dropdown
   const columnOptions = columns.map(column => ({
     value: column.id,
-    label: column.label
+    label: column.label || 'Status'
   }));
+
+  const handleActionChange = (action) => {
+    if (!action) return;
+
+    switch (action) {
+      case 'edit':
+        if (selected.length === 1) {
+          const selectedItem = clientData.find(item => item.id === selected[0]);
+          navigate(`/dashboard/clients/client-form`, { 
+            state: { client: selectedItem, mode: 'edit' } 
+          });
+        } else if (selected.length === 0) {
+          toast.error('Please select a client to edit');
+        } else {
+          toast.error('Please select only one client to edit');
+        }
+        break;
+      case 'enable':
+        if (selected.length === 0) {
+          toast.error('Please select clients to enable');
+        } else {
+          const updatedData = clientData.map(item => 
+            selected.includes(item.id) ? { ...item, status: 'active' } : item
+          );
+          setClientData(updatedData);
+          toast.success(`${selected.length} client(s) enabled`);
+          setSelected([]);
+        }
+        break;
+      case 'pause':
+        if (selected.length === 0) {
+          toast.error('Please select clients to pause');
+        } else {
+          const updatedData = clientData.map(item => 
+            selected.includes(item.id) ? { ...item, status: 'paused' } : item
+          );
+          setClientData(updatedData);
+          toast.success(`${selected.length} client(s) paused`);
+          setSelected([]);
+        }
+        break;
+      case 'deactivate':
+        if (selected.length === 0) {
+          toast.error('Please select clients to deactivate');
+        } else {
+          const updatedData = clientData.map(item => 
+            selected.includes(item.id) ? { ...item, status: 'inactive' } : item
+          );
+          setClientData(updatedData);
+          toast.success(`${selected.length} client(s) deactivated`);
+          setSelected([]);
+        }
+        break;
+      case 'clone':
+        if (selected.length === 0) {
+          toast.error('Please select clients to clone');
+        } else {
+          const itemsToClone = clientData.filter(item => selected.includes(item.id));
+          const clonedItems = itemsToClone.map(item => ({
+            ...item,
+            id: Math.max(...clientData.map(d => d.id)) + Math.random(),
+            clientName: `${item.clientName} (Copy)`
+          }));
+          setClientData(prev => [...prev, ...clonedItems]);
+          toast.success(`${selected.length} client(s) cloned`);
+          setSelected([]);
+        }
+        break;
+      case 'delete':
+        if (selected.length === 0) {
+          toast.error('Please select clients to delete');
+        } else {
+          const updatedData = clientData.filter(item => !selected.includes(item.id));
+          setClientData(updatedData);
+          toast.success(`${selected.length} client(s) deleted`);
+          setSelected([]);
+        }
+        break;
+      case 'duplicate':
+        if (selected.length === 0) {
+          toast.error('Please select clients to duplicate');
+        } else {
+          const itemsToDuplicate = clientData.filter(item => selected.includes(item.id));
+          const duplicatedItems = itemsToDuplicate.map(item => ({
+            ...item,
+            id: Math.max(...clientData.map(d => d.id)) + Math.random(),
+            clientName: `${item.clientName} (Duplicate)`
+          }));
+          setClientData(prev => [...prev, ...duplicatedItems]);
+          toast.success(`${selected.length} client(s) duplicated`);
+          setSelected([]);
+        }
+        break;
+      case 'campaigns':
+        if (selected.length === 1) {
+          navigate('/dashboard/campaigns');
+        } else if (selected.length === 0) {
+          toast.error('Please select a client to view campaigns');
+        } else {
+          toast.error('Please select only one client to view campaigns');
+        }
+        break;
+      case 'job-groups':
+        if (selected.length === 1) {
+          navigate('/dashboard/job-group');
+        } else if (selected.length === 0) {
+          toast.error('Please select a client to view job groups');
+        } else {
+          toast.error('Please select only one client to view job groups');
+        }
+        break;
+      case 'publishers':
+        if (selected.length === 1) {
+          navigate('/dashboard/publishers');
+        } else if (selected.length === 0) {
+          toast.error('Please select a client to view publishers');
+        } else {
+          toast.error('Please select only one client to view publishers');
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   const filterConfig = [
     {
@@ -392,9 +600,17 @@ const ClientTable = () => {
           minWidth: 120,
           options: [
             { value: 'edit', label: 'Edit' },
+            { value: 'enable', label: 'Enable' },
+            { value: 'pause', label: 'Pause' },
+            { value: 'deactivate', label: 'Deactivate' },
+            { value: 'clone', label: 'Clone' },
             { value: 'delete', label: 'Delete' },
-            { value: 'duplicate', label: 'Duplicate' }
-          ]
+            { value: 'duplicate', label: 'Duplicate' },
+            { value: 'campaigns', label: 'View Campaigns' },
+            { value: 'job-groups', label: 'View Job Groups' },
+            { value: 'publishers', label: 'View Publishers' }
+          ],
+          onChange: handleActionChange
         },
         {
           type: 'select',
@@ -406,19 +622,43 @@ const ClientTable = () => {
             { value: '10000-50000', label: '$10K - $50K' },
             { value: '50000+', label: '$50K+' }
           ]
+        },
+        // {
+        //   type: 'select',
+        //   key: 'clientType',
+        //   placeholder: 'Client Type',
+        //   minWidth: 120,
+        //   options: [
+        //     { value: 'CPA', label: 'CPA' },
+        //     { value: 'CPC', label: 'CPC' }
+        //   ]
+        // },
+        {
+          type: 'select',
+          key: 'margin',
+          placeholder: 'Margin',
+          minWidth: 120,
+          options: [
+            { value: 'markup', label: 'Mark Up' },
+            { value: 'markdown', label: 'Mark Down' }
+          ]
         }
       ],
       rightFilters: [
         {
-          type: 'label',
-          text: 'Date Range:'
+          type: 'dateRange',
+          key: 'dateRange',
+          placeholder: 'Date Range',
+          minWidth: 200,
+          defaultValue: '01-01-2023 to 12-31-2023'
         },
         {
-          type: 'text',
-          key: 'dateRange',
-          placeholder: '01-01-2000 to 01-01-2020',
-          minWidth: 200,
-          icon: <Calendar size="20" />
+          type: 'button',
+          label: 'Add Client',
+          icon: <AddSquare size="20" />,
+          variant: 'contained',
+          color: 'primary',
+          onClick: () => navigate('/dashboard/clients/add-client')
         }
       ]
     },
@@ -437,11 +677,11 @@ const ClientTable = () => {
         {
           type: 'select',
           key: 'columns',
-          placeholder: 'Select Columns',
+          placeholder: 'Select Stats',
           minWidth: 140,
           options: [
-            { value: '', label: 'Default Columns' },
-            { value: 'all', label: 'All Columns' },
+            { value: '', label: 'Default Stats' },
+            { value: 'all', label: 'All Stats' },
             ...columnOptions
           ],
           onChange: (value) => {
@@ -450,8 +690,8 @@ const ClientTable = () => {
             } else if (value === '' || !value) {
               setVisibleColumns([
                 'clientName', 
+                'status',
                 'clientType', 
-                'status', 
                 'budgetCap', 
                 'spend', 
                 'clicks', 
@@ -466,8 +706,8 @@ const ClientTable = () => {
         {
           type: 'select',
           key: 'currency',
-          placeholder: 'Currency',
-          minWidth: 100,
+          placeholder: 'USD',
+          minWidth: 80,
           options: [
             { value: 'USD', label: 'USD - $' },
             { value: 'EUR', label: 'EUR - €' },
@@ -488,17 +728,19 @@ const ClientTable = () => {
         {
           type: 'button',
           label: 'Apply Filters',
-          icon: <Filter size="20" />
+          icon: <Filter size="20" />,
+          variant: 'outlined'
         },
         {
           type: 'select',
           key: 'rowsPerPage',
-          minWidth: 80,
+          placeholder: 'Rows per page',
+          minWidth: 60,
           options: [
-            { value: 5, label: '5' },
-            { value: 10, label: '10' },
-            { value: 25, label: '25' },
-            { value: 50, label: '50' }
+            { value: '10', label: '10' },
+            { value: '25', label: '25' },
+            { value: '50', label: '50' },
+            { value: '100', label: '100' }
           ]
         }
       ]
@@ -510,8 +752,8 @@ const ClientTable = () => {
     ? columns.filter(column => visibleColumns.includes(column.id))
     : columns.filter(column => [
         'clientName', 
+        'status',
         'clientType', 
-        'status', 
         'budgetCap', 
         'spend', 
         'clicks', 
@@ -520,23 +762,41 @@ const ClientTable = () => {
       ].includes(column.id));
 
   const customFilter = (row, filters) => {
+    // Budget range filter
     if (filters.budgetRange) {
-      const [min, max] = filters.budgetRange.split('-').map(Number);
       if (filters.budgetRange.endsWith('+')) {
+        const min = parseInt(filters.budgetRange.replace('+', ''));
         if (row.budgetCap < min) return false;
       } else {
+        const [min, max] = filters.budgetRange.split('-').map(Number);
         if (row.budgetCap < min || row.budgetCap > max) return false;
       }
     }
     
+    // Status filter
     if (filters.status && row.status !== filters.status) {
       return false;
     }
-    
-    if (filters.currency) {
+
+    // Client Type filter
+    if (filters.clientType && row.clientType !== filters.clientType) {
+      return false;
+    }
+
+    // Margin filter
+    if (filters.margin) {
+      if (filters.margin === 'markup') {
+        if (row.markUpPercent <= 0) return false;
+      } else if (filters.margin === 'markdown') {
+        if (row.markDownPercent <= 0) return false;
+      }
     }
     
     return true;
+  };
+
+  const handleRowSelect = (selectedIds) => {
+    setSelected(selectedIds);
   };
 
   return (
@@ -544,33 +804,15 @@ const ClientTable = () => {
       data={clientData}
       columns={displayColumns}
       filterConfig={filterConfig}
-      initialFilters={{
-        currency: 'USD',
-        dateRange: '01-01-2000 to 01-01-2020',
-        rowsPerPage: 10
-      }}
-      title="Clients"
-      searchFields={['clientName', 'clientType', 'advertiserName', 'country']}
-      getRowId={(row) => row.id}
-      onRowClick={(row) => navigate('/dashboard/campaigns')}
-      onRowSelect={(selected) => console.log('Selected rows:', selected)}
-      onApplyFilters={(filters) => console.log('Applied filters:', filters)}
       customFilter={customFilter}
-      actionsEnabled= {true}
-      actions={[
-        {
-          label: 'Go to Campaigns',
-          onClick: () => navigate(`/dashboard/campaigns`)
-        },
-        {
-          label: 'Go to Job Groups',
-          onClick: (row) => navigate(`/dashboard/job-group`)
-        },
-        {
-          label: 'Go to publishers',
-          onClick: (row) => navigate(`/dashboard/publishers`)
-        }
-      ]}
+      onRowSelect={handleRowSelect}
+      searchEnabled={true}
+      searchFields={['clientName', 'clientType', 'advertiserName', 'country']}
+      title="Clients"
+      onRowClick={(row) => navigate('/dashboard/campaigns')}
+      selectable={true}
+      actionsEnabled={false}
+      recordsFoundText="Records Found"
     />
   );
 };
