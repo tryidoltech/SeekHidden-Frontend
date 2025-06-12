@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Paper,
@@ -12,7 +12,7 @@ import {
   Grid,
   IconButton,
 } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { ArrowLeft, Eye } from 'iconsax-react';
 
 const AddClient = () => {
