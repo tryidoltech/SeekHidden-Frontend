@@ -117,12 +117,12 @@ useEffect(() => {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, width: '80%' }}>
           <TextField
             size="small"
             placeholder="https://trialwebsiteonline.com/0358376736783673"
             sx={{ 
-              width: 350,
+              width:  '100%',
               '& .MuiOutlinedInput-root': {
                 backgroundColor: 'white',
               }
@@ -149,7 +149,8 @@ useEffect(() => {
             sx={{
               backgroundColor: '#000',
               textTransform: 'none',
-              '&:hover': { backgroundColor: '#333' }
+              '&:hover': { backgroundColor: '#333' },
+              width: 180
             }}
           >
             Exit Mapping

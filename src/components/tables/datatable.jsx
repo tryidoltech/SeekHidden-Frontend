@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -23,9 +23,12 @@ import {
   Paper,
   Stack,
   Tooltip,
-  Menu
+  Menu,
+  InputLabel,
+  ListItemText,
+  OutlinedInput
 } from '@mui/material';
-import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare } from 'iconsax-react';
+import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare, ArrowDown2 } from 'iconsax-react';
 import { visuallyHidden } from '@mui/utils';
 
 function descendingComparator(a, b, orderBy) {
@@ -92,6 +95,57 @@ function DynamicTableHeader({
                     </FormControl>
                   )}
 
+                  {filter.type === 'multiselect' && (
+                    <FormControl size="small" sx={{ minWidth: filter.minWidth || 140 }}>
+                      <InputLabel>{filter.placeholder}</InputLabel>
+                      <Select
+                        multiple
+                        value={filter.selectedValues || []}
+                        onChange={(e) => {
+                          const value = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
+                          if (filter.onChange) {
+                            filter.onChange(value);
+                          }
+                        }}
+                        input={<OutlinedInput label={filter.placeholder} />}
+                        renderValue={(selected) => (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {selected.map((value) => {
+                              const option = filter.options?.find(opt => opt.value === value);
+                              return (
+                                <Chip 
+                                  key={value} 
+                                  label={option?.label || value} 
+                                  size="small"
+                                  sx={{ height: 20, fontSize: '0.75rem' }}
+                                />
+                              );
+                            })}
+                          </Box>
+                        )}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 224,
+                              width: 250,
+                            },
+                          },
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
+                          backgroundColor: 'white'
+                        }}
+                      >
+                        {filter.options?.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            <Checkbox checked={(filter.selectedValues || []).indexOf(option.value) > -1} />
+                            <ListItemText primary={option.label} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
                   {filter.type === 'text' && (
                     <TextField
                       size="small"
@@ -147,6 +201,53 @@ function DynamicTableHeader({
                       }}
                     />
                   )}
+
+                  {filter.type === 'dateRange' && (
+                    <TextField
+                      size="small"
+                      value={filters[filter.key] || filter.defaultValue || ''}
+                      onChange={(e) => onFilterChange(filter.key, e.target.value)}
+                      placeholder={filter.placeholder}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Calendar size="20" />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        minWidth: filter.minWidth || 200,
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: 'white'
+                        }
+                      }}
+                    />
+                  )}
+
+                  {filter.type === 'button' && (
+                    <Button
+                      variant={filter.variant || "outlined"}
+                      color={filter.color || "primary"}
+                      startIcon={filter.icon}
+                      onClick={() => {
+                        if (filter.onClick) {
+                          filter.onClick();
+                        } else {
+                          onApplyFilters();
+                        }
+                      }}
+                      sx={{
+                        borderColor: filter.color ? undefined : '#ddd',
+                        color: filter.color ? undefined : 'text.primary',
+                        '&:hover': {
+                          borderColor: '#1976d2',
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                        }
+                      }}
+                    >
+                      {filter.label}
+                    </Button>
+                  )}
                 </React.Fragment>
               ))}
             </Stack>
@@ -175,6 +276,57 @@ function DynamicTableHeader({
                         {filter.options?.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+                  {filter.type === 'multiselect' && (
+                    <FormControl size="small" sx={{ minWidth: filter.minWidth || 140 }}>
+                      <InputLabel>{filter.placeholder}</InputLabel>
+                      <Select
+                        multiple
+                        value={filter.selectedValues || []}
+                        onChange={(e) => {
+                          const value = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
+                          if (filter.onChange) {
+                            filter.onChange(value);
+                          }
+                        }}
+                        input={<OutlinedInput label={filter.placeholder} />}
+                        renderValue={(selected) => (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {selected.map((value) => {
+                              const option = filter.options?.find(opt => opt.value === value);
+                              return (
+                                <Chip 
+                                  key={value} 
+                                  label={option?.label || value} 
+                                  size="small"
+                                  sx={{ height: 20, fontSize: '0.75rem' }}
+                                />
+                              );
+                            })}
+                          </Box>
+                        )}
+                        MenuProps={{
+                          PaperProps: {
+                            style: {
+                              maxHeight: 224,
+                              width: 250,
+                            },
+                          },
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
+                          backgroundColor: 'white'
+                        }}
+                      >
+                        {filter.options?.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            <Checkbox checked={(filter.selectedValues || []).indexOf(option.value) > -1} />
+                            <ListItemText primary={option.label} />
                           </MenuItem>
                         ))}
                       </Select>
@@ -224,7 +376,8 @@ function DynamicTableHead({
   rowCount,
   onRequestSort,
   selectable = true,
-  actionsEnabled = true
+  actionsEnabled = true,
+  rowActionsEnabled = false // Add new prop for row-level actions
 }) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -254,6 +407,21 @@ function DynamicTableHead({
             />
           </TableCell>
         )}
+        {rowActionsEnabled && (
+          <TableCell 
+            sx={{ 
+              pl: 3,
+              position: 'sticky',
+              left: 0,
+              backgroundColor: 'background.paper',
+              zIndex: 2,
+              borderRight: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
+            
+          </TableCell>
+        )}
         {columns.map((column, index) => (
           <TableCell
             key={column.id}
@@ -265,7 +433,7 @@ function DynamicTableHead({
               whiteSpace: 'nowrap',
               ...(column.sticky && {
                 position: 'sticky',
-                left: selectable ? 58 : 0, // Account for checkbox column width
+                left: (selectable ? 58 : 0) + (rowActionsEnabled ? 60 : 0),
                 backgroundColor: 'background.paper',
                 zIndex: 1,
                 borderRight: '1px solid',
@@ -312,17 +480,19 @@ function DynamicTableHead({
 function EditableCell({ column, value, row, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value || '');
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    setEditValue(value || '');
+  }, [value]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
 
   const handleSave = () => {
-    let processedValue = editValue;
-    
-    // Process value based on type
-    if (column.type === 'editableCurrency' || column.type === 'editablePercentage') {
-      processedValue = parseFloat(editValue) || 0;
-    }
-    
     if (onUpdate) {
-      onUpdate(row.id, processedValue);
+      onUpdate(row.id, editValue);
     }
     setIsEditing(false);
   };
@@ -340,7 +510,161 @@ function EditableCell({ column, value, row, onUpdate }) {
     }
   };
 
-  if (!isEditing) {
+  const handlePercentageMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePercentageMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handlePercentageSelect = (percentage) => {
+    setEditValue(percentage);
+    setAnchorEl(null);
+  };
+
+  if (isEditing) {
+    if (column.type === 'editableText') {
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
+          <TextField
+            size="small"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onKeyDown={handleKeyPress}
+            onBlur={handleSave}
+            autoFocus
+            sx={{ flex: 1 }}
+          />
+        </Box>
+      );
+    }
+    
+    if (column.type === 'editableCurrency') {
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 150 }}>
+          <TextField
+            size="small"
+            type="number"
+            value={editValue}
+            onChange={(e) => setEditValue(parseFloat(e.target.value) || 0)}
+            onKeyDown={handleKeyPress}
+            onBlur={handleSave}
+            autoFocus
+            InputProps={{
+              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+            }}
+            sx={{ width: 120 }}
+          />
+        </Box>
+      );
+    }
+
+    if (column.type === 'editablePercentage') {
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 120 }}>
+          <TextField
+            size="small"
+            type="number"
+            value={editValue}
+            onChange={(e) => setEditValue(parseFloat(e.target.value) || 0)}
+            onKeyDown={handleKeyPress}
+            onBlur={handleSave}
+            autoFocus
+            InputProps={{
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
+            }}
+            sx={{ width: 80 }}
+          />
+          <IconButton
+            size="small"
+            onClick={handlePercentageMenuClick}
+            sx={{ p: 0.5 }}
+          >
+            <ArrowDown2 size="14" />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handlePercentageMenuClose}
+            PaperProps={{
+              sx: { minWidth: 100 }
+            }}
+          >
+            {[5, 10, 15, 20, 25, 30].map((percentage) => (
+              <MenuItem
+                key={percentage}
+                onClick={() => handlePercentageSelect(percentage)}
+                sx={{ fontSize: '0.875rem' }}
+              >
+                {percentage}%
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
+      );
+    }
+  }
+
+  // Display mode
+  if (column.type === 'editableText') {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {column.render ? column.render(value, row) : (
+          <Typography variant="body2">
+            {value}
+          </Typography>
+        )}
+        <IconButton
+          size="small"
+          onClick={handleEdit}
+          sx={{ 
+            opacity: 0.6,
+            '&:hover': { opacity: 1 },
+            p: 0.5
+          }}
+        >
+          <Edit size="14" />
+        </IconButton>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Typography variant="body2">
+        {column.type === 'editableCurrency' 
+          ? (typeof value === 'number' ? value.toLocaleString('en-US', {
+              style: 'currency',
+              currency: column.currency || 'USD'
+            }) : value)
+          : column.type === 'editablePercentage'
+          ? `${value}%`
+          : value
+        }
+      </Typography>
+      <IconButton
+        size="small"
+        onClick={handleEdit}
+        sx={{ 
+          opacity: 0.6,
+          '&:hover': { opacity: 1 },
+          p: 0.5
+        }}
+      >
+        <Edit size="14" />
+      </IconButton>
+    </Box>
+  );
+}
+
+function CellRenderer({ column, value, row, onCellEdit }) {
+  if (column.render && !column.editable) {
+    return column.render(value, row);
+  }
+
+  // Handle editable fields with custom edit handlers
+  if (column.editable && column.customEditHandler) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Typography variant="body2">
@@ -356,7 +680,11 @@ function EditableCell({ column, value, row, onUpdate }) {
         </Typography>
         <IconButton
           size="small"
-          onClick={() => setIsEditing(true)}
+          onClick={() => {
+            if (column.customEditHandler) {
+              column.customEditHandler(row, column.id);
+            }
+          }}
           sx={{ 
             opacity: 0.6,
             '&:hover': { opacity: 1 },
@@ -369,58 +697,8 @@ function EditableCell({ column, value, row, onUpdate }) {
     );
   }
 
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <TextField
-        size="small"
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onKeyDown={handleKeyPress}
-        onBlur={handleSave}
-        type="number"
-        autoFocus
-        InputProps={{
-          startAdornment: column.type === 'editableCurrency' ? (
-            <InputAdornment position="start">
-              {column.currency === 'EUR' ? '€' : column.currency === 'GBP' ? '£' : '$'}
-            </InputAdornment>
-          ) : undefined,
-          endAdornment: column.type === 'editablePercentage' ? (
-            <InputAdornment position="end">%</InputAdornment>
-          ) : undefined,
-        }}
-        sx={{
-          width: 100,
-          '& .MuiOutlinedInput-root': {
-            fontSize: '0.875rem'
-          }
-        }}
-      />
-      <IconButton
-        size="small"
-        onClick={handleSave}
-        sx={{ p: 0.5, color: 'success.main' }}
-      >
-        <TickSquare size="14" />
-      </IconButton>
-      <IconButton
-        size="small"
-        onClick={handleCancel}
-        sx={{ p: 0.5, color: 'error.main' }}
-      >
-        <CloseSquare size="14" />
-      </IconButton>
-    </Box>
-  );
-}
-
-function CellRenderer({ column, value, row }) {
-  if (column.render) {
-    return column.render(value, row);
-  }
-
-  // Handle editable fields
-  if (column.editable && (column.type === 'editableCurrency' || column.type === 'editablePercentage')) {
+  // Handle editable fields with inline editing
+  if (column.editable && (column.type === 'editableCurrency' || column.type === 'editablePercentage' || column.type === 'editableText')) {
     return (
       <EditableCell
         column={column}
@@ -429,6 +707,11 @@ function CellRenderer({ column, value, row }) {
         onUpdate={column.onUpdate}
       />
     );
+  }
+
+  // Handle custom render functions for non-editable fields
+  if (column.render) {
+    return column.render(value, row);
   }
 
   switch (column.type) {
@@ -538,7 +821,8 @@ export default function DynamicTable({
   searchEnabled = true,
   searchFields = [],
   actionsEnabled = false,
-  actions = [], // Add actions prop
+  actions = [],
+  rowActions = [], // Add new prop for row-level actions
   title = "Records",
   rowsPerPageOptions = [5, 10, 25, 50],
   defaultRowsPerPage = 10,
@@ -551,6 +835,7 @@ export default function DynamicTable({
   const [page, setPage] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [rowMenuAnchorEl, setRowMenuAnchorEl] = useState(null); // Add state for row menu
   const [filters, setFilters] = useState({
     search: '',
     rowsPerPage: defaultRowsPerPage,
@@ -679,6 +964,24 @@ export default function DynamicTable({
     handleActionClose();
   };
 
+  const handleRowActionClick = (event, row) => {
+    event.stopPropagation();
+    setRowMenuAnchorEl(event.currentTarget);
+    setSelectedRow(row);
+  };
+
+  const handleRowActionClose = () => {
+    setRowMenuAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  const handleRowMenuItemClick = (action) => {
+    if (action.onClick && selectedRow) {
+      action.onClick(selectedRow);
+    }
+    handleRowActionClose();
+  };
+
   const isSelected = (rowId) => selected.indexOf(rowId) !== -1;
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * filters.rowsPerPage - filteredRows.length) : 0;
 
@@ -702,7 +1005,6 @@ export default function DynamicTable({
           sx={{ 
             overflowX: 'auto',
             maxHeight: maxHeight,
-            // Add scrollbar styling for better UX
             '&::-webkit-scrollbar': {
               height: 8,
               width: 8,
@@ -723,7 +1025,6 @@ export default function DynamicTable({
           <Table 
             sx={{ 
               minWidth: 750,
-              // Calculate minimum width based on columns
               width: columns.length > 8 ? 'max-content' : '100%'
             }} 
             aria-labelledby="tableTitle"
@@ -739,6 +1040,7 @@ export default function DynamicTable({
               rowCount={filteredRows.length}
               selectable={selectable}
               actionsEnabled={actionsEnabled}
+              rowActionsEnabled={rowActions.length > 0}
             />
             <TableBody>
               {stableSort(filteredRows, getComparator(order, orderBy))
@@ -756,10 +1058,9 @@ export default function DynamicTable({
                       key={rowId}
                       selected={isItemSelected}
                       sx={{ 
-                        cursor: onRowClick ? 'pointer' : 'default' // Only show pointer cursor if onRowClick is provided
+                        cursor: onRowClick ? 'pointer' : 'default'
                       }}
                     >
-                      {/* Remove role="checkbox" and aria-checked since row clicking doesn't select anymore */}
                       {selectable && (
                         <TableCell 
                           padding="checkbox" 
@@ -784,6 +1085,34 @@ export default function DynamicTable({
                         </TableCell>
                       )}
 
+                      {/* Row Actions Column */}
+                      {rowActions.length > 0 && (
+                        <TableCell
+                          sx={{
+                            width: 60,
+                            position: 'sticky',
+                            left: selectable ? 58 : 0,
+                            backgroundColor: isItemSelected ? 'action.selected' : 'background.paper',
+                            zIndex: 1,
+                            borderRight: '1px solid',
+                            borderColor: 'divider'
+                          }}
+                        >
+                          <IconButton
+                            size="small"
+                            onClick={(event) => handleRowActionClick(event, row)}
+                            sx={{
+                              color: 'text.secondary',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                              }
+                            }}
+                          >
+                            <More size="16" />
+                          </IconButton>
+                        </TableCell>
+                      )}
+
                       {columns.map((column, colIndex) => (
                         <TableCell
                           key={column.id}
@@ -797,7 +1126,7 @@ export default function DynamicTable({
                             whiteSpace: 'nowrap',
                             ...(column.sticky && {
                               position: 'sticky',
-                              left: selectable ? 58 : 0,
+                              left: (selectable ? 58 : 0) + (rowActions.length > 0 ? 60 : 0),
                               backgroundColor: isItemSelected ? 'action.selected' : 'background.paper',
                               zIndex: 1,
                               borderRight: '1px solid',
@@ -844,12 +1173,43 @@ export default function DynamicTable({
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (actionsEnabled ? 1 : 0)} />
+                  <TableCell colSpan={columns.length + (selectable ? 1 : 0) + (actionsEnabled ? 1 : 0) + (rowActions.length > 0 ? 1 : 0)} />
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Row Actions Menu */}
+        <Menu
+          anchorEl={rowMenuAnchorEl}
+          open={Boolean(rowMenuAnchorEl)}
+          onClose={handleRowActionClose}
+          PaperProps={{
+            sx: {
+              minWidth: 180,
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+            }
+          }}
+          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          {rowActions.map((action, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => handleRowMenuItemClick(action)}
+              sx={{
+                fontSize: '0.875rem',
+                py: 1,
+                '&:hover': {
+                  backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                }
+              }}
+            >
+              {action.label}
+            </MenuItem>
+          ))}
+        </Menu>
 
         {/* Actions Menu */}
         <Menu
@@ -896,6 +1256,7 @@ export default function DynamicTable({
   );
 }
 
+// Update PropTypes to include rowActions
 DynamicTable.propTypes = {
   data: PropTypes.array.isRequired,
   columns: PropTypes.arrayOf(PropTypes.shape({
@@ -928,6 +1289,10 @@ DynamicTable.propTypes = {
     label: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired
   })), // Add actions prop type
+  rowActions: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
+  })),
   title: PropTypes.string,
   rowsPerPageOptions: PropTypes.array,
   defaultRowsPerPage: PropTypes.number,

@@ -24,17 +24,17 @@ export default function Statistics() {
         <HoverSocialCard primary="Jobs" secondary="1165 +"/>
       </Grid>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
-        <HoverSocialCard primary="Applies" secondary="0" color="info.main" />
+        <HoverSocialCard primary="Spend" secondary="00.00USD" color="error.main" />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
+        <HoverSocialCard primary="Application" secondary="0" color="info.main" />
       </Grid>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
         <HoverSocialCard
-          primary="CR %"
+          primary="CR"
           secondary="0.00 %"
           color={theme.palette.mode === ThemeMode.DARK ? 'secondary.200' : 'secondary.dark'}
         />
-      </Grid>
-      <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
-        <HoverSocialCard primary="Spend" secondary="00.00USD" color="error.main" />
       </Grid>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
         <HoverSocialCard primary="CPA" secondary="00.00USD"/>

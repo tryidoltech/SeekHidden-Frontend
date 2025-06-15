@@ -16,25 +16,30 @@ import {
   Select,
   MenuItem,
   Box,
-  Typography
+  Typography,
+  Checkbox,
+  ListItemText
 } from '@mui/material';
 
 const ClientTable = () => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState([]);
-  
-  // Add state for visible columns
-  const [visibleColumns, setVisibleColumns] = useState([
-    'clientName', 
+
+  // Define default columns that should always be visible
+  const defaultColumns = [
+    'clientName',
     'status',
-    'clientType', 
-    'budgetCap', 
-    'spend', 
-    'clicks', 
+    'clientType',
+    'budgetCap',
+    'spend',
+    'clicks',
     'applies',
     'country'
-  ]);
-  
+  ];
+
+  // Add state for visible columns - initialize with default columns
+  const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
+
   // Add state for budget popup
   const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
   const [budgetSettings, setBudgetSettings] = useState({
@@ -45,18 +50,18 @@ const ClientTable = () => {
   });
 
   const [clientData, setClientData] = useState([
-    { 
-      id: 1, 
-      clientName: 'Acme Corp', 
-      clientType: 'CPA', 
-      status: 'active', 
-      budgetCap: 10000.00, 
+    {
+      id: 1,
+      clientName: 'Acme Corp',
+      clientType: 'CPA',
+      status: 'active',
+      budgetCap: 10000.00,
       advertiserName: 'Global Ads Inc.',
-      spend: 4500.00, 
+      spend: 4500.00,
       reconSpend: 4300.00,
       reconNetSpend: 4200.00,
-      clicks: 1500, 
-      validClicks: 1450, 
+      clicks: 1500,
+      validClicks: 1450,
       invalidClicks: 50,
       botClicks: 10,
       latentClicks: 15,
@@ -79,18 +84,18 @@ const ClientTable = () => {
       markUpPercent: 15.0,
       markDownPercent: 5.0
     },
-    { 
-      id: 2, 
-      clientName: 'Tech Solutions', 
-      clientType: 'CPC', 
-      status: 'inactive', 
+    {
+      id: 2,
+      clientName: 'Tech Solutions',
+      clientType: 'CPC',
+      status: 'inactive',
       budgetCap: 20000.00,
       advertiserName: 'Digital Marketing Co.',
-      spend: 0.00, 
+      spend: 0.00,
       reconSpend: 0.00,
       reconNetSpend: 0.00,
-      clicks: 0, 
-      validClicks: 0, 
+      clicks: 0,
+      validClicks: 0,
       invalidClicks: 0,
       botClicks: 0,
       latentClicks: 0,
@@ -113,18 +118,18 @@ const ClientTable = () => {
       markUpPercent: 12.0,
       markDownPercent: 3.0
     },
-    { 
-      id: 3, 
-      clientName: 'Marketing Plus', 
-      clientType: 'CPA', 
-      status: 'active', 
+    {
+      id: 3,
+      clientName: 'Marketing Plus',
+      clientType: 'CPA',
+      status: 'active',
       budgetCap: 15000.00,
       advertiserName: 'Ad Network Partners',
-      spend: 8000.00, 
+      spend: 8000.00,
       reconSpend: 7900.00,
       reconNetSpend: 7800.00,
-      clicks: 2000, 
-      validClicks: 1950, 
+      clicks: 2000,
+      validClicks: 1950,
       invalidClicks: 50,
       botClicks: 15,
       latentClicks: 20,
@@ -147,18 +152,18 @@ const ClientTable = () => {
       markUpPercent: 18.0,
       markDownPercent: 6.0
     },
-    { 
-      id: 4, 
-      clientName: 'Digital Agency', 
-      clientType: 'CPC', 
-      status: 'paused', 
+    {
+      id: 4,
+      clientName: 'Digital Agency',
+      clientType: 'CPC',
+      status: 'paused',
       budgetCap: 50000.00,
       advertiserName: 'Performance Marketing Ltd',
-      spend: 25000.00, 
+      spend: 25000.00,
       reconSpend: 24800.00,
       reconNetSpend: 24500.00,
-      clicks: 5000, 
-      validClicks: 4850, 
+      clicks: 5000,
+      validClicks: 4850,
       invalidClicks: 150,
       botClicks: 30,
       latentClicks: 40,
@@ -181,18 +186,18 @@ const ClientTable = () => {
       markUpPercent: 20.0,
       markDownPercent: 8.0
     },
-    { 
-      id: 5, 
-      clientName: 'Global Advisors', 
-      clientType: 'CPA', 
-      status: 'active', 
+    {
+      id: 5,
+      clientName: 'Global Advisors',
+      clientType: 'CPA',
+      status: 'active',
       budgetCap: 30000.00,
       advertiserName: 'Worldwide Advertisers',
-      spend: 12000.00, 
+      spend: 12000.00,
       reconSpend: 11800.00,
       reconNetSpend: 11500.00,
-      clicks: 3000, 
-      validClicks: 2900, 
+      clicks: 3000,
+      validClicks: 2900,
       invalidClicks: 100,
       botClicks: 20,
       latentClicks: 25,
@@ -220,10 +225,10 @@ const ClientTable = () => {
   // Handle field updates - updates the actual data
   const handleFieldUpdate = (id, field, value) => {
     // Update local state
-    setClientData(prev => prev.map(item => 
+    setClientData(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ));
-    
+
     // Here you would typically make an API call to update the data
     console.log(`Updating ${field} for ID ${id} to ${value}`);
     toast.success(`${field} updated successfully`);
@@ -242,9 +247,9 @@ const ClientTable = () => {
     }
 
     // Update selected clients with new budget settings
-    const updatedData = clientData.map(item => 
-      selected.includes(item.id) ? { 
-        ...item, 
+    const updatedData = clientData.map(item =>
+      selected.includes(item.id) ? {
+        ...item,
         budgetCap: parseFloat(budgetSettings.budgetTarget),
         frequency: budgetSettings.frequency,
         // Add pacing and threshold to the data model if needed
@@ -252,10 +257,10 @@ const ClientTable = () => {
         threshold: parseFloat(budgetSettings.threshold)
       } : item
     );
-    
+
     setClientData(updatedData);
     toast.success(`Budget settings updated for ${selected.length} client(s)`);
-    
+
     // Reset and close popup
     setBudgetSettings({
       pacing: '',
@@ -275,6 +280,8 @@ const ClientTable = () => {
       sortable: false,
       editable: true,
       editType: 'select',
+      width: 80, // Add this to make the column smaller
+      minWidth: 60, // Add this to set minimum width
       editOptions: [
         { value: 'active', label: 'Active' },
         { value: 'inactive', label: 'Inactive' },
@@ -308,31 +315,17 @@ const ClientTable = () => {
         />
       )
     },
-    { 
-      id: 'clientName', 
-      label: 'Client Name', 
+    {
+      id: 'clientName',
+      label: 'Client Name',
       disablePadding: true,
       editable: true,
       type: 'editableText',
-      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value),
-      render: (value, row) => (
-        <span
-          onClick={() => navigate('/dashboard/campaigns')}
-          style={{
-            color: '#1976d2',
-            cursor: 'pointer',
-            textDecoration: 'underline'
-          }}
-          onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
-          onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
-        >
-          {value}
-        </span>
-      )
+      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value)
     },
-    { 
-      id: 'clientType', 
-      label: 'Client Type', 
+    {
+      id: 'clientType',
+      label: 'Client Type',
       type: 'chip',
       editable: true,
       editType: 'select',
@@ -347,145 +340,145 @@ const ClientTable = () => {
         fontWeight: 500
       })
     },
-    { 
-      id: 'budgetCap', 
-      label: 'Budget Cap', 
-      numeric: true, 
+    {
+      id: 'budgetCap',
+      label: 'Budget Cap',
+      numeric: true,
       type: 'editableCurrency',
       currency: 'USD',
       editable: true,
-      onUpdate: (id, value) => handleFieldUpdate(id, 'budgetCap', value)
+      customEditHandler: (row, columnId) => setBudgetPopupOpen(true)
     },
-    { 
-      id: 'advertiserName', 
+    {
+      id: 'advertiserName',
       label: 'Advertiser Name',
       editable: true,
       type: 'editableText',
       onUpdate: (id, value) => handleFieldUpdate(id, 'advertiserName', value)
     },
-    { 
-      id: 'spend', 
-      label: 'Spend', 
-      numeric: true, 
-      type: 'currency',
-      currency: 'USD'
-    },
-    { 
-      id: 'reconSpend', 
-      label: 'Recon Spend', 
-      numeric: true, 
-      type: 'currency',
-      currency: 'USD'
-    },
-    { 
-      id: 'reconNetSpend', 
-      label: 'Recon Net Spend', 
-      numeric: true, 
-      type: 'currency',
-      currency: 'USD'
-    },
-    { 
-      id: 'clicks', 
-      label: 'Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'validClicks', 
-      label: 'Valid Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'invalidClicks', 
-      label: 'Invalid Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'botClicks', 
-      label: 'Bot Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'latentClicks', 
-      label: 'Latent Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'duplicateClicks', 
-      label: 'Duplicate Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'foreignClicks', 
-      label: 'Foreign Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconClicks', 
-      label: 'Recon Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconValidClicks', 
-      label: 'Recon Valid Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconBotClicks', 
-      label: 'Recon Bot Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconInvalidClicks', 
-      label: 'Recon Invalid Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconLatentClicks', 
-      label: 'Recon Latent Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconDuplicateClicks', 
-      label: 'Recon Duplicate Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'reconForeignClicks', 
-      label: 'Recon Foreign Clicks', 
-      numeric: true 
-    },
-    { 
-      id: 'applies', 
-      label: 'Applies', 
-      numeric: true 
-    },
-    { 
-      id: 'cp', 
-      label: 'CP', 
+    {
+      id: 'spend',
+      label: 'Spend',
       numeric: true,
       type: 'currency',
       currency: 'USD'
     },
-    { 
-      id: 'cpc', 
-      label: 'CPC', 
+    {
+      id: 'reconSpend',
+      label: 'Recon Spend',
       numeric: true,
       type: 'currency',
       currency: 'USD'
     },
-    { 
-      id: 'ctaPercent', 
-      label: 'CTA%', 
+    {
+      id: 'reconNetSpend',
+      label: 'Recon Net Spend',
+      numeric: true,
+      type: 'currency',
+      currency: 'USD'
+    },
+    {
+      id: 'clicks',
+      label: 'Clicks',
+      numeric: true
+    },
+    {
+      id: 'validClicks',
+      label: 'Valid Clicks',
+      numeric: true
+    },
+    {
+      id: 'invalidClicks',
+      label: 'Invalid Clicks',
+      numeric: true
+    },
+    {
+      id: 'botClicks',
+      label: 'Bot Clicks',
+      numeric: true
+    },
+    {
+      id: 'latentClicks',
+      label: 'Latent Clicks',
+      numeric: true
+    },
+    {
+      id: 'duplicateClicks',
+      label: 'Duplicate Clicks',
+      numeric: true
+    },
+    {
+      id: 'foreignClicks',
+      label: 'Foreign Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconClicks',
+      label: 'Recon Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconValidClicks',
+      label: 'Recon Valid Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconBotClicks',
+      label: 'Recon Bot Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconInvalidClicks',
+      label: 'Recon Invalid Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconLatentClicks',
+      label: 'Recon Latent Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconDuplicateClicks',
+      label: 'Recon Duplicate Clicks',
+      numeric: true
+    },
+    {
+      id: 'reconForeignClicks',
+      label: 'Recon Foreign Clicks',
+      numeric: true
+    },
+    {
+      id: 'applies',
+      label: 'Applies',
+      numeric: true
+    },
+    {
+      id: 'cp',
+      label: 'CP',
+      numeric: true,
+      type: 'currency',
+      currency: 'USD'
+    },
+    {
+      id: 'cpc',
+      label: 'CPC',
+      numeric: true,
+      type: 'currency',
+      currency: 'USD'
+    },
+    {
+      id: 'ctaPercent',
+      label: 'CTA%',
       numeric: true,
       type: 'percentage'
     },
-    { 
-      id: 'startDate', 
+    {
+      id: 'startDate',
       label: 'Start Date',
       type: 'date'
     },
-    { 
-      id: 'frequency', 
+    {
+      id: 'frequency',
       label: 'Frequency',
       editable: true,
       editType: 'select',
@@ -497,24 +490,24 @@ const ClientTable = () => {
       ],
       onUpdate: (id, value) => handleFieldUpdate(id, 'frequency', value)
     },
-    { 
-      id: 'country', 
+    {
+      id: 'country',
       label: 'Country',
       editable: true,
       type: 'editableText',
       onUpdate: (id, value) => handleFieldUpdate(id, 'country', value)
     },
-    { 
-      id: 'markUpPercent', 
-      label: 'Mark Up %', 
+    {
+      id: 'markUpPercent',
+      label: 'Mark Up %',
       numeric: true,
       type: 'editablePercentage',
       editable: true,
       onUpdate: (id, value) => handleFieldUpdate(id, 'markUpPercent', value)
     },
-    { 
-      id: 'markDownPercent', 
-      label: 'Mark Down %', 
+    {
+      id: 'markDownPercent',
+      label: 'Mark Down %',
       numeric: true,
       type: 'editablePercentage',
       editable: true,
@@ -522,12 +515,46 @@ const ClientTable = () => {
     }
   ];
 
-  // Generate column options for the dropdown
-  const columnOptions = columns.map(column => ({
-    value: column.id,
-    label: column.label || 'Status'
-  }));
+  // Generate column options for the dropdown (exclude default columns from options)
+  const columnOptions = columns
+    .filter(column => !defaultColumns.includes(column.id))
+    .map(column => ({
+      value: column.id,
+      label: column.label || 'Status'
+    }));
 
+  // Handle multiselect column changes
+  const handleColumnSelectionChange = (selectedValues) => {
+    // Always include default columns and add selected additional columns
+    const newVisibleColumns = [...defaultColumns, ...selectedValues];
+    // Remove duplicates
+    const uniqueColumns = [...new Set(newVisibleColumns)];
+    setVisibleColumns(uniqueColumns);
+  };
+
+  // Define row actions for the More menu
+  const rowActions = [
+    {
+      label: 'View Campaigns',
+      onClick: (row) => {
+        navigate('/dashboard/campaigns', { state: { clientId: row.id } });
+      }
+    },
+    {
+      label: 'View Job Groups',
+      onClick: (row) => {
+        navigate('/dashboard/job-group', { state: { clientId: row.id } });
+      }
+    },
+    {
+      label: 'View Publishers',
+      onClick: (row) => {
+        navigate('/dashboard/publishers', { state: { clientId: row.id } });
+      }
+    }
+  ];
+
+  // Remove the campaigns, job-groups, and publishers actions from handleActionChange
   const handleActionChange = (action) => {
     if (!action) return;
 
@@ -535,8 +562,8 @@ const ClientTable = () => {
       case 'edit':
         if (selected.length === 1) {
           const selectedItem = clientData.find(item => item.id === selected[0]);
-          navigate(`/dashboard/clients/add-client`, { 
-            state: { client: selectedItem, mode: 'edit' } 
+          navigate(`/dashboard/clients/add-client`, {
+            state: { client: selectedItem, mode: 'edit' }
           });
         } else if (selected.length === 0) {
           toast.error('Please select a client to edit');
@@ -548,7 +575,7 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to enable');
         } else {
-          const updatedData = clientData.map(item => 
+          const updatedData = clientData.map(item =>
             selected.includes(item.id) ? { ...item, status: 'active' } : item
           );
           setClientData(updatedData);
@@ -560,7 +587,7 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to pause');
         } else {
-          const updatedData = clientData.map(item => 
+          const updatedData = clientData.map(item =>
             selected.includes(item.id) ? { ...item, status: 'paused' } : item
           );
           setClientData(updatedData);
@@ -572,7 +599,7 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to deactivate');
         } else {
-          const updatedData = clientData.map(item => 
+          const updatedData = clientData.map(item =>
             selected.includes(item.id) ? { ...item, status: 'inactive' } : item
           );
           setClientData(updatedData);
@@ -620,33 +647,6 @@ const ClientTable = () => {
           setSelected([]);
         }
         break;
-      case 'campaigns':
-        if (selected.length === 1) {
-          navigate('/dashboard/campaigns');
-        } else if (selected.length === 0) {
-          toast.error('Please select a client to view campaigns');
-        } else {
-          toast.error('Please select only one client to view campaigns');
-        }
-        break;
-      case 'job-groups':
-        if (selected.length === 1) {
-          navigate('/dashboard/job-group');
-        } else if (selected.length === 0) {
-          toast.error('Please select a client to view job groups');
-        } else {
-          toast.error('Please select only one client to view job groups');
-        }
-        break;
-      case 'publishers':
-        if (selected.length === 1) {
-          navigate('/dashboard/publishers');
-        } else if (selected.length === 0) {
-          toast.error('Please select a client to view publishers');
-        } else {
-          toast.error('Please select only one client to view publishers');
-        }
-        break;
       default:
         break;
     }
@@ -667,10 +667,7 @@ const ClientTable = () => {
             { value: 'deactivate', label: 'Deactivate' },
             { value: 'clone', label: 'Clone' },
             { value: 'delete', label: 'Delete' },
-            { value: 'duplicate', label: 'Duplicate' },
-            { value: 'campaigns', label: 'View Campaigns' },
-            { value: 'job-groups', label: 'View Job Groups' },
-            { value: 'publishers', label: 'View Publishers' }
+            { value: 'duplicate', label: 'Duplicate' }
           ],
           onChange: handleActionChange
         },
@@ -683,15 +680,6 @@ const ClientTable = () => {
             { value: 'markup', label: 'Mark Up' },
             { value: 'markdown', label: 'Mark Down' }
           ]
-        }
-      ],
-      rightFilters: [
-        {
-          type: 'dateRange',
-          key: 'dateRange',
-          placeholder: 'Date Range',
-          minWidth: 200,
-          defaultValue: '01-01-2023 to 12-31-2023'
         },
         {
           type: 'button',
@@ -705,6 +693,15 @@ const ClientTable = () => {
               setBudgetPopupOpen(true);
             }
           }
+        },
+      ],
+      rightFilters: [
+        {
+          type: 'dateRange',
+          key: 'dateRange',
+          placeholder: 'Date Range',
+          minWidth: 200,
+          defaultValue: '01-01-2023 to 12-31-2023'
         },
         {
           type: 'button',
@@ -729,33 +726,13 @@ const ClientTable = () => {
       ],
       rightFilters: [
         {
-          type: 'select',
+          type: 'multiselect',
           key: 'columns',
           placeholder: 'Select Stats',
           minWidth: 140,
-          options: [
-            { value: '', label: 'Default Stats' },
-            { value: 'all', label: 'All Stats' },
-            ...columnOptions
-          ],
-          onChange: (value) => {
-            if (value === 'all') {
-              setVisibleColumns(columns.map(col => col.id));
-            } else if (value === '' || !value) {
-              setVisibleColumns([
-                'clientName', 
-                'status',
-                'clientType', 
-                'budgetCap', 
-                'spend', 
-                'clicks', 
-                'applies',
-                'country'
-              ]);
-            } else {
-              setVisibleColumns([value]);
-            }
-          }
+          options: columnOptions,
+          onChange: handleColumnSelectionChange,
+          selectedValues: visibleColumns.filter(col => !defaultColumns.includes(col))
         },
         {
           type: 'select',
@@ -780,12 +757,6 @@ const ClientTable = () => {
           ]
         },
         {
-          type: 'button',
-          label: 'Apply Filters',
-          icon: <Filter size="20" />,
-          variant: 'outlined'
-        },
-        {
           type: 'select',
           key: 'rowsPerPage',
           placeholder: 'Rows per page',
@@ -801,19 +772,8 @@ const ClientTable = () => {
     }
   ];
 
-  // Filter columns based on selection - show default important columns if none selected
-  const displayColumns = visibleColumns.length > 0 
-    ? columns.filter(column => visibleColumns.includes(column.id))
-    : columns.filter(column => [
-        'clientName', 
-        'status',
-        'clientType', 
-        'budgetCap', 
-        'spend', 
-        'clicks', 
-        'applies',
-        'country'
-      ].includes(column.id));
+  // Filter columns based on visible columns selection
+  const displayColumns = columns.filter(column => visibleColumns.includes(column.id));
 
   // Update customFilter to remove budget range logic
   const customFilter = (row, filters) => {
@@ -835,7 +795,7 @@ const ClientTable = () => {
         if (row.markDownPercent <= 0) return false;
       }
     }
-    
+
     return true;
   };
 
@@ -856,12 +816,13 @@ const ClientTable = () => {
         title="Clients"
         selectable={true}
         actionsEnabled={false}
+        rowActions={rowActions} // Add the row actions
         recordsFoundText="Records Found"
       />
 
       {/* Budget Settings Popup */}
-      <Dialog 
-        open={budgetPopupOpen} 
+      <Dialog
+        open={budgetPopupOpen}
         onClose={() => setBudgetPopupOpen(false)}
         maxWidth="sm"
         fullWidth
@@ -872,7 +833,7 @@ const ClientTable = () => {
             Updating budget settings for {selected.length} selected client(s)
           </Typography>
         </DialogTitle>
-        
+
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <FormControl fullWidth>
@@ -928,13 +889,13 @@ const ClientTable = () => {
         </DialogContent>
 
         <DialogActions sx={{ p: 3 }}>
-          <Button 
+          <Button
             onClick={() => setBudgetPopupOpen(false)}
             variant="outlined"
           >
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleBudgetUpdate}
             variant="contained"
             color="primary"
