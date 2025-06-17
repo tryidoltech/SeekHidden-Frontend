@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AddSquare, Filter } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import DynamicTable from '../tables/datatable';
 // Add these imports for the budget popup
 import {
     Dialog,
@@ -18,13 +17,14 @@ import {
     Box,
     Typography
 } from '@mui/material';
+import DynamicTable from '../../../tables/datatable';
 
 const CampaignsTable = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
 
-    // Add state for visible columns with default important columns
-    const [visibleColumns, setVisibleColumns] = useState([
+    // Define default columns that should always be visible
+    const defaultColumns = [
         'campaignName',
         'status',
         'clientName',
@@ -34,7 +34,10 @@ const CampaignsTable = () => {
         'clicks',
         'applies',
         'country'
-    ]);
+    ];
+
+    // Add state for visible columns - initialize with default columns
+    const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
 
     // Add state for budget popup
     const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
@@ -386,6 +389,8 @@ const CampaignsTable = () => {
             sortable: false,
             editable: true,
             editType: 'select',
+            width: 80, // Add this to make the column smaller
+            minWidth: 60, // Add this to set minimum width
             editOptions: [
                 { value: 'active', label: 'Active' },
                 { value: 'inactive', label: 'Inactive' },
@@ -428,7 +433,7 @@ const CampaignsTable = () => {
             onUpdate: (id, value) => handleFieldUpdate(id, 'campaignName', value),
             render: (value, row) => (
                 <span
-                    onClick={() => navigate('/dashboard/job-group')}
+                    onClick={() => navigate('/campaigns/job-group')}
                     style={{
                         color: '#1976d2',
                         cursor: 'pointer',
@@ -441,14 +446,14 @@ const CampaignsTable = () => {
                 </span>
             )
         },
-        // {
-        //     id: 'clientName',
-        //     label: 'Client Name',
-        //     disablePadding: false,
-        //     editable: true,
-        //     type: 'editableText',
-        //     onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value)
-        // },
+        {
+            id: 'clientName',
+            label: 'Client Name',
+            disablePadding: false,
+            editable: true,
+            type: 'editableText',
+            onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value)
+        },
         {
             id: 'clientType',
             label: 'Client Type',
@@ -641,11 +646,56 @@ const CampaignsTable = () => {
         }
     ];
 
-    // Generate column options for the dropdown
-    const columnOptions = columns.map(column => ({
-        value: column.id,
-        label: column.label || 'Status'
-    }));
+    // Generate column options for the dropdown (exclude default columns from options)
+    const columnOptions = columns
+        .filter(column => !defaultColumns.includes(column.id))
+        .map(column => ({
+            value: column.id,
+            label: column.label || 'Status'
+        }));
+
+    // Handle multiselect column changes
+    const handleColumnSelectionChange = (selectedValues) => {
+        // Always include default columns and add selected additional columns
+        const newVisibleColumns = [...defaultColumns, ...selectedValues];
+        // Remove duplicates
+        const uniqueColumns = [...new Set(newVisibleColumns)];
+        setVisibleColumns(uniqueColumns);
+    };
+
+    // Define row actions for the More menu
+    const rowActions = [
+        {
+            label: 'View Job Groups',
+            onClick: (row) => {
+                navigate('/campaigns/job-group', { state: { campaignId: row.id } });
+            }
+        },
+        {
+            label: 'View Publishers',
+            onClick: (row) => {
+                navigate('/campaigns/job-group/publishers', { state: { campaignId: row.id } });
+            }
+        },
+        {
+            label: 'Click Logs',
+            onClick: (row) => {
+                navigate('/click-logs', { state: { campaignId: row.id } });
+            }
+        },
+        {
+            label: 'Daily Stats',
+            onClick: (row) => {
+                toast.info('Daily stats view will be implemented');
+            }
+        },
+        {
+            label: 'Inspect Feed',
+            onClick: (row) => {
+                navigate('/inspect-feed', { state: { campaignId: row.id } });
+            }
+        }
+    ];
 
     const handleActionChange = (action) => {
         if (!action) return;
@@ -654,7 +704,7 @@ const CampaignsTable = () => {
             case 'edit':
                 if (selected.length === 1) {
                     const selectedItem = campaignData.find(item => item.id === selected[0]);
-                    navigate(`/dashboard/campaigns/edit-campaign/${selectedItem.id}`, {
+                    navigate(`/campaigns/edit-campaign/${selectedItem.id}`, {
                         state: { campaign: selectedItem, mode: 'edit' }
                     });
                 } else if (selected.length === 0) {
@@ -739,33 +789,6 @@ const CampaignsTable = () => {
                     setSelected([]);
                 }
                 break;
-            case 'click-logs':
-                if (selected.length === 1) {
-                    navigate('/dashboard/click-logs');
-                } else if (selected.length === 0) {
-                    toast.error('Please select a campaign to view click logs');
-                } else {
-                    toast.error('Please select only one campaign to view click logs');
-                }
-                break;
-            case 'daily-stats':
-                if (selected.length === 1) {
-                    toast.info('Daily stats view will be implemented');
-                } else if (selected.length === 0) {
-                    toast.error('Please select a campaign to view daily stats');
-                } else {
-                    toast.error('Please select only one campaign to view daily stats');
-                }
-                break;
-            case 'inspect-feed':
-                if (selected.length === 1) {
-                    navigate('/dashboard/inspectfeed');
-                } else if (selected.length === 0) {
-                    toast.error('Please select a campaign to inspect feed');
-                } else {
-                    toast.error('Please select only one campaign to inspect feed');
-                }
-                break;
             default:
                 break;
         }
@@ -786,24 +809,10 @@ const CampaignsTable = () => {
                         { value: 'deactivate', label: 'Deactivate' },
                         { value: 'clone', label: 'Clone' },
                         { value: 'delete', label: 'Delete' },
-                        { value: 'duplicate', label: 'Duplicate' },
-                        { value: 'click-logs', label: 'Click Logs' },
-                        { value: 'daily-stats', label: 'Daily Stats' },
-                        { value: 'inspect-feed', label: 'Inspect Feed' }
+                        { value: 'duplicate', label: 'Duplicate' }
                     ],
                     onChange: handleActionChange
                 },
-                // {
-                //     type: 'select',
-                //     key: 'budgetRange',
-                //     placeholder: 'Budget Cap',
-                //     minWidth: 140,
-                //     options: [
-                //         { value: '0-1000', label: '$0 - $1K' },
-                //         { value: '1000-5000', label: '$1K - $5K' },
-                //         { value: '5000+', label: '$5K+' }
-                //     ]
-                // },
                 {
                     type: 'select',
                     key: 'margin',
@@ -813,15 +822,6 @@ const CampaignsTable = () => {
                         { value: 'markup', label: 'Mark Up' },
                         { value: 'markdown', label: 'Mark Down' }
                     ]
-                }
-            ],
-            rightFilters: [
-                {
-                    type: 'dateRange',
-                    key: 'dateRange',
-                    placeholder: 'Date Range',
-                    minWidth: 200,
-                    defaultValue: '01-01-2024 to 12-31-2024'
                 },
                 {
                     type: 'button',
@@ -835,6 +835,15 @@ const CampaignsTable = () => {
                             setBudgetPopupOpen(true);
                         }
                     }
+                }
+            ],
+            rightFilters: [
+                {
+                    type: 'dateRange',
+                    key: 'dateRange',
+                    placeholder: 'Date Range',
+                    minWidth: 200,
+                    defaultValue: '01-01-2024 to 12-31-2024'
                 },
                 {
                     type: 'button',
@@ -842,7 +851,7 @@ const CampaignsTable = () => {
                     icon: <AddSquare size="20" />,
                     variant: 'contained',
                     color: 'primary',
-                    onClick: () => navigate('/dashboard/campaigns/add-campaign')
+                    onClick: () => navigate('/campaigns/add-campaign')
                 }
             ]
         },
@@ -859,34 +868,13 @@ const CampaignsTable = () => {
             ],
             rightFilters: [
                 {
-                    type: 'select',
+                    type: 'multiselect',
                     key: 'columns',
                     placeholder: 'Select Stats',
                     minWidth: 140,
-                    options: [
-                        { value: '', label: 'Default Stats' },
-                        { value: 'all', label: 'All Stats' },
-                        ...columnOptions
-                    ],
-                    onChange: (value) => {
-                        if (value === 'all') {
-                            setVisibleColumns(columns.map(col => col.id));
-                        } else if (value === '' || !value) {
-                            setVisibleColumns([
-                                'campaignName',
-                                'status',
-                                'clientName',
-                                'clientType',
-                                'budgetCap',
-                                'spend',
-                                'clicks',
-                                'applies',
-                                'country'
-                            ]);
-                        } else {
-                            setVisibleColumns([value]);
-                        }
-                    }
+                    options: columnOptions,
+                    onChange: handleColumnSelectionChange,
+                    selectedValues: visibleColumns.filter(col => !defaultColumns.includes(col))
                 },
                 {
                     type: 'select',
@@ -911,12 +899,6 @@ const CampaignsTable = () => {
                     ]
                 },
                 {
-                    type: 'button',
-                    label: 'Apply Filters',
-                    icon: <Filter size="20" />,
-                    variant: 'outlined'
-                },
-                {
                     type: 'select',
                     key: 'rowsPerPage',
                     placeholder: 'Rows per page',
@@ -932,33 +914,10 @@ const CampaignsTable = () => {
         }
     ];
 
-    // Filter columns based on selection
-    const displayColumns = visibleColumns.length > 0
-        ? columns.filter(column => visibleColumns.includes(column.id))
-        : columns.filter(column => [
-            'campaignName',
-            'status',
-            'clientName',
-            'clientType',
-            'budgetCap',
-            'spend',
-            'clicks',
-            'applies',
-            'country'
-        ].includes(column.id));
+    // Filter columns based on visible columns selection
+    const displayColumns = columns.filter(column => visibleColumns.includes(column.id));
 
     const customFilter = (row, filters) => {
-        // Budget range filter
-        if (filters.budgetRange) {
-            if (filters.budgetRange.endsWith('+')) {
-                const min = parseInt(filters.budgetRange.replace('+', ''));
-                if (row.budgetCap < min) return false;
-            } else {
-                const [min, max] = filters.budgetRange.split('-').map(Number);
-                if (row.budgetCap < min || row.budgetCap > max) return false;
-            }
-        }
-
         // Status filter
         if (filters.status && row.status !== filters.status) {
             return false;
@@ -967,6 +926,15 @@ const CampaignsTable = () => {
         // Client Type filter
         if (filters.clientType && row.clientType !== filters.clientType) {
             return false;
+        }
+
+        // Margin filter
+        if (filters.margin) {
+            if (filters.margin === 'markup') {
+                if (row.markUpPercent <= 0) return false;
+            } else if (filters.margin === 'markdown') {
+                if (row.markDownPercent <= 0) return false;
+            }
         }
 
         return true;
@@ -989,6 +957,7 @@ const CampaignsTable = () => {
                 title="Campaigns"
                 selectable={true}
                 actionsEnabled={false}
+                rowActions={rowActions} // Add the row actions
                 recordsFoundText="Records Found"
             />
 

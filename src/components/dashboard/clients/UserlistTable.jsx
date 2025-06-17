@@ -437,7 +437,7 @@
 import React, { useState } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import { Calendar, Filter, AddSquare, Lock, Trash, Edit, Profile } from 'iconsax-react';
-import DynamicTable from '../tables/datatable';
+import DynamicTable from '../../tables/datatable';
 import { useNavigate } from 'react-router';
 
 function TabPanel({ children, value, index, ...other }) {
@@ -477,11 +477,11 @@ const UserManagementTable = () => {
     //     navigate('/dashboard/clients/add-publisher-user');
     // };
     const handleAddClientUser = () => {
-  navigate('/dashboard/clients/add-user');
+  navigate('/clients/add-user');
 };
 
 const handleAddPublisherUser = () => {
-  navigate('/dashboard/clients/add-user?type=publisher');
+  navigate('/clients/add-user?type=publisher');
 };
 
     // Original client user data

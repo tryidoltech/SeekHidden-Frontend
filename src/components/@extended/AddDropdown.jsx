@@ -23,12 +23,12 @@ const AddDropdown = () => {
     };
 
     const handleAddClient = () => {
-        navigate('dashboard/clients/add-client')
+        navigate('/clients/add-client')
         handleClose()
     }
 
     const handleAddClientUser = () => {
-        navigate('dashboard/clients/add-client-user')
+        navigate('/clients/add-client-user')
         handleClose()
     }
 

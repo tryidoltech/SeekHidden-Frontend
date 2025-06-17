@@ -28,7 +28,7 @@ const pages = {
           id: 'clients',
           title: 'Clients',
           type: 'item',
-          url: '/dashboard/clients',
+          url: '/clients',
           icon: icons.user
         },
         // {

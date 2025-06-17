@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import DynamicTable from '../tables/datatable';
+import DynamicTable from '../../../../../../tables/datatable';
 import { DocumentDownload } from 'iconsax-react';
 
 const ClickLogsTable = () => {

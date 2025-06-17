@@ -67,6 +67,13 @@ const AddClient = () => {
   const [showAddFieldDialog, setShowAddFieldDialog] = useState(false);
   const [newFieldName, setNewFieldName] = useState('');
 
+  // Add these state variables with your existing state declarations
+  const [feeds, setFeeds] = useState([]);
+  const [showAddFeedDialog, setShowAddFeedDialog] = useState(false);
+  const [newFeedUrl, setNewFeedUrl] = useState('');
+  const [isLoadingNewFeed, setIsLoadingNewFeed] = useState(false);
+  const [newFeedError, setNewFeedError] = useState('');
+
   // Mock feed data structure for demonstration
   const [unmappedNodes] = useState([
     'Source',
@@ -148,7 +155,7 @@ const AddClient = () => {
               '/title': 'Interior Designer (Hospitality and F&B)',
               '/company': 'Gough Recruitment (Hong Kong) Pty Limited',
               '/location': 'central area',
-              '/url': 'https://open.opp.jobstreet.com/sg/361739158034579456B0?src=jsononet...',
+              '/url': 'https://open.opp.jobstreet.com/sg/361739158034579456386B0?src=jsononet...',
               '/listdate': '2025-03-29'
             }
           },
@@ -209,6 +216,7 @@ const AddClient = () => {
       spendTypeCpa,
       feedUrl,
       mappings,
+      additionalFeeds: feeds,
     });
   };
 
@@ -266,6 +274,109 @@ const AddClient = () => {
     console.log('Mappings reset');
   };
 
+  // Modify the Add Feed button click handler
+  const handleAddFeed = () => {
+    setShowAddFeedDialog(true);
+    setNewFeedUrl('');
+    setNewFeedError('');
+  };
+
+  // Function to add a new feed
+  const handleAddFeedConfirm = async () => {
+    if (!newFeedUrl.trim()) {
+      setNewFeedError('Please enter a valid feed URL');
+      return;
+    }
+
+    // Check if URL already exists
+    if (feeds.some(feed => feed.url === newFeedUrl.trim()) || feedUrl === newFeedUrl.trim()) {
+      setNewFeedError('This feed URL already exists');
+      return;
+    }
+
+    setIsLoadingNewFeed(true);
+    setNewFeedError('');
+
+    try {
+      // Simulate API call to extract feed data
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Mock extracted data for new feed
+      const mockNewFeedData = {
+        id: Date.now(),
+        url: newFeedUrl.trim(),
+        totalJobs: Math.floor(Math.random() * 2000) + 500,
+        lastUpdated: new Date().toISOString(),
+        feedType: 'XML',
+        encoding: 'UTF-8',
+        nodes: [
+          'job_id', 'title', 'description', 'company', 'location',
+          'salary', 'job_type', 'posted_date', 'expiry_date', 'apply_url',
+          'category', 'requirements', 'benefits', 'experience_level',
+          'contact_email', 'application_deadline', 'remote_work'
+        ],
+        mappings: {
+          Source: '',
+          JobId: '',
+          JobCategory: '',
+          Publisher: '',
+          Country: ''
+        }
+      };
+
+      // Add to feeds array
+      setFeeds(prev => [...prev, mockNewFeedData]);
+      setShowAddFeedDialog(false);
+      setNewFeedUrl('');
+
+    } catch (error) {
+      setNewFeedError('Failed to extract feed data. Please check the URL and try again.');
+    } finally {
+      setIsLoadingNewFeed(false);
+    }
+  };
+
+  const handleAddFeedCancel = () => {
+    setShowAddFeedDialog(false);
+    setNewFeedUrl('');
+    setNewFeedError('');
+  };
+
+  // Function to remove a feed
+  const handleRemoveFeed = (feedId) => {
+    setFeeds(prev => prev.filter(feed => feed.id !== feedId));
+  };
+
+  // Function to handle mapping changes for additional feeds
+  const handleAdditionalFeedMappingChange = (feedId, field, value) => {
+    setFeeds(prev => prev.map(feed => 
+      feed.id === feedId 
+        ? {
+            ...feed,
+            mappings: {
+              ...feed.mappings,
+              [field]: value
+            }
+          }
+        : feed
+    ));
+  };
+
+  // Function to add field to specific feed
+  const handleAddFieldToFeed = (feedId, fieldName) => {
+    setFeeds(prev => prev.map(feed => 
+      feed.id === feedId 
+        ? {
+            ...feed,
+            mappings: {
+              ...feed.mappings,
+              [fieldName]: ''
+            }
+          }
+        : feed
+    ));
+  };
+
   return (
     <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
       {/* Header */}
@@ -319,22 +430,12 @@ const AddClient = () => {
               textTransform: 'none',
               backgroundColor: 'white',
               borderColor: '#ddd',
-              color: '#666'
+              color: '#666',
+              width: '120px',
             }}
+            onClick={handleAddFeed}
           >
-            Feed 1
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              backgroundColor: '#000',
-              textTransform: 'none',
-              '&:hover': { backgroundColor: '#333' },
-              width: 180
-            }}
-          >
-            Exit Mapping
+            Add Feed
           </Button>
         </Box>
       </Box>
@@ -596,6 +697,200 @@ const AddClient = () => {
           </Paper>
         )}
 
+        {/* Additional Feeds Section */}
+        {feeds.map((feed, index) => (
+          <Paper
+            key={feed.id}
+            elevation={0}
+            sx={{
+              p: 3,
+              backgroundColor: '#ffffff',
+              borderRadius: 2,
+              mb: 3,
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Feed Mapping #{index + 2}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Typography variant="body2" color="textSecondary" sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {feed.url}
+                </Typography>
+                <IconButton 
+                  size="small" 
+                  color="error"
+                  onClick={() => handleRemoveFeed(feed.id)}
+                  sx={{ ml: 1 }}
+                >
+                  <Box sx={{ fontSize: 16 }}>×</Box>
+                </IconButton>
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={3}>
+                  <Typography variant="body2" color="textSecondary">
+                    Total Jobs: <strong>{feed.totalJobs}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" color="textSecondary">
+                    Feed Type: <strong>{feed.feedType}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" color="textSecondary">
+                    Last Updated: <strong>{new Date(feed.lastUpdated).toLocaleDateString()}</strong>
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" color="textSecondary">
+                    Nodes Found: <strong>{feed.nodes.length}</strong>
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Grid container spacing={3}>
+                <Grid item xs={4}>
+                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+                    Career Fields
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {Object.keys(feed.mappings).map((field) => (
+                      <TextField
+                        key={field}
+                        fullWidth
+                        size="small"
+                        label={field}
+                        value={field}
+                        disabled
+                        sx={{ backgroundColor: '#f9f9f9' }}
+                      />
+                    ))}
+                  </Box>
+                </Grid>
+
+                <Grid item xs={4}>
+                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+                    Feed Nodes
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {Object.keys(feed.mappings).map((field) => (
+                      <FormControl key={field} fullWidth size="small">
+                        <InputLabel>Select Node</InputLabel>
+                        <Select
+                          value={feed.mappings[field]}
+                          label="Select Node"
+                          onChange={(e) => handleAdditionalFeedMappingChange(feed.id, field, e.target.value)}
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {feed.nodes.map((node) => (
+                            <MenuItem key={node} value={node}>
+                              {node}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    ))}
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, my: 3 }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => {
+                        const fieldName = prompt('Enter field name:');
+                        if (fieldName && fieldName.trim() && !feed.mappings.hasOwnProperty(fieldName.trim())) {
+                          handleAddFieldToFeed(feed.id, fieldName.trim());
+                        }
+                      }}
+                      sx={{
+                        textTransform: 'none',
+                        borderColor: '#ddd',
+                        color: '#666'
+                      }}
+                    >
+                      Add Field
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => {
+                        const mappedFields = Object.entries(feed.mappings).filter(([key, value]) => value.trim() !== '');
+                        if (mappedFields.length === 0) {
+                          alert('Please map at least one field before proceeding.');
+                          return;
+                        }
+                        console.log(`Feed ${feed.id} mappings saved:`, feed.mappings);
+                      }}
+                      sx={{
+                        backgroundColor: '#000',
+                        textTransform: 'none',
+                        '&:hover': { backgroundColor: '#333' }
+                      }}
+                    >
+                      Map
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => {
+                        const resetMappings = Object.keys(feed.mappings).reduce((acc, key) => {
+                          acc[key] = '';
+                          return acc;
+                        }, {});
+                        setFeeds(prev => prev.map(f => 
+                          f.id === feed.id 
+                            ? { ...f, mappings: resetMappings }
+                            : f
+                        ));
+                      }}
+                      sx={{
+                        textTransform: 'none',
+                        borderColor: '#ddd',
+                        color: '#666'
+                      }}
+                      startIcon={<RotateCcw size={16} />}
+                    >
+                      Reset
+                    </Button>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={4}>
+                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+                    Unmapped Feed Nodes
+                  </Typography>
+                  <Box sx={{
+                    backgroundColor: '#f9f9f9',
+                    p: 2,
+                    borderRadius: 1,
+                    maxHeight: 300,
+                    overflowY: 'auto'
+                  }}>
+                    {feed.nodes
+                      .filter(node => !Object.values(feed.mappings).includes(node))
+                      .map((node) => (
+                        <Chip
+                          key={node}
+                          label={node}
+                          size="small"
+                          sx={{ m: 0.5 }}
+                          variant="outlined"
+                        />
+                      ))}
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Paper>
+        ))}
+
         {/* Client Details Section */}
         <Paper
           elevation={0}
@@ -611,40 +906,34 @@ const AddClient = () => {
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Client Name"
-                placeholder="eg. Marco Faloppa"
-                variant="outlined"
-                size="small"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
+                size="small"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Advertiser Name"
-                placeholder="eg. Marco Faloppa"
-                variant="outlined"
-                size="small"
                 value={advertiserName}
                 onChange={(e) => setAdvertiserName(e.target.value)}
+                size="small"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Exported Name"
-                placeholder="eg. Marco Faloppa"
-                variant="outlined"
-                size="small"
                 value={exportedName}
                 onChange={(e) => setExportedName(e.target.value)}
+                size="small"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Currency</InputLabel>
                 <Select
@@ -655,10 +944,11 @@ const AddClient = () => {
                   <MenuItem value="USD">USD</MenuItem>
                   <MenuItem value="EUR">EUR</MenuItem>
                   <MenuItem value="GBP">GBP</MenuItem>
+                  <MenuItem value="SGD">SGD</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Country</InputLabel>
                 <Select
@@ -668,11 +958,12 @@ const AddClient = () => {
                 >
                   <MenuItem value="US">United States</MenuItem>
                   <MenuItem value="UK">United Kingdom</MenuItem>
-                  <MenuItem value="CA">Canada</MenuItem>
+                  <MenuItem value="SG">Singapore</MenuItem>
+                  <MenuItem value="AU">Australia</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Industry</InputLabel>
                 <Select
@@ -680,9 +971,10 @@ const AddClient = () => {
                   label="Industry"
                   onChange={(e) => setIndustry(e.target.value)}
                 >
-                  <MenuItem value="Tech">Technology</MenuItem>
-                  <MenuItem value="Finance">Finance</MenuItem>
+                  <MenuItem value="Technology">Technology</MenuItem>
                   <MenuItem value="Healthcare">Healthcare</MenuItem>
+                  <MenuItem value="Finance">Finance</MenuItem>
+                  <MenuItem value="Education">Education</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -704,18 +996,17 @@ const AddClient = () => {
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Budget"
-                placeholder="Enter budget amount"
-                variant="outlined"
-                size="small"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
+                size="small"
+                type="number"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Mark Type</InputLabel>
                 <Select
@@ -723,34 +1014,32 @@ const AddClient = () => {
                   label="Mark Type"
                   onChange={(e) => setMarkType(e.target.value)}
                 >
-                  <MenuItem value="Type A">Type A</MenuItem>
-                  <MenuItem value="Type B">Type B</MenuItem>
+                  <MenuItem value="Markup">Markup</MenuItem>
+                  <MenuItem value="Markdown">Markdown</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="MarkUp"
-                placeholder="Enter markup percentage"
-                variant="outlined"
-                size="small"
+                label="Markup (%)"
                 value={markup}
                 onChange={(e) => setMarkup(e.target.value)}
+                size="small"
+                type="number"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Markdown"
-                placeholder="Enter markdown percentage"
-                variant="outlined"
-                size="small"
+                label="Markdown (%)"
                 value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
+                size="small"
+                type="number"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Frequency</InputLabel>
                 <Select
@@ -764,7 +1053,7 @@ const AddClient = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Time Zone</InputLabel>
                 <Select
@@ -772,13 +1061,14 @@ const AddClient = () => {
                   label="Time Zone"
                   onChange={(e) => setTimeZone(e.target.value)}
                 >
+                  <MenuItem value="UTC">UTC</MenuItem>
                   <MenuItem value="EST">EST</MenuItem>
                   <MenuItem value="PST">PST</MenuItem>
-                  <MenuItem value="GMT">GMT</MenuItem>
+                  <MenuItem value="SGT">SGT</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Client Type</InputLabel>
                 <Select
@@ -788,10 +1078,11 @@ const AddClient = () => {
                 >
                   <MenuItem value="Premium">Premium</MenuItem>
                   <MenuItem value="Standard">Standard</MenuItem>
+                  <MenuItem value="Basic">Basic</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Show Dashboards</InputLabel>
                 <Select
@@ -799,71 +1090,60 @@ const AddClient = () => {
                   label="Show Dashboards"
                   onChange={(e) => setShowDashboards(e.target.value)}
                 >
-                  <MenuItem value="All">All</MenuItem>
-                  <MenuItem value="Limited">Limited</MenuItem>
+                  <MenuItem value="Yes">Yes</MenuItem>
+                  <MenuItem value="No">No</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Click Filters</InputLabel>
-                <Select
-                  value={clickFilters}
-                  label="Click Filters"
-                  onChange={(e) => setClickFilters(e.target.value)}
-                >
-                  <MenuItem value="Enabled">Enabled</MenuItem>
-                  <MenuItem value="Disabled">Disabled</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Click Filters"
+                value={clickFilters}
+                onChange={(e) => setClickFilters(e.target.value)}
+                size="small"
+              />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Click Filter Redirect URL"
-                placeholder="Enter redirect URL"
-                variant="outlined"
-                size="small"
                 value={clickFilterRedirectUrl}
                 onChange={(e) => setClickFilterRedirectUrl(e.target.value)}
+                size="small"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Start Date"
-                type="date"
-                variant="outlined"
-                size="small"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                size="small"
+                type="date"
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="End Date"
-                type="date"
-                variant="outlined"
-                size="small"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
+                size="small"
+                type="date"
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Spend Type CPA</InputLabel>
-                <Select
-                  value={spendTypeCpa}
-                  label="Spend Type CPA"
-                  onChange={(e) => setSpendTypeCpa(e.target.value)}
-                >
-                  <MenuItem value="Fixed">Fixed</MenuItem>
-                  <MenuItem value="Variable">Variable</MenuItem>
-                </Select>
-              </FormControl>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Spend Type CPA"
+                value={spendTypeCpa}
+                onChange={(e) => setSpendTypeCpa(e.target.value)}
+                size="small"
+                type="number"
+              />
             </Grid>
           </Grid>
         </Paper>
@@ -886,7 +1166,7 @@ const AddClient = () => {
           </Button>
         </Box>
 
-        {/* Add Field Dialog - Add this after the Feed Mapping Paper component */}
+        {/* Add Field Dialog */}
         {showAddFieldDialog && (
           <Box
             sx={{
@@ -963,6 +1243,89 @@ const AddClient = () => {
                   This field already exists
                 </Typography>
               )}
+            </Paper>
+          </Box>
+        )}
+
+        {/* Add Feed Dialog */}
+        {showAddFeedDialog && (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1300,
+            }}
+            onClick={handleAddFeedCancel}
+          >
+            <Paper
+              sx={{
+                width: 500,
+                p: 3,
+                borderRadius: 2,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                Add New Feed
+              </Typography>
+              
+              {newFeedError && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {newFeedError}
+                </Alert>
+              )}
+              
+              <TextField
+                fullWidth
+                label="Feed URL"
+                placeholder="Enter feed URL"
+                value={newFeedUrl}
+                onChange={(e) => setNewFeedUrl(e.target.value)}
+                size="small"
+                sx={{ mb: 3 }}
+                disabled={isLoadingNewFeed}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !isLoadingNewFeed) {
+                    handleAddFeedConfirm();
+                  }
+                }}
+              />
+              
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleAddFeedCancel}
+                  disabled={isLoadingNewFeed}
+                  sx={{
+                    textTransform: 'none',
+                    borderColor: '#ddd',
+                    color: '#666'
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleAddFeedConfirm}
+                  disabled={!newFeedUrl.trim() || isLoadingNewFeed}
+                  sx={{
+                    backgroundColor: '#000',
+                    textTransform: 'none',
+                    '&:hover': { backgroundColor: '#333' }
+                  }}
+                >
+                  {isLoadingNewFeed ? <CircularProgress size={16} color="inherit" /> : 'Add Feed'}
+                </Button>
+              </Box>
             </Paper>
           </Box>
         )}

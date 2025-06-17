@@ -71,7 +71,7 @@ const AddClientUser = () => {
       jobGroups,
     });
 
-    navigate('/dashboard/clients')
+    navigate('/clients')
   };
 
   // Handler for cancel (stub)

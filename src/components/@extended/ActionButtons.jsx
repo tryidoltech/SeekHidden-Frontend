@@ -10,17 +10,17 @@ const ActionButtons = () => {
 
                 <Stack direction="row" spacing={2}>
                     <Button variant="outlined" color="primary" onClick={()=>{
-                        navigate('/dashboard/job-status')
+                        navigate('/job-status')
                     }} >
                         Job Stats
                     </Button>
                     <Button variant="outlined" color="primary" onClick={()=>{
-                        navigate('/dashboard/conversion-tracking')
+                        navigate('/conversion-tracking')
                     }} >
                         Conversion Tracking
                     </Button>
                     <Button variant="outlined" color="primary" onClick={() => {
-                        navigate('/dashboard/publisher-management')
+                        navigate('/publisher-management')
                     }} >
                         Publisher Management
                     </Button>

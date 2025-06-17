@@ -95,7 +95,7 @@ const CampaignForm = () => {
 
   // Handlers
   const handleBack = () => {
-    navigate('/dashboard/campaigns');
+    navigate('/campaigns');
   };
 
   const handleAddRule = () => {
@@ -123,7 +123,7 @@ const CampaignForm = () => {
 
   const handleCancel = () => {
     if (isEdit) {
-      navigate('/dashboard/campaigns');
+      navigate('/campaigns');
     } else {
       // Reset form for add mode
       setName('');
@@ -169,7 +169,7 @@ const CampaignForm = () => {
       toast.success('Campaign created successfully!');
     }
     
-    navigate('/dashboard/campaigns');
+    navigate('/campaigns');
   };
 
   const totalJobCount = rules.length;

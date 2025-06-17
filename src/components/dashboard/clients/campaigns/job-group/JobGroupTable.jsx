@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AddSquare, Filter } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import DynamicTable from '../tables/datatable';
+import DynamicTable from '../../../../tables/datatable';
 // Add these imports for the budget popup
 import {
     Dialog,
@@ -19,23 +19,25 @@ import {
     Typography
 } from '@mui/material';
 
-const PublisherTable = () => {
+const JobGroupTable = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState([]);
 
-    // Add state for visible columns with default important columns
-    const [visibleColumns, setVisibleColumns] = useState([
-        'publisherName',
+    // Define default columns that should always be visible
+    const defaultColumns = [
+        'jobGroupName',
         'status',
         'budgetCap',
+        'markup',
+        'markdown',
         'spend',
         'clicks',
-        'validClicks',
-        'invalidClicks',
-        'markUpPercent',
-        'markDownPercent'
-    ]);
+        'validClicks'
+    ];
 
+    // Add state for visible columns - initialize with default columns
+    const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
+    
     // Add state for budget popup
     const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
     const [budgetSettings, setBudgetSettings] = useState({
@@ -45,24 +47,24 @@ const PublisherTable = () => {
         frequency: ''
     });
 
-    const [publisherData, setPublisherData] = useState([
-        { id: 1, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5, markUpPercent: 15.0, markDownPercent: 5.0 },
-        { id: 2, publisherName: 'TechSol Media', status: 'active', budgetCap: 2000.00, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5, markUpPercent: 12.0, markDownPercent: 3.0 },
-        { id: 3, publisherName: 'Digital Partners', status: 'paused', budgetCap: 1500.00, spend: 600.00, reconSpend: 580.00, clicks: 120, validClicks: 115, invalidClicks: 5, markUpPercent: 18.0, markDownPercent: 7.0 },
-        { id: 4, publisherName: 'Global Media Network', status: 'inactive', budgetCap: 3000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0, markUpPercent: 20.0, markDownPercent: 8.0 },
-        { id: 5, publisherName: 'Creative Solutions', status: 'active', budgetCap: 1800.00, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5, markUpPercent: 16.0, markDownPercent: 4.0 },
-        { id: 6, publisherName: 'Marketing Plus', status: 'inactive', budgetCap: 2500.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0, markUpPercent: 14.0, markDownPercent: 6.0 },
-        { id: 7, publisherName: 'Media Partners', status: 'active', budgetCap: 2200.00, spend: 1100.00, reconSpend: 1080.00, clicks: 220, validClicks: 210, invalidClicks: 10, markUpPercent: 13.0, markDownPercent: 2.0 },
-        { id: 8, publisherName: 'Data Insights', status: 'paused', budgetCap: 1200.00, spend: 300.00, reconSpend: 290.00, clicks: 60, validClicks: 58, invalidClicks: 2, markUpPercent: 10.0, markDownPercent: 1.0 },
+    const [clientData, setClientData] = useState([
+        { id: 1, jobGroupName: '+12 CPA', status: 'active', budgetCap: 1000.00, markup: 15.0, markdown: 5.0, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { id: 2, jobGroupName: 'Tech Solutions Group', status: 'inactive', budgetCap: 2000.00, markup: 20.0, markdown: 8.0, spend: 850.00, reconSpend: 840.00, clicks: 120, validClicks: 115, invalidClicks: 5 },
+        { id: 3, jobGroupName: 'Marketing Plus CPA', status: 'active', budgetCap: 1500.00, markup: 18.0, markdown: 3.0, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5 },
+        { id: 4, jobGroupName: 'Digital Agency CPC', status: 'paused', budgetCap: 5000.00, markup: 25.0, markdown: 10.0, spend: 2500.00, reconSpend: 2480.00, clicks: 500, validClicks: 485, invalidClicks: 15 },
+        { id: 5, jobGroupName: 'Global Advisors', status: 'active', budgetCap: 3000.00, markup: 12.0, markdown: 2.0, spend: 1200.00, reconSpend: 1180.00, clicks: 300, validClicks: 290, invalidClicks: 10 },
+        { id: 6, jobGroupName: 'Media Partners', status: 'active', budgetCap: 2500.00, markup: 22.0, markdown: 7.0, spend: 1800.00, reconSpend: 1750.00, clicks: 400, validClicks: 390, invalidClicks: 10 },
+        { id: 7, jobGroupName: 'Creative Solutions', status: 'paused', budgetCap: 1800.00, markup: 16.0, markdown: 4.0, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
+        { id: 8, jobGroupName: 'Data Insights', status: 'inactive', budgetCap: 2200.00, markup: 14.0, markdown: 6.0, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
     ]);
-
-    // Handle field updates - updates the actual data
+    
+    // Handle field updates - now updates the actual data
     const handleFieldUpdate = (id, field, value) => {
         // Update local state
-        setPublisherData(prev => prev.map(item =>
+        setClientData(prev => prev.map(item => 
             item.id === id ? { ...item, [field]: value } : item
         ));
-
+        
         // Here you would typically make an API call to update the data
         console.log(`Updating ${field} for ID ${id} to ${value}`);
         toast.success(`${field} updated successfully`);
@@ -71,7 +73,7 @@ const PublisherTable = () => {
     // Add budget update handler
     const handleBudgetUpdate = () => {
         if (selected.length === 0) {
-            toast.error('Please select publishers to update budget settings');
+            toast.error('Please select job groups to update budget settings');
             return;
         }
 
@@ -80,8 +82,8 @@ const PublisherTable = () => {
             return;
         }
 
-        // Update selected publishers with new budget settings
-        const updatedData = publisherData.map(item => 
+        // Update selected job groups with new budget settings
+        const updatedData = clientData.map(item => 
             selected.includes(item.id) ? { 
                 ...item, 
                 budgetCap: parseFloat(budgetSettings.budgetTarget),
@@ -92,8 +94,8 @@ const PublisherTable = () => {
             } : item
         );
         
-        setPublisherData(updatedData);
-        toast.success(`Budget settings updated for ${selected.length} publisher(s)`);
+        setClientData(updatedData);
+        toast.success(`Budget settings updated for ${selected.length} job group(s)`);
         
         // Reset and close popup
         setBudgetSettings({
@@ -114,6 +116,8 @@ const PublisherTable = () => {
             sortable: false,
             editable: true,
             editType: 'select',
+            width: 80,
+            minWidth: 60,
             editOptions: [
                 { value: 'active', label: 'Active' },
                 { value: 'inactive', label: 'Inactive' },
@@ -148,19 +152,19 @@ const PublisherTable = () => {
             )
         },
         {
-            id: 'publisherName',
-            label: 'Publisher Name',
+            id: 'jobGroupName',
+            label: 'Job Group Name',
             disablePadding: true,
             editable: true,
             type: 'editableText',
-            onUpdate: (id, value) => handleFieldUpdate(id, 'publisherName', value),
+            onUpdate: (id, value) => handleFieldUpdate(id, 'jobGroupName', value),
             render: (value, row) => (
                 <span
-                    // onClick={() => navigate('/dashboard/job-group')}
+                    onClick={() => navigate('/campaigns/job-group/publishers')}
                     style={{
                         color: '#1976d2',
-                        // cursor: 'pointer',
-                        // textDecoration: 'underline'
+                        cursor: 'pointer',
+                        textDecoration: 'underline'
                     }}
                     onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
                     onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
@@ -177,6 +181,22 @@ const PublisherTable = () => {
             currency: 'USD',
             editable: true,
             onUpdate: (id, value) => handleFieldUpdate(id, 'budgetCap', value)
+        },
+        {
+            id: 'markup',
+            label: 'Markup (%)',
+            numeric: true,
+            type: 'editablePercentage',
+            editable: true,
+            onUpdate: (id, value) => handleFieldUpdate(id, 'markup', value)
+        },
+        {
+            id: 'markdown',
+            label: 'MarkDown (%)',
+            numeric: true,
+            type: 'editablePercentage',
+            editable: true,
+            onUpdate: (id, value) => handleFieldUpdate(id, 'markdown', value)
         },
         {
             id: 'spend',
@@ -206,40 +226,47 @@ const PublisherTable = () => {
             id: 'invalidClicks',
             label: 'Invalid Clicks',
             numeric: true
-        },
-        {
-            id: 'markUpPercent',
-            label: 'Markup %',
-            numeric: true,
-            type: 'editablePercentage',
-            editable: true,
-            onUpdate: (id, value) => handleFieldUpdate(id, 'markUpPercent', value),
-            render: (value, row) => (
-                <span style={{ color: '#4caf50', fontWeight: 500 }}>
-                    +{parseFloat(value || 0).toFixed(1)}%
-                </span>
-            )
-        },
-        {
-            id: 'markDownPercent',
-            label: 'Markdown %',
-            numeric: true,
-            type: 'editablePercentage',
-            editable: true,
-            onUpdate: (id, value) => handleFieldUpdate(id, 'markDownPercent', value),
-            render: (value, row) => (
-                <span style={{ color: '#f44336', fontWeight: 500 }}>
-                    -{parseFloat(value || 0).toFixed(1)}%
-                </span>
-            )
         }
     ];
 
-    // Generate column options for the dropdown
-    const columnOptions = columns.map(column => ({
-        value: column.id,
-        label: column.label || 'Status'
-    }));
+    // Generate column options for the dropdown (exclude default columns from options)
+    const columnOptions = columns
+        .filter(column => !defaultColumns.includes(column.id))
+        .map(column => ({
+            value: column.id,
+            label: column.label || 'Status'
+        }));
+
+    // Handle multiselect column changes
+    const handleColumnSelectionChange = (selectedValues) => {
+        // Always include default columns and add selected additional columns
+        const newVisibleColumns = [...defaultColumns, ...selectedValues];
+        // Remove duplicates
+        const uniqueColumns = [...new Set(newVisibleColumns)];
+        setVisibleColumns(uniqueColumns);
+    };
+
+    // Define row actions for the More menu
+    const rowActions = [
+        {
+            label: 'View Publishers',
+            onClick: (row) => {
+                navigate('/campaigns/job-group/publishers', { state: { jobGroupId: row.id } });
+            }
+        },
+        {
+            label: 'Click Logs',
+            onClick: (row) => {
+                navigate('/click-logs', { state: { jobGroupId: row.id } });
+            }
+        },
+        {
+            label: 'Daily Stats',
+            onClick: (row) => {
+                toast.info('Daily stats view will be implemented');
+            }
+        }
+    ];
 
     const handleActionChange = (action) => {
         if (!action) return;
@@ -247,108 +274,90 @@ const PublisherTable = () => {
         switch (action) {
             case 'edit':
                 if (selected.length === 1) {
-                    const selectedItem = publisherData.find(item => item.id === selected[0]);
-                    navigate(`/dashboard/publishers/publisher-form`, {
-                        state: { publisher: selectedItem, mode: 'edit' }
+                    const selectedItem = clientData.find(item => item.id === selected[0]);
+                    navigate(`/campaigns/job-group/job-group-form`, { 
+                        state: { jobGroup: selectedItem, mode: 'edit' } 
                     });
                 } else if (selected.length === 0) {
-                    toast.error('Please select a publisher to edit');
+                    toast.error('Please select a job group to edit');
                 } else {
-                    toast.error('Please select only one publisher to edit');
+                    toast.error('Please select only one job group to edit');
                 }
                 break;
             case 'enable':
                 if (selected.length === 0) {
-                    toast.error('Please select publishers to enable');
+                    toast.error('Please select job groups to enable');
                 } else {
-                    const updatedData = publisherData.map(item =>
+                    const updatedData = clientData.map(item => 
                         selected.includes(item.id) ? { ...item, status: 'active' } : item
                     );
-                    setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) enabled`);
+                    setClientData(updatedData);
+                    toast.success(`${selected.length} job group(s) enabled`);
                     setSelected([]);
                 }
                 break;
             case 'pause':
                 if (selected.length === 0) {
-                    toast.error('Please select publishers to pause');
+                    toast.error('Please select job groups to pause');
                 } else {
-                    const updatedData = publisherData.map(item =>
+                    const updatedData = clientData.map(item => 
                         selected.includes(item.id) ? { ...item, status: 'paused' } : item
                     );
-                    setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) paused`);
+                    setClientData(updatedData);
+                    toast.success(`${selected.length} job group(s) paused`);
                     setSelected([]);
                 }
                 break;
             case 'deactivate':
                 if (selected.length === 0) {
-                    toast.error('Please select publishers to deactivate');
+                    toast.error('Please select job groups to deactivate');
                 } else {
-                    const updatedData = publisherData.map(item =>
+                    const updatedData = clientData.map(item => 
                         selected.includes(item.id) ? { ...item, status: 'inactive' } : item
                     );
-                    setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) deactivated`);
+                    setClientData(updatedData);
+                    toast.success(`${selected.length} job group(s) deactivated`);
                     setSelected([]);
                 }
                 break;
             case 'clone':
                 if (selected.length === 0) {
-                    toast.error('Please select publishers to clone');
+                    toast.error('Please select job groups to clone');
                 } else {
-                    const itemsToClone = publisherData.filter(item => selected.includes(item.id));
+                    const itemsToClone = clientData.filter(item => selected.includes(item.id));
                     const clonedItems = itemsToClone.map(item => ({
                         ...item,
-                        id: Math.max(...publisherData.map(d => d.id)) + Math.random(),
-                        publisherName: `${item.publisherName} (Copy)`
+                        id: Math.max(...clientData.map(d => d.id)) + Math.random(),
+                        jobGroupName: `${item.jobGroupName} (Copy)`
                     }));
-                    setPublisherData(prev => [...prev, ...clonedItems]);
-                    toast.success(`${selected.length} publisher(s) cloned`);
+                    setClientData(prev => [...prev, ...clonedItems]);
+                    toast.success(`${selected.length} job group(s) cloned`);
                     setSelected([]);
                 }
                 break;
             case 'delete':
                 if (selected.length === 0) {
-                    toast.error('Please select publishers to delete');
+                    toast.error('Please select job groups to delete');
                 } else {
-                    const updatedData = publisherData.filter(item => !selected.includes(item.id));
-                    setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) deleted`);
+                    const updatedData = clientData.filter(item => !selected.includes(item.id));
+                    setClientData(updatedData);
+                    toast.success(`${selected.length} job group(s) deleted`);
                     setSelected([]);
                 }
                 break;
             case 'duplicate':
                 if (selected.length === 0) {
-                    toast.error('Please select publishers to duplicate');
+                    toast.error('Please select job groups to duplicate');
                 } else {
-                    const itemsToDuplicate = publisherData.filter(item => selected.includes(item.id));
+                    const itemsToDuplicate = clientData.filter(item => selected.includes(item.id));
                     const duplicatedItems = itemsToDuplicate.map(item => ({
                         ...item,
-                        id: Math.max(...publisherData.map(d => d.id)) + Math.random(),
-                        publisherName: `${item.publisherName} (Duplicate)`
+                        id: Math.max(...clientData.map(d => d.id)) + Math.random(),
+                        jobGroupName: `${item.jobGroupName} (Duplicate)`
                     }));
-                    setPublisherData(prev => [...prev, ...duplicatedItems]);
-                    toast.success(`${selected.length} publisher(s) duplicated`);
+                    setClientData(prev => [...prev, ...duplicatedItems]);
+                    toast.success(`${selected.length} job group(s) duplicated`);
                     setSelected([]);
-                }
-                break;
-            case 'click-logs':
-                if (selected.length === 1) {
-                    navigate('/dashboard/click-logs');
-                } else if (selected.length === 0) {
-                    toast.error('Please select a publisher to view click logs');
-                } else {
-                    toast.error('Please select only one publisher to view click logs');
-                }
-                break;
-            case 'daily-stats':
-                if (selected.length === 1) {
-                    toast.info('Daily stats view will be implemented');
-                } else if (selected.length === 0) {
-                    toast.error('Please select a publisher to view daily stats');
-                } else {
-                    toast.error('Please select only one publisher to view daily stats');
                 }
                 break;
             default:
@@ -356,7 +365,6 @@ const PublisherTable = () => {
         }
     };
 
-    // Add markup/markdown range filter in filterConfig
     const filterConfig = [
         {
             leftFilters: [
@@ -372,23 +380,10 @@ const PublisherTable = () => {
                         { value: 'deactivate', label: 'Deactivate' },
                         { value: 'clone', label: 'Clone' },
                         { value: 'delete', label: 'Delete' },
-                        { value: 'duplicate', label: 'Duplicate' },
-                        { value: 'click-logs', label: 'Click Logs' },
-                        { value: 'daily-stats', label: 'Daily Stats' }
+                        { value: 'duplicate', label: 'Duplicate' }
                     ],
                     onChange: handleActionChange
                 },
-                // {
-                //     type: 'select',
-                //     key: 'budgetRange',
-                //     placeholder: 'Budget Cap',
-                //     minWidth: 140,
-                //     options: [
-                //         { value: '0-1000', label: '$0 - $1K' },
-                //         { value: '1000-2000', label: '$1K - $2K' },
-                //         { value: '2000+', label: '$2K+' }
-                //     ]
-                // },
                 {
                     type: 'select',
                     key: 'margin',
@@ -398,15 +393,6 @@ const PublisherTable = () => {
                         { value: 'markup', label: 'Mark Up' },
                         { value: 'markdown', label: 'Mark Down' }
                     ]
-                }
-            ],
-            rightFilters: [
-                {
-                    type: 'dateRange',
-                    key: 'dateRange',
-                    placeholder: 'Date Range',
-                    minWidth: 200,
-                    defaultValue: '01-01-2024 to 12-31-2024'
                 },
                 {
                     type: 'button',
@@ -415,19 +401,28 @@ const PublisherTable = () => {
                     color: 'secondary',
                     onClick: () => {
                         if (selected.length === 0) {
-                            toast.error('Please select publishers to update budget settings');
+                            toast.error('Please select job groups to update budget settings');
                         } else {
                             setBudgetPopupOpen(true);
                         }
                     }
+                }
+            ],
+            rightFilters: [
+                {
+                    type: 'dateRange',
+                    key: 'dateRange',
+                    placeholder: 'Date Range',
+                    minWidth: 200,
+                    defaultValue: '01-01-2000 to 01-01-2020'
                 },
                 {
                     type: 'button',
-                    label: 'Add Publisher',
+                    label: 'Add Job Group',
                     icon: <AddSquare size="20" />,
                     variant: 'contained',
                     color: 'primary',
-                    onClick: () => navigate('/dashboard/publishers/publisher-form')
+                    onClick: () => navigate('/campaigns/job-group/job-group-form')
                 }
             ]
         },
@@ -438,40 +433,19 @@ const PublisherTable = () => {
                 },
                 {
                     type: 'search',
-                    placeholder: 'Search publishers...',
+                    placeholder: 'Search job groups...',
                     minWidth: 200
                 }
             ],
             rightFilters: [
                 {
-                    type: 'select',
+                    type: 'multiselect',
                     key: 'columns',
                     placeholder: 'Select Stats',
                     minWidth: 140,
-                    options: [
-                        { value: '', label: 'Default Stats' },
-                        { value: 'all', label: 'All Stats' },
-                        ...columnOptions
-                    ],
-                    onChange: (value) => {
-                        if (value === 'all') {
-                            setVisibleColumns(columns.map(col => col.id));
-                        } else if (value === '' || !value) {
-                            setVisibleColumns([
-                                'publisherName',
-                                'status',
-                                'budgetCap',
-                                'spend',
-                                'clicks',
-                                'validClicks',
-                                'invalidClicks',
-                                'markUpPercent',
-                                'markDownPercent'
-                            ]);
-                        } else {
-                            setVisibleColumns([value]);
-                        }
-                    }
+                    options: columnOptions,
+                    onChange: handleColumnSelectionChange,
+                    selectedValues: visibleColumns.filter(col => !defaultColumns.includes(col))
                 },
                 {
                     type: 'select',
@@ -496,12 +470,6 @@ const PublisherTable = () => {
                     ]
                 },
                 {
-                    type: 'button',
-                    label: 'Apply Filters',
-                    icon: <Filter size="20" />,
-                    variant: 'outlined'
-                },
-                {
                     type: 'select',
                     key: 'rowsPerPage',
                     placeholder: 'Rows per page',
@@ -517,58 +485,22 @@ const PublisherTable = () => {
         }
     ];
 
-    // Filter columns based on selection
-    const displayColumns = visibleColumns.length > 0
-        ? columns.filter(column => visibleColumns.includes(column.id))
-        : columns.filter(column => [
-            'publisherName',
-            'status',
-            'budgetCap',
-            'spend',
-            'clicks',
-            'validClicks',
-            'invalidClicks',
-            'markUpPercent',
-            'markDownPercent'
-        ].includes(column.id));
+    // Filter columns based on visible columns selection
+    const displayColumns = columns.filter(column => visibleColumns.includes(column.id));
 
     const customFilter = (row, filters) => {
-        // Budget range filter
-        if (filters.budgetRange) {
-            if (filters.budgetRange.endsWith('+')) {
-                const min = parseInt(filters.budgetRange.replace('+', ''));
-                if (row.budgetCap < min) return false;
-            } else {
-                const [min, max] = filters.budgetRange.split('-').map(Number);
-                if (row.budgetCap < min || row.budgetCap > max) return false;
-            }
-        }
-
-        // Click range filter
-        if (filters.clickRange) {
-            if (filters.clickRange.endsWith('+')) {
-                const min = parseInt(filters.clickRange.replace('+', ''));
-                if (row.clicks < min) return false;
-            } else {
-                const [min, max] = filters.clickRange.split('-').map(Number);
-                if (row.clicks < min || row.clicks > max) return false;
-            }
-        }
-
-        // Markup range filter
-        if (filters.markupRange) {
-            if (filters.markupRange.endsWith('+')) {
-                const min = parseInt(filters.markupRange.replace('+', ''));
-                if (row.markUpPercent < min) return false;
-            } else {
-                const [min, max] = filters.markupRange.split('-').map(Number);
-                if (row.markUpPercent < min || row.markUpPercent > max) return false;
-            }
-        }
-
         // Status filter
         if (filters.status && row.status !== filters.status) {
             return false;
+        }
+
+        // Margin filter
+        if (filters.margin) {
+            if (filters.margin === 'markup') {
+                if (row.markup <= 0) return false;
+            } else if (filters.margin === 'markdown') {
+                if (row.markdown <= 0) return false;
+            }
         }
 
         return true;
@@ -581,16 +513,17 @@ const PublisherTable = () => {
     return (
         <>
             <DynamicTable
-                data={publisherData}
+                data={clientData}
                 columns={displayColumns}
                 filterConfig={filterConfig}
                 customFilter={customFilter}
                 onRowSelect={handleRowSelect}
                 searchEnabled={true}
-                searchFields={['publisherName']}
-                title="Publishers"
+                searchFields={['jobGroupName']}
+                title="Job Groups"
                 selectable={true}
                 actionsEnabled={false}
+                rowActions={rowActions}
                 recordsFoundText="Records Found"
             />
 
@@ -604,7 +537,7 @@ const PublisherTable = () => {
                 <DialogTitle>
                     Update Budget Settings
                     <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        Updating budget settings for {selected.length} selected publisher(s)
+                        Updating budget settings for {selected.length} selected job group(s)
                     </Typography>
                 </DialogTitle>
                 
@@ -641,7 +574,7 @@ const PublisherTable = () => {
                             type="number"
                             value={budgetSettings.budgetTarget}
                             onChange={(e) => setBudgetSettings(prev => ({ ...prev, budgetTarget: e.target.value }))}
-                            helperText="Total budget allocation for the publisher"
+                            helperText="Total budget allocation for the job group"
                             inputProps={{ min: 0, step: 0.01 }}
                         />
 
@@ -682,4 +615,4 @@ const PublisherTable = () => {
     );
 };
 
-export default PublisherTable;
+export default JobGroupTable;

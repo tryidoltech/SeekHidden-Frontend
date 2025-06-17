@@ -321,7 +321,21 @@ const ClientTable = () => {
       disablePadding: true,
       editable: true,
       type: 'editableText',
-      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value)
+      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value),
+      render: (value, row) => (
+        <span
+          onClick={() => navigate('/campaigns')}
+          style={{
+            color: '#1976d2',
+            cursor: 'pointer',
+            textDecoration: 'underline'
+          }}
+          onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
+          onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
+        >
+          {value}
+        </span>
+      )
     },
     {
       id: 'clientType',
@@ -537,19 +551,19 @@ const ClientTable = () => {
     {
       label: 'View Campaigns',
       onClick: (row) => {
-        navigate('/dashboard/campaigns', { state: { clientId: row.id } });
+        navigate('/campaigns', { state: { clientId: row.id } });
       }
     },
     {
       label: 'View Job Groups',
       onClick: (row) => {
-        navigate('/dashboard/job-group', { state: { clientId: row.id } });
+        navigate('/campaigns/job-group', { state: { clientId: row.id } });
       }
     },
     {
       label: 'View Publishers',
       onClick: (row) => {
-        navigate('/dashboard/publishers', { state: { clientId: row.id } });
+        navigate('/campaigns/job-group/publishers', { state: { clientId: row.id } });
       }
     }
   ];
@@ -562,7 +576,7 @@ const ClientTable = () => {
       case 'edit':
         if (selected.length === 1) {
           const selectedItem = clientData.find(item => item.id === selected[0]);
-          navigate(`/dashboard/clients/add-client`, {
+          navigate(`/clients/add-client`, {
             state: { client: selectedItem, mode: 'edit' }
           });
         } else if (selected.length === 0) {
@@ -709,7 +723,7 @@ const ClientTable = () => {
           icon: <AddSquare size="20" />,
           variant: 'contained',
           color: 'primary',
-          onClick: () => navigate('/dashboard/clients/add-client')
+          onClick: () => navigate('/clients/add-client')
         }
       ]
     },

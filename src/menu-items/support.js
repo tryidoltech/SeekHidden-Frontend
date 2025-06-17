@@ -149,7 +149,7 @@ const support = {
       id: 'job stats',
       title: 'Job Stats',
       type: 'item',
-      url: 'dashboard/job-status',
+      url: 'job-status',
       icon: icons.roadmap,
 
     }
@@ -158,7 +158,7 @@ const support = {
       id: 'conversion tracking',
       title: 'Conversion Tracking',
       type: 'item',
-      url: 'dashboard/conversion-tracking',
+      url: 'conversion-tracking',
       icon: icons.roadmap,
   
     }
@@ -167,7 +167,7 @@ const support = {
       id: 'publisher management',
       title: 'Publisher Management',
       type: 'item',
-      url: 'dashboard/publisher-management',
+      url: 'publisher-management',
       icon: icons.roadmap,
     
     }
