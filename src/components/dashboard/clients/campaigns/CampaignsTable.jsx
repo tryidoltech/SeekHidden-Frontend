@@ -356,9 +356,9 @@ const CampaignsTable = () => {
         }
 
         // Update selected campaigns with new budget settings
-        const updatedData = campaignData.map(item => 
-            selected.includes(item.id) ? { 
-                ...item, 
+        const updatedData = campaignData.map(item =>
+            selected.includes(item.id) ? {
+                ...item,
                 budgetCap: parseFloat(budgetSettings.budgetTarget),
                 frequency: budgetSettings.frequency,
                 // Add pacing and threshold to the data model if needed
@@ -366,10 +366,10 @@ const CampaignsTable = () => {
                 threshold: parseFloat(budgetSettings.threshold)
             } : item
         );
-        
+
         setCampaignData(updatedData);
         toast.success(`Budget settings updated for ${selected.length} campaign(s)`);
-        
+
         // Reset and close popup
         setBudgetSettings({
             pacing: '',
@@ -478,7 +478,7 @@ const CampaignsTable = () => {
             type: 'editableCurrency',
             currency: 'USD',
             editable: true,
-            onUpdate: (id, value) => handleFieldUpdate(id, 'budgetCap', value)
+            customEditHandler: (row, columnId) => setBudgetPopupOpen(true)
         },
         {
             id: 'advertiserName',
@@ -666,6 +666,12 @@ const CampaignsTable = () => {
     // Define row actions for the More menu
     const rowActions = [
         {
+            label: 'View Client Stats',
+            onClick: (row) => {
+                navigate('/', { state: { campaignId: row.id } });
+            }
+        },
+        {
             label: 'View Job Groups',
             onClick: (row) => {
                 navigate('/campaigns/job-group', { state: { campaignId: row.id } });
@@ -675,24 +681,6 @@ const CampaignsTable = () => {
             label: 'View Publishers',
             onClick: (row) => {
                 navigate('/campaigns/job-group/publishers', { state: { campaignId: row.id } });
-            }
-        },
-        {
-            label: 'Click Logs',
-            onClick: (row) => {
-                navigate('/click-logs', { state: { campaignId: row.id } });
-            }
-        },
-        {
-            label: 'Daily Stats',
-            onClick: (row) => {
-                toast.info('Daily stats view will be implemented');
-            }
-        },
-        {
-            label: 'Inspect Feed',
-            onClick: (row) => {
-                navigate('/inspect-feed', { state: { campaignId: row.id } });
             }
         }
     ];
@@ -962,8 +950,8 @@ const CampaignsTable = () => {
             />
 
             {/* Budget Settings Popup */}
-            <Dialog 
-                open={budgetPopupOpen} 
+            <Dialog
+                open={budgetPopupOpen}
                 onClose={() => setBudgetPopupOpen(false)}
                 maxWidth="sm"
                 fullWidth
@@ -974,7 +962,7 @@ const CampaignsTable = () => {
                         Updating budget settings for {selected.length} selected campaign(s)
                     </Typography>
                 </DialogTitle>
-                
+
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
                         <FormControl fullWidth>
@@ -1030,13 +1018,13 @@ const CampaignsTable = () => {
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3 }}>
-                    <Button 
+                    <Button
                         onClick={() => setBudgetPopupOpen(false)}
                         variant="outlined"
                     >
                         Cancel
                     </Button>
-                    <Button 
+                    <Button
                         onClick={handleBudgetUpdate}
                         variant="contained"
                         color="primary"

@@ -84,9 +84,9 @@ const PublisherTable = () => {
         }
 
         // Update selected publishers with new budget settings
-        const updatedData = publisherData.map(item => 
-            selected.includes(item.id) ? { 
-                ...item, 
+        const updatedData = publisherData.map(item =>
+            selected.includes(item.id) ? {
+                ...item,
                 budgetCap: parseFloat(budgetSettings.budgetTarget),
                 frequency: budgetSettings.frequency,
                 // Add pacing and threshold to the data model if needed
@@ -94,10 +94,10 @@ const PublisherTable = () => {
                 threshold: parseFloat(budgetSettings.threshold)
             } : item
         );
-        
+
         setPublisherData(updatedData);
         toast.success(`Budget settings updated for ${selected.length} publisher(s)`);
-        
+
         // Reset and close popup
         setBudgetSettings({
             pacing: '',
@@ -176,7 +176,7 @@ const PublisherTable = () => {
             type: 'editableCurrency',
             currency: 'USD',
             editable: true,
-            onUpdate: (id, value) => handleFieldUpdate(id, 'budgetCap', value)
+            customEditHandler: (row, columnId) => setBudgetPopupOpen(true)
         },
         {
             id: 'spend',
@@ -255,15 +255,21 @@ const PublisherTable = () => {
     // Define row actions for the More menu
     const rowActions = [
         {
-            label: 'Click Logs',
+            label: 'View Client Stats',
             onClick: (row) => {
-                navigate('/click-logs', { state: { publisherId: row.id } });
+                navigate('/', { state: { campaignId: row.id } });
             }
         },
         {
-            label: 'Daily Stats',
+            label: 'View Campaigns',
             onClick: (row) => {
-                toast.info('Daily stats view will be implemented');
+                navigate('/campaigns', { state: { clientId: row.id } });
+            }
+        },
+        {
+            label: 'View Job Groups',
+            onClick: (row) => {
+                navigate('/campaigns/job-group', { state: { campaignId: row.id } });
             }
         }
     ];
@@ -528,8 +534,8 @@ const PublisherTable = () => {
             />
 
             {/* Budget Settings Popup */}
-            <Dialog 
-                open={budgetPopupOpen} 
+            <Dialog
+                open={budgetPopupOpen}
                 onClose={() => setBudgetPopupOpen(false)}
                 maxWidth="sm"
                 fullWidth
@@ -540,7 +546,7 @@ const PublisherTable = () => {
                         Updating budget settings for {selected.length} selected publisher(s)
                     </Typography>
                 </DialogTitle>
-                
+
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
                         <FormControl fullWidth>
@@ -596,13 +602,13 @@ const PublisherTable = () => {
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3 }}>
-                    <Button 
+                    <Button
                         onClick={() => setBudgetPopupOpen(false)}
                         variant="outlined"
                     >
                         Cancel
                     </Button>
-                    <Button 
+                    <Button
                         onClick={handleBudgetUpdate}
                         variant="contained"
                         color="primary"
