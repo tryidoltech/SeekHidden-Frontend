@@ -18,8 +18,10 @@ import {
   Chip,
   IconButton,
   InputAdornment,
+  Divider,
+  Alert,
 } from '@mui/material';
-import { ArrowLeft2, AddSquare, Calendar, Edit } from 'iconsax-react';
+import { ArrowLeft2, AddSquare, Calendar, Edit, Trash, Add } from 'iconsax-react';
 import { useNavigate } from 'react-router';
 
 // Import the DynamicTable component (assuming it's available)
@@ -199,19 +201,28 @@ const JobTable = ({ data, onSelectionChange }) => {
 const JobGroupForm = () => {
   const navigate = useNavigate();
 
-  // Form state
+  // Enhanced form state with filter rules
   const [formData, setFormData] = useState({
-    build: '',
-    operator: '',
-    value: '',
     jobGroupName: '',
     jobGroupType: '',
     startDate: '',
     endDate: ''
   });
 
+  // Filter rules state
+  const [filterRules, setFilterRules] = useState([
+    {
+      id: 1,
+      build: '',
+      operator: '',
+      value: '',
+      logicalOperator: 'AND' // AND, OR
+    }
+  ]);
+
   const [totalJobCount, setTotalJobCount] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
 
   // Rule options state
   const [ruleOptions, setRuleOptions] = useState({
@@ -229,17 +240,145 @@ const JobGroupForm = () => {
   const [threshold, setThreshold] = useState('');
   const [frequencyEnabled, setFrequencyEnabled] = useState(false);
 
-  // Sample table data - updated with markUp and markDown
-  const [tableData] = useState([
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '100.00', bid: '2.50', markUp: '15.0', markDown: '5.0', minimumBid: '1.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '200.00', bid: '3.00', markUp: '20.0', markDown: '3.0', minimumBid: '1.50 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '150.00', bid: '2.75', markUp: '12.5', markDown: '4.0', minimumBid: '1.25 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '300.00', bid: '4.00', markUp: '25.0', markDown: '7.0', minimumBid: '2.00 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '175.00', bid: '2.25', markUp: '18.0', markDown: '6.0', minimumBid: '1.10 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '250.00', bid: '3.50', markUp: '22.0', markDown: '4.5', minimumBid: '1.75 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '120.00', bid: '2.00', markUp: '10.0', markDown: '2.5', minimumBid: '0.90 USD' },
-    { publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '400.00', bid: '5.00', markUp: '30.0', markDown: '8.0', minimumBid: '2.50 USD' }
+  // Sample table data - this would come from API
+  const [allJobs] = useState([
+    { id: 1, publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '100.00', bid: '2.50', markUp: '15.0', markDown: '5.0', minimumBid: '1.00 USD', country: 'US', category: 'Finance' },
+    { id: 2, publisherName: 'ELJ-Europe-EUR-CPC', type: 'CPC', budget: '200.00', bid: '3.00', markUp: '20.0', markDown: '3.0', minimumBid: '1.50 USD', country: 'DE', category: 'Tech' },
+    { id: 3, publisherName: 'ELJ-Asia-USD-CPA', type: 'CPA', budget: '150.00', bid: '2.75', markUp: '12.5', markDown: '4.0', minimumBid: '1.25 USD', country: 'JP', category: 'Finance' },
+    { id: 4, publisherName: 'ELJ-UK-GBP-CPC', type: 'CPC', budget: '300.00', bid: '4.00', markUp: '25.0', markDown: '7.0', minimumBid: '2.00 USD', country: 'UK', category: 'Healthcare' },
+    { id: 5, publisherName: 'ELJ-Canada-CAD-CPA', type: 'CPA', budget: '175.00', bid: '2.25', markUp: '18.0', markDown: '6.0', minimumBid: '1.10 USD', country: 'CA', category: 'Education' },
+    { id: 6, publisherName: 'ELJ-Australia-AUD-CPC', type: 'CPC', budget: '250.00', bid: '3.50', markUp: '22.0', markDown: '4.5', minimumBid: '1.75 USD', country: 'AU', category: 'Tech' },
+    { id: 7, publisherName: 'ELJ-Brazil-BRL-CPA', type: 'CPA', budget: '120.00', bid: '2.00', markUp: '10.0', markDown: '2.5', minimumBid: '0.90 USD', country: 'BR', category: 'Finance' },
+    { id: 8, publisherName: 'ELJ-India-INR-CPC', type: 'CPC', budget: '400.00', bid: '5.00', markUp: '30.0', markDown: '8.0', minimumBid: '2.50 USD', country: 'IN', category: 'Education' }
   ]);
+
+  // Build options for dropdown
+  const buildOptions = [
+    { value: 'publisherName', label: 'Publisher Name' },
+    { value: 'type', label: 'Type' },
+    { value: 'budget', label: 'Budget' },
+    { value: 'bid', label: 'Bid' },
+    { value: 'country', label: 'Country' },
+    { value: 'category', label: 'Category' }
+  ];
+
+  // Operator options
+  const operatorOptions = [
+    { value: 'equal', label: 'Equal' },
+    { value: 'notEqual', label: 'Not Equal' },
+    { value: 'moreThan', label: 'More than' },
+    { value: 'lessThan', label: 'Less than' },
+    { value: 'between', label: 'Between' },
+    { value: 'contains', label: 'Contains' },
+    { value: 'notContains', label: 'Not Contains' },
+    { value: 'beginsWith', label: 'Begins with' },
+    { value: 'notBeginsWith', label: 'Not begins with' },
+    { value: 'moreThanOrEqual', label: 'More than or Equal to' },
+    { value: 'lessThanOrEqual', label: 'Less than or Equal to' }
+  ];
+
+  // Function to evaluate a single rule
+  const evaluateRule = (job, rule) => {
+    if (!rule.build || !rule.operator || rule.value === '') return true;
+
+    const jobValue = job[rule.build];
+    const ruleValue = rule.value;
+
+    switch (rule.operator) {
+      case 'equal':
+        return jobValue?.toString().toLowerCase() === ruleValue.toLowerCase();
+      case 'notEqual':
+        return jobValue?.toString().toLowerCase() !== ruleValue.toLowerCase();
+      case 'moreThan':
+        return parseFloat(jobValue) > parseFloat(ruleValue);
+      case 'lessThan':
+        return parseFloat(jobValue) < parseFloat(ruleValue);
+      case 'moreThanOrEqual':
+        return parseFloat(jobValue) >= parseFloat(ruleValue);
+      case 'lessThanOrEqual':
+        return parseFloat(jobValue) <= parseFloat(ruleValue);
+      case 'contains':
+        return jobValue?.toString().toLowerCase().includes(ruleValue.toLowerCase());
+      case 'notContains':
+        return !jobValue?.toString().toLowerCase().includes(ruleValue.toLowerCase());
+      case 'beginsWith':
+        return jobValue?.toString().toLowerCase().startsWith(ruleValue.toLowerCase());
+      case 'notBeginsWith':
+        return !jobValue?.toString().toLowerCase().startsWith(ruleValue.toLowerCase());
+      case 'between':
+        const [min, max] = ruleValue.split(',').map(v => parseFloat(v.trim()));
+        const numValue = parseFloat(jobValue);
+        return numValue >= min && numValue <= max;
+      default:
+        return true;
+    }
+  };
+
+  // Function to apply all filter rules
+  const applyFilterRules = () => {
+    if (filterRules.length === 0 || filterRules.every(rule => !rule.build)) {
+      setFilteredJobs(allJobs);
+      setTotalJobCount(allJobs.length);
+      return;
+    }
+
+    const filtered = allJobs.filter(job => {
+      let result = true;
+      let currentResult = true;
+
+      for (let i = 0; i < filterRules.length; i++) {
+        const rule = filterRules[i];
+        const ruleResult = evaluateRule(job, rule);
+
+        if (i === 0) {
+          result = ruleResult;
+        } else {
+          const prevRule = filterRules[i - 1];
+          if (prevRule.logicalOperator === 'AND') {
+            result = result && ruleResult;
+          } else if (prevRule.logicalOperator === 'OR') {
+            result = result || ruleResult;
+          }
+        }
+      }
+
+      return result;
+    });
+
+    setFilteredJobs(filtered);
+    setTotalJobCount(filtered.length);
+  };
+
+  // Handle filter rule changes
+  const handleFilterRuleChange = (index, field, value) => {
+    const updatedRules = filterRules.map((rule, i) => {
+      if (i === index) {
+        return { ...rule, [field]: value };
+      }
+      return rule;
+    });
+    setFilterRules(updatedRules);
+  };
+
+  // Add new filter rule
+  const handleAddRule = () => {
+    const newRule = {
+      id: Date.now(),
+      build: '',
+      operator: '',
+      value: '',
+      logicalOperator: 'AND'
+    };
+    setFilterRules([...filterRules, newRule]);
+  };
+
+  // Remove filter rule
+  const handleRemoveRule = (index) => {
+    if (filterRules.length > 1) {
+      const updatedRules = filterRules.filter((_, i) => i !== index);
+      setFilterRules(updatedRules);
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -259,25 +398,25 @@ const JobGroupForm = () => {
     navigate(-1);
   };
 
-  const handleAddRule = () => {
-    console.log('Add Rule clicked');
-  };
-
   const handleApplyFilters = () => {
-    console.log('Apply Filters clicked');
+    applyFilterRules();
   };
 
   const handleCancel = () => {
     // Reset form
     setFormData({
-      build: '',
-      operator: '',
-      value: '',
       jobGroupName: '',
       jobGroupType: '',
       startDate: '',
       endDate: ''
     });
+    setFilterRules([{
+      id: 1,
+      build: '',
+      operator: '',
+      value: '',
+      logicalOperator: 'AND'
+    }]);
     setRuleOptions({
       convertToCPC: false,
       expansionEnable: false,
@@ -285,11 +424,19 @@ const JobGroupForm = () => {
       scheduleOnCertainDays: false,
       limitNumberOfJobs: false
     });
+    setFilteredJobs([]);
+    setTotalJobCount(0);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', { formData, ruleOptions, selectedRows });
+    console.log('Form submitted:', { 
+      formData, 
+      filterRules, 
+      ruleOptions, 
+      selectedRows,
+      filteredJobs: filteredJobs.length 
+    });
     navigate(-1);
   };
 
@@ -315,67 +462,104 @@ const JobGroupForm = () => {
             Job Filters
           </Typography>
           
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Build</InputLabel>
-                <Select
-                  value={formData.build}
-                  onChange={(e) => handleInputChange('build', e.target.value)}
-                  label="Build"
-                >
-                  <MenuItem value="">Select an option</MenuItem>
-                  <MenuItem value="option1">Option 1</MenuItem>
-                  <MenuItem value="option2">Option 2</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            
-            <Grid item xs={12} sm={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Operator</InputLabel>
-                <Select
-                  value={formData.operator}
-                  onChange={(e) => handleInputChange('operator', e.target.value)}
-                  label="Operator"
-                >
-                  <MenuItem value="">Select an option</MenuItem>
-                  <MenuItem value="equal">Equal</MenuItem>
-                  <MenuItem value="notEqual">Not Equal</MenuItem>
-                  <MenuItem value="moreThan">More than</MenuItem>
-                  <MenuItem value="lessThan">Less than</MenuItem>
-                  <MenuItem value="between">Between</MenuItem>
-                  <MenuItem value="inContains">In/Contains</MenuItem>
-                  <MenuItem value="notInContains">Not in/Contains</MenuItem>
-                  <MenuItem value="beginsWith">Begins with</MenuItem>
-                  <MenuItem value="notBeginsWith">Not begins with</MenuItem>
-                  <MenuItem value="moreThanOrEqual">More than or Equal to</MenuItem>
-                  <MenuItem value="lessThanOrEqual">Less than or Equal to</MenuItem>
-                  <MenuItem value="searchString">Search String</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Value"
-                placeholder="Select an option"
-                value={formData.value}
-                onChange={(e) => handleInputChange('value', e.target.value)}
-              />
-            </Grid>
-          </Grid>
+          {filterRules.map((rule, index) => (
+            <Box key={rule.id}>
+              {index > 0 && (
+                <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+                  <FormControl size="small" sx={{ minWidth: 80 }}>
+                    <Select
+                      value={filterRules[index - 1].logicalOperator}
+                      onChange={(e) => handleFilterRuleChange(index - 1, 'logicalOperator', e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="AND">AND</MenuItem>
+                      <MenuItem value="OR">OR</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <Divider sx={{ flexGrow: 1, mx: 2 }} />
+                </Box>
+              )}
+              
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={3}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Build</InputLabel>
+                    <Select
+                      value={rule.build}
+                      onChange={(e) => handleFilterRuleChange(index, 'build', e.target.value)}
+                      label="Build"
+                    >
+                      <MenuItem value="">Select field</MenuItem>
+                      {buildOptions.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                
+                <Grid item xs={12} sm={3}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Operator</InputLabel>
+                    <Select
+                      value={rule.operator}
+                      onChange={(e) => handleFilterRuleChange(index, 'operator', e.target.value)}
+                      label="Operator"
+                    >
+                      <MenuItem value="">Select operator</MenuItem>
+                      {operatorOptions.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label="Value"
+                    placeholder={rule.operator === 'between' ? 'min,max (e.g., 10,50)' : 'Enter value'}
+                    value={rule.value}
+                    onChange={(e) => handleFilterRuleChange(index, 'value', e.target.value)}
+                  />
+                </Grid>
+                
+                <Grid item xs={12} sm={2}>
+                  {filterRules.length > 1 && (
+                    <IconButton 
+                      onClick={() => handleRemoveRule(index)}
+                      color="error"
+                      size="small"
+                    >
+                      <Trash size="20" />
+                    </IconButton>
+                  )}
+                </Grid>
+              </Grid>
+            </Box>
+          ))}
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              Total Job Count: {totalJobCount}
-            </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Total Job Count: {totalJobCount}
+              </Typography>
+              {filteredJobs.length > 0 && filteredJobs.length < allJobs.length && (
+                <Chip 
+                  label={`${filteredJobs.length} of ${allJobs.length} jobs match`} 
+                  size="small" 
+                  color="primary" 
+                />
+              )}
+            </Box>
             <Box>
               <Button
                 variant="outlined"
-                startIcon={<AddSquare size="20" />}
+                startIcon={<Add size="20" />}
                 onClick={handleAddRule}
                 sx={{ mr: 2, textTransform: 'none' }}
               >
@@ -394,6 +578,25 @@ const JobGroupForm = () => {
               </Button>
             </Box>
           </Box>
+
+          {/* Filter Summary */}
+          {filterRules.some(rule => rule.build) && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              <Typography variant="body2">
+                <strong>Active Filters:</strong> {
+                  filterRules
+                    .filter(rule => rule.build)
+                    .map((rule, index) => {
+                      const buildLabel = buildOptions.find(opt => opt.value === rule.build)?.label || rule.build;
+                      const operatorLabel = operatorOptions.find(opt => opt.value === rule.operator)?.label || rule.operator;
+                      const prefix = index > 0 ? ` ${filterRules[index - 1].logicalOperator} ` : '';
+                      return `${prefix}${buildLabel} ${operatorLabel} "${rule.value}"`;
+                    })
+                    .join('')
+                }
+              </Typography>
+            </Alert>
+          )}
         </Paper>
 
         {/* Job Group Details */}
@@ -587,9 +790,9 @@ const JobGroupForm = () => {
           </Grid>
         </Paper>
 
-        {/* Job Table */}
+        {/* Job Table - now uses filtered data */}
         <JobTable 
-          data={tableData} 
+          data={filteredJobs.length > 0 ? filteredJobs : allJobs} 
           onSelectionChange={setSelectedRows}
         />
 
