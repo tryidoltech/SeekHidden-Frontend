@@ -37,7 +37,7 @@ const JobGroupTable = () => {
 
     // Add state for visible columns - initialize with default columns
     const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
-    
+
     // Add state for budget popup
     const [budgetPopupOpen, setBudgetPopupOpen] = useState(false);
     const [budgetSettings, setBudgetSettings] = useState({
@@ -57,14 +57,14 @@ const JobGroupTable = () => {
         { id: 7, jobGroupName: 'Creative Solutions', status: 'paused', budgetCap: 1800.00, markup: 16.0, markdown: 4.0, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
         { id: 8, jobGroupName: 'Data Insights', status: 'inactive', budgetCap: 2200.00, markup: 14.0, markdown: 6.0, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
     ]);
-    
+
     // Handle field updates - now updates the actual data
     const handleFieldUpdate = (id, field, value) => {
         // Update local state
-        setClientData(prev => prev.map(item => 
+        setClientData(prev => prev.map(item =>
             item.id === id ? { ...item, [field]: value } : item
         ));
-        
+
         // Here you would typically make an API call to update the data
         console.log(`Updating ${field} for ID ${id} to ${value}`);
         toast.success(`${field} updated successfully`);
@@ -83,9 +83,9 @@ const JobGroupTable = () => {
         }
 
         // Update selected job groups with new budget settings
-        const updatedData = clientData.map(item => 
-            selected.includes(item.id) ? { 
-                ...item, 
+        const updatedData = clientData.map(item =>
+            selected.includes(item.id) ? {
+                ...item,
                 budgetCap: parseFloat(budgetSettings.budgetTarget),
                 frequency: budgetSettings.frequency,
                 // Add pacing and threshold to the data model if needed
@@ -93,10 +93,10 @@ const JobGroupTable = () => {
                 threshold: parseFloat(budgetSettings.threshold)
             } : item
         );
-        
+
         setClientData(updatedData);
         toast.success(`Budget settings updated for ${selected.length} job group(s)`);
-        
+
         // Reset and close popup
         setBudgetSettings({
             pacing: '',
@@ -180,7 +180,7 @@ const JobGroupTable = () => {
             type: 'editableCurrency',
             currency: 'USD',
             editable: true,
-            onUpdate: (id, value) => handleFieldUpdate(id, 'budgetCap', value)
+            customEditHandler: (row, columnId) => setBudgetPopupOpen(true)
         },
         {
             id: 'markup',
@@ -249,21 +249,21 @@ const JobGroupTable = () => {
     // Define row actions for the More menu
     const rowActions = [
         {
+            label: 'View Client Stats',
+            onClick: (row) => {
+                navigate('/', { state: { campaignId: row.id } });
+            }
+        },
+        {
+            label: 'View Campaigns',
+            onClick: (row) => {
+                navigate('/campaigns', { state: { clientId: row.id } });
+            }
+        },
+        {
             label: 'View Publishers',
             onClick: (row) => {
                 navigate('/campaigns/job-group/publishers', { state: { jobGroupId: row.id } });
-            }
-        },
-        {
-            label: 'Click Logs',
-            onClick: (row) => {
-                navigate('/click-logs', { state: { jobGroupId: row.id } });
-            }
-        },
-        {
-            label: 'Daily Stats',
-            onClick: (row) => {
-                toast.info('Daily stats view will be implemented');
             }
         }
     ];
@@ -275,8 +275,8 @@ const JobGroupTable = () => {
             case 'edit':
                 if (selected.length === 1) {
                     const selectedItem = clientData.find(item => item.id === selected[0]);
-                    navigate(`/campaigns/job-group/job-group-form`, { 
-                        state: { jobGroup: selectedItem, mode: 'edit' } 
+                    navigate(`/campaigns/job-group/job-group-form`, {
+                        state: { jobGroup: selectedItem, mode: 'edit' }
                     });
                 } else if (selected.length === 0) {
                     toast.error('Please select a job group to edit');
@@ -288,7 +288,7 @@ const JobGroupTable = () => {
                 if (selected.length === 0) {
                     toast.error('Please select job groups to enable');
                 } else {
-                    const updatedData = clientData.map(item => 
+                    const updatedData = clientData.map(item =>
                         selected.includes(item.id) ? { ...item, status: 'active' } : item
                     );
                     setClientData(updatedData);
@@ -300,7 +300,7 @@ const JobGroupTable = () => {
                 if (selected.length === 0) {
                     toast.error('Please select job groups to pause');
                 } else {
-                    const updatedData = clientData.map(item => 
+                    const updatedData = clientData.map(item =>
                         selected.includes(item.id) ? { ...item, status: 'paused' } : item
                     );
                     setClientData(updatedData);
@@ -312,7 +312,7 @@ const JobGroupTable = () => {
                 if (selected.length === 0) {
                     toast.error('Please select job groups to deactivate');
                 } else {
-                    const updatedData = clientData.map(item => 
+                    const updatedData = clientData.map(item =>
                         selected.includes(item.id) ? { ...item, status: 'inactive' } : item
                     );
                     setClientData(updatedData);
@@ -528,8 +528,8 @@ const JobGroupTable = () => {
             />
 
             {/* Budget Settings Popup */}
-            <Dialog 
-                open={budgetPopupOpen} 
+            <Dialog
+                open={budgetPopupOpen}
                 onClose={() => setBudgetPopupOpen(false)}
                 maxWidth="sm"
                 fullWidth
@@ -540,7 +540,7 @@ const JobGroupTable = () => {
                         Updating budget settings for {selected.length} selected job group(s)
                     </Typography>
                 </DialogTitle>
-                
+
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
                         <FormControl fullWidth>
@@ -596,13 +596,13 @@ const JobGroupTable = () => {
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3 }}>
-                    <Button 
+                    <Button
                         onClick={() => setBudgetPopupOpen(false)}
                         variant="outlined"
                     >
                         Cancel
                     </Button>
-                    <Button 
+                    <Button
                         onClick={handleBudgetUpdate}
                         variant="contained"
                         color="primary"
