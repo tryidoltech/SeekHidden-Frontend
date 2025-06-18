@@ -16,7 +16,8 @@ import {
     Select,
     MenuItem,
     Box,
-    Typography
+    Typography,
+    Checkbox
 } from '@mui/material';
 
 const PublisherTable = () => {
@@ -46,6 +47,14 @@ const PublisherTable = () => {
         threshold: '',
         budgetTarget: '',
         frequency: ''
+    });
+
+    // Add state for margin popup
+    const [marginPopupOpen, setMarginPopupOpen] = useState(false);
+    const [marginSettings, setMarginSettings] = useState({
+        markUpPercent: '',
+        markDownPercent: '',
+        applyToAll: false
     });
 
     const [publisherData, setPublisherData] = useState([
@@ -106,6 +115,46 @@ const PublisherTable = () => {
             frequency: ''
         });
         setBudgetPopupOpen(false);
+        setSelected([]);
+    };
+
+    // Add margin update handler
+    const handleMarginUpdate = () => {
+        if (selected.length === 0) {
+            toast.error('Please select publishers to update margin settings');
+            return;
+        }
+
+        if (!marginSettings.markUpPercent && !marginSettings.markDownPercent) {
+            toast.error('Please enter at least one margin percentage');
+            return;
+        }
+
+        // Update selected publishers with new margin settings
+        const updatedData = publisherData.map(item => {
+            if (selected.includes(item.id)) {
+                const updates = {};
+                if (marginSettings.markUpPercent) {
+                    updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
+                }
+                if (marginSettings.markDownPercent) {
+                    updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
+                }
+                return { ...item, ...updates };
+            }
+            return item;
+        });
+
+        setPublisherData(updatedData);
+        toast.success(`Margin settings updated for ${selected.length} publisher(s)`);
+
+        // Reset and close popup
+        setMarginSettings({
+            markUpPercent: '',
+            markDownPercent: '',
+            applyToAll: false
+        });
+        setMarginPopupOpen(false);
         setSelected([]);
     };
 
@@ -213,6 +262,14 @@ const PublisherTable = () => {
             numeric: true,
             type: 'editablePercentage',
             editable: true,
+            customEditHandler: (row, columnId) => {
+                // Pre-fill the popup with current values from the selected row
+                setMarginSettings(prev => ({
+                    ...prev,
+                    markUpPercent: row.markUpPercent?.toString() || ''
+                }));
+                setMarginPopupOpen(true);
+            },
             onUpdate: (id, value) => handleFieldUpdate(id, 'markUpPercent', value),
             render: (value, row) => (
                 <span style={{ color: '#4caf50', fontWeight: 500 }}>
@@ -226,6 +283,14 @@ const PublisherTable = () => {
             numeric: true,
             type: 'editablePercentage',
             editable: true,
+            customEditHandler: (row, columnId) => {
+                // Pre-fill the popup with current values from the selected row
+                setMarginSettings(prev => ({
+                    ...prev,
+                    markDownPercent: row.markDownPercent?.toString() || ''
+                }));
+                setMarginPopupOpen(true);
+            },
             onUpdate: (id, value) => handleFieldUpdate(id, 'markDownPercent', value),
             render: (value, row) => (
                 <span style={{ color: '#f44336', fontWeight: 500 }}>
@@ -412,7 +477,20 @@ const PublisherTable = () => {
                             setBudgetPopupOpen(true);
                         }
                     }
-                }
+                },
+                // {
+                //     type: 'button',
+                //     label: 'Update Margin',
+                //     variant: 'outlined',
+                //     color: 'secondary',
+                //     onClick: () => {
+                //         if (selected.length === 0) {
+                //             toast.error('Please select publishers to update margin settings');
+                //         } else {
+                //             setMarginPopupOpen(true);
+                //         }
+                //     }
+                // }
             ],
             rightFilters: [
                 {
@@ -614,6 +692,71 @@ const PublisherTable = () => {
                         color="primary"
                     >
                         Update Budget Settings
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Margin Settings Popup */}
+            <Dialog
+                open={marginPopupOpen}
+                onClose={() => setMarginPopupOpen(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>
+                    Update Margin Settings
+                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                        Updating margin settings for {selected.length} selected publisher(s)
+                    </Typography>
+                </DialogTitle>
+
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <TextField
+                            fullWidth
+                            label="Mark Up Percentage (%)"
+                            type="number"
+                            value={marginSettings.markUpPercent}
+                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
+                            helperText="Percentage to mark up from base cost"
+                            inputProps={{ min: 0, max: 100, step: 0.1 }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Mark Down Percentage (%)"
+                            type="number"
+                            value={marginSettings.markDownPercent}
+                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
+                            helperText="Percentage to mark down from base cost"
+                            inputProps={{ min: 0, max: 100, step: 0.1 }}
+                        />
+
+                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                            <Checkbox
+                                checked={marginSettings.applyToAll}
+                                onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
+                            />
+                            <Typography variant="body2">
+                                Apply these margin settings to all selected publishers
+                            </Typography>
+                        </Box>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions sx={{ p: 3 }}>
+                    <Button
+                        onClick={() => setMarginPopupOpen(false)}
+                        variant="outlined"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleMarginUpdate}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Update Margin Settings
                     </Button>
                 </DialogActions>
             </Dialog>
