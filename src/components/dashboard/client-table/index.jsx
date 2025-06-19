@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  DialogContentText, // Add this import
   Button,
   TextField,
   FormControl,
@@ -18,7 +19,8 @@ import {
   Box,
   Typography,
   Checkbox,
-  ListItemText
+  ListItemText,
+  InputAdornment
 } from '@mui/material';
 
 const ClientTable = () => {
@@ -53,10 +55,27 @@ const ClientTable = () => {
   const [marginPopupOpen, setMarginPopupOpen] = useState(false);
   const [marginSettings, setMarginSettings] = useState({
     markUpPercent: '',
+    markUpValue: '',
     markDownPercent: '',
+    markDownValue: '',
     applyToAll: false
   });
 
+  // Add state to track which margin type is being edited
+  const [marginType, setMarginType] = useState('');
+
+  // Add state for margin mode (percentage or value)
+  const [marginMode, setMarginMode] = useState('percentage'); // 'percentage' or 'value'
+
+  // Add state for confirmation dialog - ADD THIS LINE
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: '',
+    message: '',
+    onConfirm: null
+  });
+
+  // Update client data to include mode fields
   const [clientData, setClientData] = useState([
     {
       id: 1,
@@ -90,7 +109,9 @@ const ClientTable = () => {
       frequency: 'daily',
       country: 'US',
       markUpPercent: 15.0,
-      markDownPercent: 5.0
+      markUpPercentMode: 'percentage',
+      markDownPercent: 5.0,
+      markDownPercentMode: 'percentage'
     },
     {
       id: 2,
@@ -123,8 +144,10 @@ const ClientTable = () => {
       startDate: '2023-03-10',
       frequency: 'weekly',
       country: 'UK',
-      markUpPercent: 12.0,
-      markDownPercent: 3.0
+      markUpPercent: 0.50,
+      markUpPercentMode: 'value',
+      markDownPercent: 3.0,
+      markDownPercentMode: 'percentage'
     },
     {
       id: 3,
@@ -158,7 +181,9 @@ const ClientTable = () => {
       frequency: 'daily',
       country: 'CA',
       markUpPercent: 18.0,
-      markDownPercent: 6.0
+      markUpPercentMode: 'percentage',
+      markDownPercent: 6.0,
+      markDownPercentMode: 'percentage'
     },
     {
       id: 4,
@@ -192,7 +217,9 @@ const ClientTable = () => {
       frequency: 'monthly',
       country: 'AU',
       markUpPercent: 20.0,
-      markDownPercent: 8.0
+      markUpPercentMode: 'percentage',
+      markDownPercent: 8.0,
+      markDownPercentMode: 'percentage'
     },
     {
       id: 5,
@@ -226,7 +253,9 @@ const ClientTable = () => {
       frequency: 'weekly',
       country: 'US',
       markUpPercent: 17.5,
-      markDownPercent: 7.0
+      markUpPercentMode: 'percentage',
+      markDownPercent: 7.0,
+      markDownPercentMode: 'percentage'
     }
   ]);
 
@@ -280,44 +309,133 @@ const ClientTable = () => {
     setSelected([]);
   };
 
-  // Add margin update handler
+  // Update margin action handler
+  const handleMarginAction = (selectedMarginType) => {
+    if (!selectedMarginType) return;
+    
+    if (selected.length === 0) {
+      toast.error('Please select clients to update margin settings');
+      return;
+    }
+
+    // Set the margin type and pre-fill the popup
+    setMarginType(selectedMarginType);
+    setMarginMode('percentage'); // Default to percentage
+    
+    if (selectedMarginType === 'markup') {
+      setMarginSettings({
+        markUpPercent: '',
+        markUpValue: '',
+        markDownPercent: '',
+        markDownValue: '',
+        applyToAll: false
+      });
+    } else if (selectedMarginType === 'markdown') {
+      setMarginSettings({
+        markUpPercent: '',
+        markUpValue: '',
+        markDownPercent: '',
+        markDownValue: '',
+        applyToAll: false
+      });
+    }
+    
+    setMarginPopupOpen(true);
+  };
+
+  // Update margin update handler
   const handleMarginUpdate = () => {
     if (selected.length === 0) {
       toast.error('Please select clients to update margin settings');
       return;
     }
 
-    if (!marginSettings.markUpPercent && !marginSettings.markDownPercent) {
-      toast.error('Please enter at least one margin percentage');
-      return;
+    // Validate based on margin type and mode
+    if (marginType === 'markup') {
+      if (marginMode === 'percentage' && !marginSettings.markUpPercent) {
+        toast.error('Please enter mark up percentage');
+        return;
+      }
+      if (marginMode === 'value' && !marginSettings.markUpValue) {
+        toast.error('Please enter mark up value');
+        return;
+      }
+    }
+
+    if (marginType === 'markdown') {
+      if (marginMode === 'percentage' && !marginSettings.markDownPercent) {
+        toast.error('Please enter mark down percentage');
+        return;
+      }
+      if (marginMode === 'value' && !marginSettings.markDownValue) {
+        toast.error('Please enter mark down value');
+        return;
+      }
     }
 
     // Update selected clients with new margin settings
     const updatedData = clientData.map(item => {
       if (selected.includes(item.id)) {
         const updates = {};
-        if (marginSettings.markUpPercent) {
-          updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
+        
+        if (marginType === 'markup') {
+          if (marginMode === 'percentage' && marginSettings.markUpPercent) {
+            updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
+            updates.markUpValue = 0; // Clear the other field
+          } else if (marginMode === 'value' && marginSettings.markUpValue) {
+            updates.markUpValue = parseFloat(marginSettings.markUpValue);
+            updates.markUpPercent = 0; // Clear the other field
+          }
         }
-        if (marginSettings.markDownPercent) {
-          updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
+        
+        if (marginType === 'markdown') {
+          if (marginMode === 'percentage' && marginSettings.markDownPercent) {
+            updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
+            updates.markDownValue = 0; // Clear the other field
+          } else if (marginMode === 'value' && marginSettings.markDownValue) {
+            updates.markDownValue = parseFloat(marginSettings.markDownValue);
+            updates.markDownPercent = 0; // Clear the other field
+          }
         }
+        
         return { ...item, ...updates };
       }
       return item;
     });
 
     setClientData(updatedData);
-    toast.success(`Margin settings updated for ${selected.length} client(s)`);
+    const fieldName = marginType === 'markup' ? 'mark up' : 'mark down';
+    const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
+    toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} client(s)`);
 
     // Reset and close popup
     setMarginSettings({
       markUpPercent: '',
+      markUpValue: '',
       markDownPercent: '',
+      markDownValue: '',
       applyToAll: false
     });
+    setMarginType('');
+    setMarginMode('percentage');
     setMarginPopupOpen(false);
     setSelected([]);
+  };
+
+  // Handle margin field updates with mode
+  const handleMarginFieldUpdate = (id, fieldName, value, mode) => {
+    setClientData(prevData =>
+      prevData.map(item =>
+        item.id === id
+          ? { 
+              ...item, 
+              [fieldName]: parseFloat(value) || 0,
+              [`${fieldName}Mode`]: mode
+            }
+          : item
+      )
+    );
+    toast.success('Margin setting updated successfully');
   };
 
   const columns = [
@@ -372,7 +490,10 @@ const ClientTable = () => {
       onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value),
       render: (value, row) => (
         <span
-          onClick={() => navigate('/campaigns')}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent row click event
+            navigate('/campaigns');
+          }}
           style={{
             color: '#1976d2',
             cursor: 'pointer',
@@ -561,33 +682,19 @@ const ClientTable = () => {
     },
     {
       id: 'markUpPercent',
-      label: 'Mark Up %',
+      label: 'Mark Up',
       numeric: true,
-      type: 'editablePercentage',
+      type: 'editableMargin',
       editable: true,
-      customEditHandler: (row, columnId) => {
-        // Pre-fill the popup with current values from the selected row
-        setMarginSettings(prev => ({
-          ...prev,
-          markUpPercent: row.markUpPercent?.toString() || ''
-        }));
-        setMarginPopupOpen(true);
-      }
+      onUpdate: (id, value, mode) => handleMarginFieldUpdate(id, 'markUpPercent', value, mode)
     },
     {
       id: 'markDownPercent',
-      label: 'Mark Down %',
+      label: 'Mark Down',
       numeric: true,
-      type: 'editablePercentage',
+      type: 'editableMargin',
       editable: true,
-      customEditHandler: (row, columnId) => {
-        // Pre-fill the popup with current values from the selected row
-        setMarginSettings(prev => ({
-          ...prev,
-          markDownPercent: row.markDownPercent?.toString() || ''
-        }));
-        setMarginPopupOpen(true);
-      }
+      onUpdate: (id, value, mode) => handleMarginFieldUpdate(id, 'markDownPercent', value, mode)
     }
   ];
 
@@ -630,7 +737,7 @@ const ClientTable = () => {
     }
   ];
 
-  // Remove the campaigns, job-groups, and publishers actions from handleActionChange
+  // Update the handleActionChange function to fix issues
   const handleActionChange = (action) => {
     if (!action) return;
 
@@ -647,6 +754,7 @@ const ClientTable = () => {
           toast.error('Please select only one client to edit');
         }
         break;
+
       case 'enable':
         if (selected.length === 0) {
           toast.error('Please select clients to enable');
@@ -655,10 +763,11 @@ const ClientTable = () => {
             selected.includes(item.id) ? { ...item, status: 'active' } : item
           );
           setClientData(updatedData);
-          toast.success(`${selected.length} client(s) enabled`);
+          toast.success(`${selected.length} client(s) enabled successfully`);
           setSelected([]);
         }
         break;
+
       case 'pause':
         if (selected.length === 0) {
           toast.error('Please select clients to pause');
@@ -667,10 +776,11 @@ const ClientTable = () => {
             selected.includes(item.id) ? { ...item, status: 'paused' } : item
           );
           setClientData(updatedData);
-          toast.success(`${selected.length} client(s) paused`);
+          toast.success(`${selected.length} client(s) paused successfully`);
           setSelected([]);
         }
         break;
+
       case 'deactivate':
         if (selected.length === 0) {
           toast.error('Please select clients to deactivate');
@@ -679,51 +789,72 @@ const ClientTable = () => {
             selected.includes(item.id) ? { ...item, status: 'inactive' } : item
           );
           setClientData(updatedData);
-          toast.success(`${selected.length} client(s) deactivated`);
+          toast.success(`${selected.length} client(s) deactivated successfully`);
           setSelected([]);
         }
         break;
+
       case 'clone':
         if (selected.length === 0) {
           toast.error('Please select clients to clone');
         } else {
           const itemsToClone = clientData.filter(item => selected.includes(item.id));
-          const clonedItems = itemsToClone.map(item => ({
+          const maxId = Math.max(...clientData.map(d => d.id));
+          
+          const clonedItems = itemsToClone.map((item, index) => ({
             ...item,
-            id: Math.max(...clientData.map(d => d.id)) + Math.random(),
-            clientName: `${item.clientName} (Copy)`
+            id: maxId + index + 1, // Generate unique IDs
+            clientName: `${item.clientName} (Clone)`,
+            status: 'inactive' // Set cloned items to inactive by default
           }));
+          
           setClientData(prev => [...prev, ...clonedItems]);
-          toast.success(`${selected.length} client(s) cloned`);
+          toast.success(`${selected.length} client(s) cloned successfully`);
           setSelected([]);
         }
         break;
+
       case 'delete':
         if (selected.length === 0) {
           toast.error('Please select clients to delete');
         } else {
-          const updatedData = clientData.filter(item => !selected.includes(item.id));
-          setClientData(updatedData);
-          toast.success(`${selected.length} client(s) deleted`);
-          setSelected([]);
+          setConfirmDialog({
+            open: true,
+            title: 'Confirm Delete',
+            message: `Are you sure you want to delete ${selected.length} client(s)? This action cannot be undone.`,
+            onConfirm: () => {
+              const updatedData = clientData.filter((item) => !selected.includes(item.id));
+              setClientData(updatedData);
+              toast.success(`${selected.length} client(s) deleted successfully`);
+              setSelected([]);
+              setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
+            }
+          });
         }
         break;
+
       case 'duplicate':
         if (selected.length === 0) {
           toast.error('Please select clients to duplicate');
         } else {
           const itemsToDuplicate = clientData.filter(item => selected.includes(item.id));
-          const duplicatedItems = itemsToDuplicate.map(item => ({
+          const maxId = Math.max(...clientData.map(d => d.id));
+          
+          const duplicatedItems = itemsToDuplicate.map((item, index) => ({
             ...item,
-            id: Math.max(...clientData.map(d => d.id)) + Math.random(),
-            clientName: `${item.clientName} (Duplicate)`
+            id: maxId + index + 1, // Generate unique IDs
+            clientName: `${item.clientName} (Copy)`,
+            status: 'inactive' // Set duplicated items to inactive by default
           }));
+          
           setClientData(prev => [...prev, ...duplicatedItems]);
-          toast.success(`${selected.length} client(s) duplicated`);
+          toast.success(`${selected.length} client(s) duplicated successfully`);
           setSelected([]);
         }
         break;
+
       default:
+        toast.error('Unknown action selected');
         break;
     }
   };
@@ -755,7 +886,8 @@ const ClientTable = () => {
           options: [
             { value: 'markup', label: 'Mark Up' },
             { value: 'markdown', label: 'Mark Down' }
-          ]
+          ],
+          onChange: handleMarginAction // Add this line
         },
         {
           type: 'button',
@@ -879,6 +1011,23 @@ const ClientTable = () => {
     setSelected(selectedIds);
   };
 
+  // Also update the handleRowClick function to better handle nested clicks
+  const handleRowClick = (event, rowId, row) => {
+    // Check if the click is on an interactive element
+    if (
+      event.target.type === 'checkbox' || 
+      event.target.closest('button') ||
+      event.target.closest('span[style*="cursor: pointer"]') || // Add this line
+      event.target.closest('[role="button"]')
+    ) {
+      return;
+    }
+
+    if (onRowClick) {
+      onRowClick(row, rowId);
+    }
+  };
+
   return (
     <>
       <DynamicTable
@@ -984,38 +1133,103 @@ const ClientTable = () => {
       {/* Margin Settings Popup */}
       <Dialog
         open={marginPopupOpen}
-        onClose={() => setMarginPopupOpen(false)}
+        onClose={() => {
+          setMarginPopupOpen(false);
+          setMarginType('');
+          setMarginMode('percentage');
+        }}
         maxWidth="sm"
         fullWidth
       >
         <DialogTitle>
-          Update Margin Settings
+          Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} Settings
           <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-            Updating margin settings for {selected.length} selected client(s)
+            Updating {marginType === 'markup' ? 'mark up' : 'mark down'} settings for {selected.length} selected client(s)
           </Typography>
         </DialogTitle>
 
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            <TextField
-              fullWidth
-              label="Mark Up Percentage (%)"
-              type="number"
-              value={marginSettings.markUpPercent}
-              onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
-              helperText="Percentage to mark up from base cost"
-              inputProps={{ min: 0, max: 100, step: 0.1 }}
-            />
+            {/* Mode Selection */}
+            <FormControl fullWidth>
+              <InputLabel>Margin Mode</InputLabel>
+              <Select
+                value={marginMode}
+                label="Margin Mode"
+                onChange={(e) => setMarginMode(e.target.value)}
+              >
+                <MenuItem value="percentage">Percentage (%)</MenuItem>
+                <MenuItem value="value">Value ($)</MenuItem>
+              </Select>
+            </FormControl>
 
-            <TextField
-              fullWidth
-              label="Mark Down Percentage (%)"
-              type="number"
-              value={marginSettings.markDownPercent}
-              onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
-              helperText="Percentage to mark down from base cost"
-              inputProps={{ min: 0, max: 100, step: 0.1 }}
-            />
+            {/* Mark Up Fields */}
+            {marginType === 'markup' && (
+              <>
+                {marginMode === 'percentage' && (
+                  <TextField
+                    fullWidth
+                    label="Mark Up Percentage (%)"
+                    type="number"
+                    value={marginSettings.markUpPercent}
+                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
+                    helperText="Percentage to mark up from base cost"
+                    inputProps={{ min: 0, max: 100, step: 0.1 }}
+                    autoFocus
+                  />
+                )}
+                
+                {marginMode === 'value' && (
+                  <TextField
+                    fullWidth
+                    label="Mark Up Value ($)"
+                    type="number"
+                    value={marginSettings.markUpValue}
+                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpValue: e.target.value }))}
+                    helperText="Fixed dollar amount to mark up from base cost"
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
+                    inputProps={{ min: 0, step: 0.01 }}
+                    autoFocus
+                  />
+                )}
+              </>
+            )}
+
+            {/* Mark Down Fields */}
+            {marginType === 'markdown' && (
+              <>
+                {marginMode === 'percentage' && (
+                  <TextField
+                    fullWidth
+                    label="Mark Down Percentage (%)"
+                    type="number"
+                    value={marginSettings.markDownPercent}
+                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
+                    helperText="Percentage to mark down from base cost"
+                    inputProps={{ min: 0, max: 100, step: 0.1 }}
+                    autoFocus
+                  />
+                )}
+                
+                {marginMode === 'value' && (
+                  <TextField
+                    fullWidth
+                    label="Mark Down Value ($)"
+                    type="number"
+                    value={marginSettings.markDownValue}
+                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownValue: e.target.value }))}
+                    helperText="Fixed dollar amount to mark down from base cost"
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
+                    inputProps={{ min: 0, step: 0.01 }}
+                    autoFocus
+                  />
+                )}
+              </>
+            )}
 
             <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
               <Checkbox
@@ -1023,7 +1237,7 @@ const ClientTable = () => {
                 onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
               />
               <Typography variant="body2">
-                Apply these margin settings to all selected clients
+                Apply these {marginType === 'markup' ? 'mark up' : 'mark down'} {marginMode} settings to all selected clients
               </Typography>
             </Box>
           </Box>
@@ -1031,7 +1245,11 @@ const ClientTable = () => {
 
         <DialogActions sx={{ p: 3 }}>
           <Button
-            onClick={() => setMarginPopupOpen(false)}
+            onClick={() => {
+              setMarginPopupOpen(false);
+              setMarginType('');
+              setMarginMode('percentage');
+            }}
             variant="outlined"
           >
             Cancel
@@ -1041,7 +1259,37 @@ const ClientTable = () => {
             variant="contained"
             color="primary"
           >
-            Update Margin Settings
+            Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} {marginMode === 'percentage' ? 'Percentage' : 'Value'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDialog.open}
+        onClose={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{confirmDialog.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {confirmDialog.message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+          <Button
+            onClick={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmDialog.onConfirm}
+            variant="contained"
+            color="error"
+          >
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

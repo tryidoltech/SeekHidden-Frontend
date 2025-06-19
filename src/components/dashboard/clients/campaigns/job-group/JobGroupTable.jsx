@@ -9,6 +9,7 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    DialogContentText, // Add this import
     Button,
     TextField,
     FormControl,
@@ -17,7 +18,8 @@ import {
     MenuItem,
     Box,
     Typography,
-    Checkbox
+    Checkbox,
+    InputAdornment
 } from '@mui/material';
 
 const JobGroupTable = () => {
@@ -52,19 +54,147 @@ const JobGroupTable = () => {
     const [marginPopupOpen, setMarginPopupOpen] = useState(false);
     const [marginSettings, setMarginSettings] = useState({
         markUpPercent: '',
+        markUpValue: '',
         markDownPercent: '',
+        markDownValue: '',
         applyToAll: false
     });
 
+    // Add state to track which margin type is being edited
+    const [marginType, setMarginType] = useState('');
+
+    // Add state for margin mode (percentage or value)
+    const [marginMode, setMarginMode] = useState('percentage'); // 'percentage' or 'value'
+
+    // Add state for confirmation dialog
+    const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: '',
+        message: '',
+        onConfirm: null
+    });
+
     const [clientData, setClientData] = useState([
-        { id: 1, jobGroupName: '+12 CPA', status: 'active', budgetCap: 1000.00, markup: 15.0, markdown: 5.0, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
-        { id: 2, jobGroupName: 'Tech Solutions Group', status: 'inactive', budgetCap: 2000.00, markup: 20.0, markdown: 8.0, spend: 850.00, reconSpend: 840.00, clicks: 120, validClicks: 115, invalidClicks: 5 },
-        { id: 3, jobGroupName: 'Marketing Plus CPA', status: 'active', budgetCap: 1500.00, markup: 18.0, markdown: 3.0, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5 },
-        { id: 4, jobGroupName: 'Digital Agency CPC', status: 'paused', budgetCap: 5000.00, markup: 25.0, markdown: 10.0, spend: 2500.00, reconSpend: 2480.00, clicks: 500, validClicks: 485, invalidClicks: 15 },
-        { id: 5, jobGroupName: 'Global Advisors', status: 'active', budgetCap: 3000.00, markup: 12.0, markdown: 2.0, spend: 1200.00, reconSpend: 1180.00, clicks: 300, validClicks: 290, invalidClicks: 10 },
-        { id: 6, jobGroupName: 'Media Partners', status: 'active', budgetCap: 2500.00, markup: 22.0, markdown: 7.0, spend: 1800.00, reconSpend: 1750.00, clicks: 400, validClicks: 390, invalidClicks: 10 },
-        { id: 7, jobGroupName: 'Creative Solutions', status: 'paused', budgetCap: 1800.00, markup: 16.0, markdown: 4.0, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5 },
-        { id: 8, jobGroupName: 'Data Insights', status: 'inactive', budgetCap: 2200.00, markup: 14.0, markdown: 6.0, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0 },
+        { 
+            id: 1, 
+            jobGroupName: '+12 CPA', 
+            status: 'active', 
+            budgetCap: 1000.00, 
+            markup: 15.0, 
+            markupMode: 'percentage',
+            markdown: 5.0, 
+            markdownMode: 'percentage',
+            spend: 0.00, 
+            reconSpend: 0.00, 
+            clicks: 0, 
+            validClicks: 0, 
+            invalidClicks: 0 
+        },
+        { 
+            id: 2, 
+            jobGroupName: 'Tech Solutions Group', 
+            status: 'inactive', 
+            budgetCap: 2000.00, 
+            markup: 0.50, 
+            markupMode: 'value',
+            markdown: 8.0, 
+            markdownMode: 'percentage',
+            spend: 850.00, 
+            reconSpend: 840.00, 
+            clicks: 120, 
+            validClicks: 115, 
+            invalidClicks: 5 
+        },
+        { 
+            id: 3, 
+            jobGroupName: 'Marketing Plus CPA', 
+            status: 'active', 
+            budgetCap: 1500.00, 
+            markup: 18.0, 
+            markupMode: 'percentage',
+            markdown: 3.0, 
+            markdownMode: 'percentage',
+            spend: 800.00, 
+            reconSpend: 790.00, 
+            clicks: 200, 
+            validClicks: 195, 
+            invalidClicks: 5 
+        },
+        { 
+            id: 4, 
+            jobGroupName: 'Digital Agency CPC', 
+            status: 'paused', 
+            budgetCap: 5000.00, 
+            markup: 25.0, 
+            markupMode: 'percentage',
+            markdown: 10.0, 
+            markdownMode: 'percentage',
+            spend: 2500.00, 
+            reconSpend: 2480.00, 
+            clicks: 500, 
+            validClicks: 485, 
+            invalidClicks: 15 
+        },
+        { 
+            id: 5, 
+            jobGroupName: 'Global Advisors', 
+            status: 'active', 
+            budgetCap: 3000.00, 
+            markup: 12.0, 
+            markupMode: 'percentage',
+            markdown: 2.0, 
+            markdownMode: 'percentage',
+            spend: 1200.00, 
+            reconSpend: 1180.00, 
+            clicks: 300, 
+            validClicks: 290, 
+            invalidClicks: 10 
+        },
+        { 
+            id: 6, 
+            jobGroupName: 'Media Partners', 
+            status: 'active', 
+            budgetCap: 2500.00, 
+            markup: 22.0, 
+            markupMode: 'percentage',
+            markdown: 7.0, 
+            markdownMode: 'percentage',
+            spend: 1800.00, 
+            reconSpend: 1750.00, 
+            clicks: 400, 
+            validClicks: 390, 
+            invalidClicks: 10 
+        },
+        { 
+            id: 7, 
+            jobGroupName: 'Creative Solutions', 
+            status: 'paused', 
+            budgetCap: 1800.00, 
+            markup: 16.0, 
+            markupMode: 'percentage',
+            markdown: 4.0, 
+            markdownMode: 'percentage',
+            spend: 900.00, 
+            reconSpend: 880.00, 
+            clicks: 180, 
+            validClicks: 175, 
+            invalidClicks: 5 
+        },
+        { 
+            id: 8, 
+            jobGroupName: 'Data Insights', 
+            status: 'inactive', 
+            budgetCap: 2200.00, 
+            markup: 14.0, 
+            markupMode: 'percentage',
+            markdown: 6.0, 
+            markdownMode: 'percentage',
+            spend: 0.00, 
+            reconSpend: 0.00, 
+            clicks: 0, 
+            validClicks: 0, 
+            invalidClicks: 0 
+        },
     ]);
 
     // Handle field updates - now updates the actual data
@@ -117,44 +247,133 @@ const JobGroupTable = () => {
         setSelected([]);
     };
 
-    // Add margin update handler
+    // Update margin action handler
+    const handleMarginAction = (selectedMarginType) => {
+        if (!selectedMarginType) return;
+        
+        if (selected.length === 0) {
+            toast.error('Please select job groups to update margin settings');
+            return;
+        }
+
+        // Set the margin type and pre-fill the popup
+        setMarginType(selectedMarginType);
+        setMarginMode('percentage'); // Default to percentage
+        
+        if (selectedMarginType === 'markup') {
+            setMarginSettings({
+                markUpPercent: '',
+                markUpValue: '',
+                markDownPercent: '',
+                markDownValue: '',
+                applyToAll: false
+            });
+        } else if (selectedMarginType === 'markdown') {
+            setMarginSettings({
+                markUpPercent: '',
+                markUpValue: '',
+                markDownPercent: '',
+                markDownValue: '',
+                applyToAll: false
+            });
+        }
+        
+        setMarginPopupOpen(true);
+    };
+
+    // Update margin update handler
     const handleMarginUpdate = () => {
         if (selected.length === 0) {
             toast.error('Please select job groups to update margin settings');
             return;
         }
 
-        if (!marginSettings.markUpPercent && !marginSettings.markDownPercent) {
-            toast.error('Please enter at least one margin percentage');
-            return;
+        // Validate based on margin type and mode
+        if (marginType === 'markup') {
+            if (marginMode === 'percentage' && !marginSettings.markUpPercent) {
+                toast.error('Please enter mark up percentage');
+                return;
+            }
+            if (marginMode === 'value' && !marginSettings.markUpValue) {
+                toast.error('Please enter mark up value');
+                return;
+            }
+        }
+
+        if (marginType === 'markdown') {
+            if (marginMode === 'percentage' && !marginSettings.markDownPercent) {
+                toast.error('Please enter mark down percentage');
+                return;
+            }
+            if (marginMode === 'value' && !marginSettings.markDownValue) {
+                toast.error('Please enter mark down value');
+                return;
+            }
         }
 
         // Update selected job groups with new margin settings
         const updatedData = clientData.map(item => {
             if (selected.includes(item.id)) {
                 const updates = {};
-                if (marginSettings.markUpPercent) {
-                    updates.markup = parseFloat(marginSettings.markUpPercent);
+                
+                if (marginType === 'markup') {
+                    if (marginMode === 'percentage' && marginSettings.markUpPercent) {
+                        updates.markup = parseFloat(marginSettings.markUpPercent);
+                        updates.markupMode = 'percentage';
+                    } else if (marginMode === 'value' && marginSettings.markUpValue) {
+                        updates.markup = parseFloat(marginSettings.markUpValue);
+                        updates.markupMode = 'value';
+                    }
                 }
-                if (marginSettings.markDownPercent) {
-                    updates.markdown = parseFloat(marginSettings.markDownPercent);
+                
+                if (marginType === 'markdown') {
+                    if (marginMode === 'percentage' && marginSettings.markDownPercent) {
+                        updates.markdown = parseFloat(marginSettings.markDownPercent);
+                        updates.markdownMode = 'percentage';
+                    } else if (marginMode === 'value' && marginSettings.markDownValue) {
+                        updates.markdown = parseFloat(marginSettings.markDownValue);
+                        updates.markdownMode = 'value';
+                    }
                 }
+                
                 return { ...item, ...updates };
             }
             return item;
         });
 
         setClientData(updatedData);
-        toast.success(`Margin settings updated for ${selected.length} job group(s)`);
+        const fieldName = marginType === 'markup' ? 'mark up' : 'mark down';
+        const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
+        toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} job group(s)`);
 
         // Reset and close popup
         setMarginSettings({
             markUpPercent: '',
+            markUpValue: '',
             markDownPercent: '',
+            markDownValue: '',
             applyToAll: false
         });
+        setMarginType('');
+        setMarginMode('percentage');
         setMarginPopupOpen(false);
         setSelected([]);
+    };
+
+    // Handle margin field updates with mode
+    const handleMarginFieldUpdate = (id, fieldName, value, mode) => {
+        setClientData(prevData =>
+            prevData.map(item =>
+                item.id === id
+                    ? { 
+                        ...item, 
+                        [fieldName]: parseFloat(value) || 0,
+                        [`${fieldName}Mode`]: mode
+                    }
+                    : item
+            )
+        );
+        toast.success('Margin setting updated successfully');
     };
 
     const columns = [
@@ -209,7 +428,10 @@ const JobGroupTable = () => {
             onUpdate: (id, value) => handleFieldUpdate(id, 'jobGroupName', value),
             render: (value, row) => (
                 <span
-                    onClick={() => navigate('/campaigns/job-group/publishers')}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/campaigns/job-group/publishers');
+                    }}
                     style={{
                         color: '#1976d2',
                         cursor: 'pointer',
@@ -233,33 +455,19 @@ const JobGroupTable = () => {
         },
         {
             id: 'markup',
-            label: 'Markup (%)',
+            label: 'Mark Up',
             numeric: true,
-            type: 'editablePercentage',
+            type: 'editableMargin',
             editable: true,
-            customEditHandler: (row, columnId) => {
-                // Pre-fill the popup with current values from the selected row
-                setMarginSettings(prev => ({
-                    ...prev,
-                    markUpPercent: row.markup?.toString() || ''
-                }));
-                setMarginPopupOpen(true);
-            }
+            onUpdate: (id, value, mode) => handleMarginFieldUpdate(id, 'markup', value, mode)
         },
         {
             id: 'markdown',
-            label: 'MarkDown (%)',
+            label: 'Mark Down',
             numeric: true,
-            type: 'editablePercentage',
+            type: 'editableMargin',
             editable: true,
-            customEditHandler: (row, columnId) => {
-                // Pre-fill the popup with current values from the selected row
-                setMarginSettings(prev => ({
-                    ...prev,
-                    markDownPercent: row.markdown?.toString() || ''
-                }));
-                setMarginPopupOpen(true);
-            }
+            onUpdate: (id, value, mode) => handleMarginFieldUpdate(id, 'markdown', value, mode)
         },
         {
             id: 'spend',
@@ -347,6 +555,7 @@ const JobGroupTable = () => {
                     toast.error('Please select only one job group to edit');
                 }
                 break;
+
             case 'enable':
                 if (selected.length === 0) {
                     toast.error('Please select job groups to enable');
@@ -355,10 +564,11 @@ const JobGroupTable = () => {
                         selected.includes(item.id) ? { ...item, status: 'active' } : item
                     );
                     setClientData(updatedData);
-                    toast.success(`${selected.length} job group(s) enabled`);
+                    toast.success(`${selected.length} job group(s) enabled successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'pause':
                 if (selected.length === 0) {
                     toast.error('Please select job groups to pause');
@@ -367,10 +577,11 @@ const JobGroupTable = () => {
                         selected.includes(item.id) ? { ...item, status: 'paused' } : item
                     );
                     setClientData(updatedData);
-                    toast.success(`${selected.length} job group(s) paused`);
+                    toast.success(`${selected.length} job group(s) paused successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'deactivate':
                 if (selected.length === 0) {
                     toast.error('Please select job groups to deactivate');
@@ -379,51 +590,72 @@ const JobGroupTable = () => {
                         selected.includes(item.id) ? { ...item, status: 'inactive' } : item
                     );
                     setClientData(updatedData);
-                    toast.success(`${selected.length} job group(s) deactivated`);
+                    toast.success(`${selected.length} job group(s) deactivated successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'clone':
                 if (selected.length === 0) {
                     toast.error('Please select job groups to clone');
                 } else {
                     const itemsToClone = clientData.filter(item => selected.includes(item.id));
-                    const clonedItems = itemsToClone.map(item => ({
+                    const maxId = Math.max(...clientData.map(d => d.id));
+                    
+                    const clonedItems = itemsToClone.map((item, index) => ({
                         ...item,
-                        id: Math.max(...clientData.map(d => d.id)) + Math.random(),
-                        jobGroupName: `${item.jobGroupName} (Copy)`
+                        id: maxId + index + 1,
+                        jobGroupName: `${item.jobGroupName} (Clone)`,
+                        status: 'inactive'
                     }));
+                    
                     setClientData(prev => [...prev, ...clonedItems]);
-                    toast.success(`${selected.length} job group(s) cloned`);
+                    toast.success(`${selected.length} job group(s) cloned successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'delete':
                 if (selected.length === 0) {
                     toast.error('Please select job groups to delete');
                 } else {
-                    const updatedData = clientData.filter(item => !selected.includes(item.id));
-                    setClientData(updatedData);
-                    toast.success(`${selected.length} job group(s) deleted`);
-                    setSelected([]);
+                    setConfirmDialog({
+                        open: true,
+                        title: 'Confirm Delete',
+                        message: `Are you sure you want to delete ${selected.length} job group(s)? This action cannot be undone.`,
+                        onConfirm: () => {
+                            const updatedData = clientData.filter((item) => !selected.includes(item.id));
+                            setClientData(updatedData);
+                            toast.success(`${selected.length} job group(s) deleted successfully`);
+                            setSelected([]);
+                            setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
+                        }
+                    });
                 }
                 break;
+
             case 'duplicate':
                 if (selected.length === 0) {
                     toast.error('Please select job groups to duplicate');
                 } else {
                     const itemsToDuplicate = clientData.filter(item => selected.includes(item.id));
-                    const duplicatedItems = itemsToDuplicate.map(item => ({
+                    const maxId = Math.max(...clientData.map(d => d.id));
+                    
+                    const duplicatedItems = itemsToDuplicate.map((item, index) => ({
                         ...item,
-                        id: Math.max(...clientData.map(d => d.id)) + Math.random(),
-                        jobGroupName: `${item.jobGroupName} (Duplicate)`
+                        id: maxId + index + 1,
+                        jobGroupName: `${item.jobGroupName} (Copy)`,
+                        status: 'inactive'
                     }));
+                    
                     setClientData(prev => [...prev, ...duplicatedItems]);
-                    toast.success(`${selected.length} job group(s) duplicated`);
+                    toast.success(`${selected.length} job group(s) duplicated successfully`);
                     setSelected([]);
                 }
                 break;
+
             default:
+                toast.error('Unknown action selected');
                 break;
         }
     };
@@ -455,7 +687,8 @@ const JobGroupTable = () => {
                     options: [
                         { value: 'markup', label: 'Mark Up' },
                         { value: 'markdown', label: 'Mark Down' }
-                    ]
+                    ],
+                    onChange: handleMarginAction
                 },
                 {
                     type: 'button',
@@ -678,38 +911,103 @@ const JobGroupTable = () => {
             {/* Margin Settings Popup */}
             <Dialog
                 open={marginPopupOpen}
-                onClose={() => setMarginPopupOpen(false)}
+                onClose={() => {
+                    setMarginPopupOpen(false);
+                    setMarginType('');
+                    setMarginMode('percentage');
+                }}
                 maxWidth="sm"
                 fullWidth
             >
                 <DialogTitle>
-                    Update Margin Settings
+                    Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} Settings
                     <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        Updating margin settings for {selected.length} selected job group(s)
+                        Updating {marginType === 'markup' ? 'mark up' : 'mark down'} settings for {selected.length} selected job group(s)
                     </Typography>
                 </DialogTitle>
 
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-                        <TextField
-                            fullWidth
-                            label="Mark Up Percentage (%)"
-                            type="number"
-                            value={marginSettings.markUpPercent}
-                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
-                            helperText="Percentage to mark up from base cost"
-                            inputProps={{ min: 0, max: 100, step: 0.1 }}
-                        />
+                        {/* Mode Selection */}
+                        <FormControl fullWidth>
+                            <InputLabel>Margin Mode</InputLabel>
+                            <Select
+                                value={marginMode}
+                                label="Margin Mode"
+                                onChange={(e) => setMarginMode(e.target.value)}
+                            >
+                                <MenuItem value="percentage">Percentage (%)</MenuItem>
+                                <MenuItem value="value">Value ($)</MenuItem>
+                            </Select>
+                        </FormControl>
 
-                        <TextField
-                            fullWidth
-                            label="Mark Down Percentage (%)"
-                            type="number"
-                            value={marginSettings.markDownPercent}
-                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
-                            helperText="Percentage to mark down from base cost"
-                            inputProps={{ min: 0, max: 100, step: 0.1 }}
-                        />
+                        {/* Mark Up Fields */}
+                        {marginType === 'markup' && (
+                            <>
+                                {marginMode === 'percentage' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Up Percentage (%)"
+                                        type="number"
+                                        value={marginSettings.markUpPercent}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
+                                        helperText="Percentage to mark up from base cost"
+                                        inputProps={{ min: 0, max: 100, step: 0.1 }}
+                                        autoFocus
+                                    />
+                                )}
+                                
+                                {marginMode === 'value' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Up Value ($)"
+                                        type="number"
+                                        value={marginSettings.markUpValue}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpValue: e.target.value }))}
+                                        helperText="Fixed dollar amount to mark up from base cost"
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                        }}
+                                        inputProps={{ min: 0, step: 0.01 }}
+                                        autoFocus
+                                    />
+                                )}
+                            </>
+                        )}
+
+                        {/* Mark Down Fields */}
+                        {marginType === 'markdown' && (
+                            <>
+                                {marginMode === 'percentage' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Down Percentage (%)"
+                                        type="number"
+                                        value={marginSettings.markDownPercent}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
+                                        helperText="Percentage to mark down from base cost"
+                                        inputProps={{ min: 0, max: 100, step: 0.1 }}
+                                        autoFocus
+                                    />
+                                )}
+                                
+                                {marginMode === 'value' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Down Value ($)"
+                                        type="number"
+                                        value={marginSettings.markDownValue}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownValue: e.target.value }))}
+                                        helperText="Fixed dollar amount to mark down from base cost"
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                        }}
+                                        inputProps={{ min: 0, step: 0.01 }}
+                                        autoFocus
+                                    />
+                                )}
+                            </>
+                        )}
 
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                             <Checkbox
@@ -717,7 +1015,7 @@ const JobGroupTable = () => {
                                 onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
                             />
                             <Typography variant="body2">
-                                Apply these margin settings to all selected job groups
+                                Apply these {marginType === 'markup' ? 'mark up' : 'mark down'} {marginMode} settings to all selected job groups
                             </Typography>
                         </Box>
                     </Box>
@@ -725,7 +1023,11 @@ const JobGroupTable = () => {
 
                 <DialogActions sx={{ p: 3 }}>
                     <Button
-                        onClick={() => setMarginPopupOpen(false)}
+                        onClick={() => {
+                            setMarginPopupOpen(false);
+                            setMarginType('');
+                            setMarginMode('percentage');
+                        }}
                         variant="outlined"
                     >
                         Cancel
@@ -735,7 +1037,37 @@ const JobGroupTable = () => {
                         variant="contained"
                         color="primary"
                     >
-                        Update Margin Settings
+                        Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} {marginMode === 'percentage' ? 'Percentage' : 'Value'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Confirmation Dialog */}
+            <Dialog
+                open={confirmDialog.open}
+                onClose={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>{confirmDialog.title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {confirmDialog.message}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{ p: 3 }}>
+                    <Button
+                        onClick={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
+                        variant="outlined"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={confirmDialog.onConfirm}
+                        variant="contained"
+                        color="error"
+                    >
+                        Delete
                     </Button>
                 </DialogActions>
             </Dialog>

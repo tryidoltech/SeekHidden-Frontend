@@ -9,6 +9,7 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    DialogContentText, // Add this import
     Button,
     TextField,
     FormControl,
@@ -17,7 +18,8 @@ import {
     MenuItem,
     Box,
     Typography,
-    Checkbox
+    Checkbox,
+    InputAdornment
 } from '@mui/material';
 
 const PublisherTable = () => {
@@ -53,19 +55,147 @@ const PublisherTable = () => {
     const [marginPopupOpen, setMarginPopupOpen] = useState(false);
     const [marginSettings, setMarginSettings] = useState({
         markUpPercent: '',
+        markUpValue: '',
         markDownPercent: '',
+        markDownValue: '',
         applyToAll: false
     });
 
+    // Add state to track which margin type is being edited
+    const [marginType, setMarginType] = useState('');
+
+    // Add state for margin mode (percentage or value)
+    const [marginMode, setMarginMode] = useState('percentage'); // 'percentage' or 'value'
+
+    // Add state for confirmation dialog
+    const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: '',
+        message: '',
+        onConfirm: null
+    });
+
     const [publisherData, setPublisherData] = useState([
-        { id: 1, publisherName: 'ATTB US CPA', status: 'active', budgetCap: 1000.00, spend: 450.00, reconSpend: 430.00, clicks: 150, validClicks: 145, invalidClicks: 5, markUpPercent: 15.0, markDownPercent: 5.0 },
-        { id: 2, publisherName: 'TechSol Media', status: 'active', budgetCap: 2000.00, spend: 800.00, reconSpend: 790.00, clicks: 200, validClicks: 195, invalidClicks: 5, markUpPercent: 12.0, markDownPercent: 3.0 },
-        { id: 3, publisherName: 'Digital Partners', status: 'paused', budgetCap: 1500.00, spend: 600.00, reconSpend: 580.00, clicks: 120, validClicks: 115, invalidClicks: 5, markUpPercent: 18.0, markDownPercent: 7.0 },
-        { id: 4, publisherName: 'Global Media Network', status: 'inactive', budgetCap: 3000.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0, markUpPercent: 20.0, markDownPercent: 8.0 },
-        { id: 5, publisherName: 'Creative Solutions', status: 'active', budgetCap: 1800.00, spend: 900.00, reconSpend: 880.00, clicks: 180, validClicks: 175, invalidClicks: 5, markUpPercent: 16.0, markDownPercent: 4.0 },
-        { id: 6, publisherName: 'Marketing Plus', status: 'inactive', budgetCap: 2500.00, spend: 0.00, reconSpend: 0.00, clicks: 0, validClicks: 0, invalidClicks: 0, markUpPercent: 14.0, markDownPercent: 6.0 },
-        { id: 7, publisherName: 'Media Partners', status: 'active', budgetCap: 2200.00, spend: 1100.00, reconSpend: 1080.00, clicks: 220, validClicks: 210, invalidClicks: 10, markUpPercent: 13.0, markDownPercent: 2.0 },
-        { id: 8, publisherName: 'Data Insights', status: 'paused', budgetCap: 1200.00, spend: 300.00, reconSpend: 290.00, clicks: 60, validClicks: 58, invalidClicks: 2, markUpPercent: 10.0, markDownPercent: 1.0 },
+        { 
+            id: 1, 
+            publisherName: 'ATTB US CPA', 
+            status: 'active', 
+            budgetCap: 1000.00, 
+            spend: 450.00, 
+            reconSpend: 430.00, 
+            clicks: 150, 
+            validClicks: 145, 
+            invalidClicks: 5, 
+            markUpPercent: 15.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 5.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 2, 
+            publisherName: 'TechSol Media', 
+            status: 'active', 
+            budgetCap: 2000.00, 
+            spend: 800.00, 
+            reconSpend: 790.00, 
+            clicks: 200, 
+            validClicks: 195, 
+            invalidClicks: 5, 
+            markUpPercent: 0.40, 
+            markUpPercentMode: 'value',
+            markDownPercent: 3.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 3, 
+            publisherName: 'Digital Partners', 
+            status: 'paused', 
+            budgetCap: 1500.00, 
+            spend: 600.00, 
+            reconSpend: 580.00, 
+            clicks: 120, 
+            validClicks: 115, 
+            invalidClicks: 5, 
+            markUpPercent: 18.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 7.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 4, 
+            publisherName: 'Global Media Network', 
+            status: 'inactive', 
+            budgetCap: 3000.00, 
+            spend: 0.00, 
+            reconSpend: 0.00, 
+            clicks: 0, 
+            validClicks: 0, 
+            invalidClicks: 0, 
+            markUpPercent: 20.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 8.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 5, 
+            publisherName: 'Creative Solutions', 
+            status: 'active', 
+            budgetCap: 1800.00, 
+            spend: 900.00, 
+            reconSpend: 880.00, 
+            clicks: 180, 
+            validClicks: 175, 
+            invalidClicks: 5, 
+            markUpPercent: 16.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 4.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 6, 
+            publisherName: 'Marketing Plus', 
+            status: 'inactive', 
+            budgetCap: 2500.00, 
+            spend: 0.00, 
+            reconSpend: 0.00, 
+            clicks: 0, 
+            validClicks: 0, 
+            invalidClicks: 0, 
+            markUpPercent: 14.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 6.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 7, 
+            publisherName: 'Media Partners', 
+            status: 'active', 
+            budgetCap: 2200.00, 
+            spend: 1100.00, 
+            reconSpend: 1080.00, 
+            clicks: 220, 
+            validClicks: 210, 
+            invalidClicks: 10, 
+            markUpPercent: 13.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 2.0,
+            markDownPercentMode: 'percentage'
+        },
+        { 
+            id: 8, 
+            publisherName: 'Data Insights', 
+            status: 'paused', 
+            budgetCap: 1200.00, 
+            spend: 300.00, 
+            reconSpend: 290.00, 
+            clicks: 60, 
+            validClicks: 58, 
+            invalidClicks: 2, 
+            markUpPercent: 10.0, 
+            markUpPercentMode: 'percentage',
+            markDownPercent: 1.0,
+            markDownPercentMode: 'percentage'
+        },
     ]);
 
     // Handle field updates - updates the actual data
@@ -118,44 +248,133 @@ const PublisherTable = () => {
         setSelected([]);
     };
 
-    // Add margin update handler
+    // Update margin action handler
+    const handleMarginAction = (selectedMarginType) => {
+        if (!selectedMarginType) return;
+        
+        if (selected.length === 0) {
+            toast.error('Please select publishers to update margin settings');
+            return;
+        }
+
+        // Set the margin type and pre-fill the popup
+        setMarginType(selectedMarginType);
+        setMarginMode('percentage'); // Default to percentage
+        
+        if (selectedMarginType === 'markup') {
+            setMarginSettings({
+                markUpPercent: '',
+                markUpValue: '',
+                markDownPercent: '',
+                markDownValue: '',
+                applyToAll: false
+            });
+        } else if (selectedMarginType === 'markdown') {
+            setMarginSettings({
+                markUpPercent: '',
+                markUpValue: '',
+                markDownPercent: '',
+                markDownValue: '',
+                applyToAll: false
+            });
+        }
+        
+        setMarginPopupOpen(true);
+    };
+
+    // Update margin update handler
     const handleMarginUpdate = () => {
         if (selected.length === 0) {
             toast.error('Please select publishers to update margin settings');
             return;
         }
 
-        if (!marginSettings.markUpPercent && !marginSettings.markDownPercent) {
-            toast.error('Please enter at least one margin percentage');
-            return;
+        // Validate based on margin type and mode
+        if (marginType === 'markup') {
+            if (marginMode === 'percentage' && !marginSettings.markUpPercent) {
+                toast.error('Please enter mark up percentage');
+                return;
+            }
+            if (marginMode === 'value' && !marginSettings.markUpValue) {
+                toast.error('Please enter mark up value');
+                return;
+            }
+        }
+
+        if (marginType === 'markdown') {
+            if (marginMode === 'percentage' && !marginSettings.markDownPercent) {
+                toast.error('Please enter mark down percentage');
+                return;
+            }
+            if (marginMode === 'value' && !marginSettings.markDownValue) {
+                toast.error('Please enter mark down value');
+                return;
+            }
         }
 
         // Update selected publishers with new margin settings
         const updatedData = publisherData.map(item => {
             if (selected.includes(item.id)) {
                 const updates = {};
-                if (marginSettings.markUpPercent) {
-                    updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
+                
+                if (marginType === 'markup') {
+                    if (marginMode === 'percentage' && marginSettings.markUpPercent) {
+                        updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
+                        updates.markUpPercentMode = 'percentage';
+                    } else if (marginMode === 'value' && marginSettings.markUpValue) {
+                        updates.markUpPercent = parseFloat(marginSettings.markUpValue);
+                        updates.markUpPercentMode = 'value';
+                    }
                 }
-                if (marginSettings.markDownPercent) {
-                    updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
+                
+                if (marginType === 'markdown') {
+                    if (marginMode === 'percentage' && marginSettings.markDownPercent) {
+                        updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
+                        updates.markDownPercentMode = 'percentage';
+                    } else if (marginMode === 'value' && marginSettings.markDownValue) {
+                        updates.markDownPercent = parseFloat(marginSettings.markDownValue);
+                        updates.markDownPercentMode = 'value';
+                    }
                 }
+                
                 return { ...item, ...updates };
             }
             return item;
         });
 
         setPublisherData(updatedData);
-        toast.success(`Margin settings updated for ${selected.length} publisher(s)`);
+        const fieldName = marginType === 'markup' ? 'mark up' : 'mark down';
+        const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
+        toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} publisher(s)`);
 
         // Reset and close popup
         setMarginSettings({
             markUpPercent: '',
+            markUpValue: '',
             markDownPercent: '',
+            markDownValue: '',
             applyToAll: false
         });
+        setMarginType('');
+        setMarginMode('percentage');
         setMarginPopupOpen(false);
         setSelected([]);
+    };
+
+    // Handle margin field updates with mode
+    const handleMarginFieldUpdate = (id, fieldName, value, mode) => {
+        setPublisherData(prevData =>
+            prevData.map(item =>
+                item.id === id
+                    ? { 
+                        ...item, 
+                        [fieldName]: parseFloat(value) || 0,
+                        [`${fieldName}Mode`]: mode
+                    }
+                    : item
+            )
+        );
+        toast.success('Margin setting updated successfully');
     };
 
     const columns = [
@@ -258,45 +477,19 @@ const PublisherTable = () => {
         },
         {
             id: 'markUpPercent',
-            label: 'Markup %',
+            label: 'Mark Up',
             numeric: true,
-            type: 'editablePercentage',
+            type: 'editableMargin',
             editable: true,
-            customEditHandler: (row, columnId) => {
-                // Pre-fill the popup with current values from the selected row
-                setMarginSettings(prev => ({
-                    ...prev,
-                    markUpPercent: row.markUpPercent?.toString() || ''
-                }));
-                setMarginPopupOpen(true);
-            },
-            onUpdate: (id, value) => handleFieldUpdate(id, 'markUpPercent', value),
-            render: (value, row) => (
-                <span style={{ color: '#4caf50', fontWeight: 500 }}>
-                    +{parseFloat(value || 0).toFixed(1)}%
-                </span>
-            )
+            onUpdate: (id, value, mode) => handleMarginFieldUpdate(id, 'markUpPercent', value, mode)
         },
         {
             id: 'markDownPercent',
-            label: 'Markdown %',
+            label: 'Mark Down',
             numeric: true,
-            type: 'editablePercentage',
+            type: 'editableMargin',
             editable: true,
-            customEditHandler: (row, columnId) => {
-                // Pre-fill the popup with current values from the selected row
-                setMarginSettings(prev => ({
-                    ...prev,
-                    markDownPercent: row.markDownPercent?.toString() || ''
-                }));
-                setMarginPopupOpen(true);
-            },
-            onUpdate: (id, value) => handleFieldUpdate(id, 'markDownPercent', value),
-            render: (value, row) => (
-                <span style={{ color: '#f44336', fontWeight: 500 }}>
-                    -{parseFloat(value || 0).toFixed(1)}%
-                </span>
-            )
+            onUpdate: (id, value, mode) => handleMarginFieldUpdate(id, 'markDownPercent', value, mode)
         }
     ];
 
@@ -355,6 +548,7 @@ const PublisherTable = () => {
                     toast.error('Please select only one publisher to edit');
                 }
                 break;
+
             case 'enable':
                 if (selected.length === 0) {
                     toast.error('Please select publishers to enable');
@@ -363,10 +557,11 @@ const PublisherTable = () => {
                         selected.includes(item.id) ? { ...item, status: 'active' } : item
                     );
                     setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) enabled`);
+                    toast.success(`${selected.length} publisher(s) enabled successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'pause':
                 if (selected.length === 0) {
                     toast.error('Please select publishers to pause');
@@ -375,10 +570,11 @@ const PublisherTable = () => {
                         selected.includes(item.id) ? { ...item, status: 'paused' } : item
                     );
                     setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) paused`);
+                    toast.success(`${selected.length} publisher(s) paused successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'deactivate':
                 if (selected.length === 0) {
                     toast.error('Please select publishers to deactivate');
@@ -387,51 +583,72 @@ const PublisherTable = () => {
                         selected.includes(item.id) ? { ...item, status: 'inactive' } : item
                     );
                     setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) deactivated`);
+                    toast.success(`${selected.length} publisher(s) deactivated successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'clone':
                 if (selected.length === 0) {
                     toast.error('Please select publishers to clone');
                 } else {
                     const itemsToClone = publisherData.filter(item => selected.includes(item.id));
-                    const clonedItems = itemsToClone.map(item => ({
+                    const maxId = Math.max(...publisherData.map(d => d.id));
+                    
+                    const clonedItems = itemsToClone.map((item, index) => ({
                         ...item,
-                        id: Math.max(...publisherData.map(d => d.id)) + Math.random(),
-                        publisherName: `${item.publisherName} (Copy)`
+                        id: maxId + index + 1,
+                        publisherName: `${item.publisherName} (Clone)`,
+                        status: 'inactive'
                     }));
+                    
                     setPublisherData(prev => [...prev, ...clonedItems]);
-                    toast.success(`${selected.length} publisher(s) cloned`);
+                    toast.success(`${selected.length} publisher(s) cloned successfully`);
                     setSelected([]);
                 }
                 break;
+
             case 'delete':
                 if (selected.length === 0) {
                     toast.error('Please select publishers to delete');
                 } else {
-                    const updatedData = publisherData.filter(item => !selected.includes(item.id));
-                    setPublisherData(updatedData);
-                    toast.success(`${selected.length} publisher(s) deleted`);
-                    setSelected([]);
+                    setConfirmDialog({
+                        open: true,
+                        title: 'Confirm Delete',
+                        message: `Are you sure you want to delete ${selected.length} publisher(s)? This action cannot be undone.`,
+                        onConfirm: () => {
+                            const updatedData = publisherData.filter((item) => !selected.includes(item.id));
+                            setPublisherData(updatedData);
+                            toast.success(`${selected.length} publisher(s) deleted successfully`);
+                            setSelected([]);
+                            setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
+                        }
+                    });
                 }
                 break;
+
             case 'duplicate':
                 if (selected.length === 0) {
                     toast.error('Please select publishers to duplicate');
                 } else {
                     const itemsToDuplicate = publisherData.filter(item => selected.includes(item.id));
-                    const duplicatedItems = itemsToDuplicate.map(item => ({
+                    const maxId = Math.max(...publisherData.map(d => d.id));
+                    
+                    const duplicatedItems = itemsToDuplicate.map((item, index) => ({
                         ...item,
-                        id: Math.max(...publisherData.map(d => d.id)) + Math.random(),
-                        publisherName: `${item.publisherName} (Duplicate)`
+                        id: maxId + index + 1,
+                        publisherName: `${item.publisherName} (Copy)`,
+                        status: 'inactive'
                     }));
+                    
                     setPublisherData(prev => [...prev, ...duplicatedItems]);
-                    toast.success(`${selected.length} publisher(s) duplicated`);
+                    toast.success(`${selected.length} publisher(s) duplicated successfully`);
                     setSelected([]);
                 }
                 break;
+
             default:
+                toast.error('Unknown action selected');
                 break;
         }
     };
@@ -724,12 +941,32 @@ const PublisherTable = () => {
 
                         <TextField
                             fullWidth
+                            label="Mark Up Value ($)"
+                            type="number"
+                            value={marginSettings.markUpValue}
+                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpValue: e.target.value }))}
+                            helperText="Fixed amount to mark up from base cost"
+                            inputProps={{ min: 0, step: 0.01 }}
+                        />
+
+                        <TextField
+                            fullWidth
                             label="Mark Down Percentage (%)"
                             type="number"
                             value={marginSettings.markDownPercent}
                             onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
                             helperText="Percentage to mark down from base cost"
                             inputProps={{ min: 0, max: 100, step: 0.1 }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Mark Down Value ($)"
+                            type="number"
+                            value={marginSettings.markDownValue}
+                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownValue: e.target.value }))}
+                            helperText="Fixed amount to mark down from base cost"
+                            inputProps={{ min: 0, step: 0.01 }}
                         />
 
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
@@ -757,6 +994,35 @@ const PublisherTable = () => {
                         color="primary"
                     >
                         Update Margin Settings
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Confirmation Dialog */}
+            <Dialog
+                open={confirmDialog.open}
+                onClose={() => setConfirmDialog(prev => ({ ...prev, open: false }))}
+            >
+                <DialogTitle>{confirmDialog.title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {confirmDialog.message}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmDialog(prev => ({ ...prev, open: false }))} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (confirmDialog.onConfirm) {
+                                confirmDialog.onConfirm();
+                            }
+                        }}
+                        color="secondary"
+                        variant="contained"
+                    >
+                        Confirm
                     </Button>
                 </DialogActions>
             </Dialog>

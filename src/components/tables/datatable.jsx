@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -28,8 +28,8 @@ import {
   ListItemText,
   OutlinedInput
 } from '@mui/material';
-import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare, ArrowDown2 } from 'iconsax-react';
-import { visuallyHidden } from '@mui/utils';
+import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare, ArrowDown2 } from "iconsax-react";
+import { visuallyHidden } from "@mui/utils";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -480,18 +480,27 @@ function DynamicTableHead({
 function EditableCell({ column, value, row, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value || '');
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [marginMode, setMarginMode] = useState(row[`${column.id}Mode`] || 'percentage');
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
 
   useEffect(() => {
     setEditValue(value || '');
   }, [value]);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  useEffect(() => {
+    setMarginMode(row[`${column.id}Mode`] || 'percentage');
+  }, [row, column.id]);
 
   const handleSave = () => {
-    if (onUpdate) {
+    if (column.type === 'editableMargin') {
+      onUpdate(row.id, editValue, marginMode);
+    } else {
       onUpdate(row.id, editValue);
     }
     setIsEditing(false);
@@ -499,161 +508,138 @@ function EditableCell({ column, value, row, onUpdate }) {
 
   const handleCancel = () => {
     setEditValue(value || '');
+    setMarginMode(row[`${column.id}Mode`] || 'percentage');
     setIsEditing(false);
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
       handleSave();
-    } else if (event.key === 'Escape') {
+    } else if (e.key === 'Escape') {
       handleCancel();
     }
   };
 
-  const handlePercentageMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePercentageMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handlePercentageSelect = (percentage) => {
-    setEditValue(percentage);
-    setAnchorEl(null);
-  };
-
-  if (isEditing) {
-    if (column.type === 'editableText') {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
-          <TextField
-            size="small"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onKeyDown={handleKeyPress}
-            onBlur={handleSave}
-            autoFocus
-            sx={{ flex: 1 }}
-          />
-        </Box>
-      );
-    }
-    
-    if (column.type === 'editableCurrency') {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 150 }}>
-          <TextField
-            size="small"
-            type="number"
-            value={editValue}
-            onChange={(e) => setEditValue(parseFloat(e.target.value) || 0)}
-            onKeyDown={handleKeyPress}
-            onBlur={handleSave}
-            autoFocus
-            InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            }}
-            sx={{ width: 120 }}
-          />
-        </Box>
-      );
-    }
-
-    if (column.type === 'editablePercentage') {
-      return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 120 }}>
-          <TextField
-            size="small"
-            type="number"
-            value={editValue}
-            onChange={(e) => setEditValue(parseFloat(e.target.value) || 0)}
-            onKeyDown={handleKeyPress}
-            onBlur={handleSave}
-            autoFocus
-            InputProps={{
-              endAdornment: <InputAdornment position="end">%</InputAdornment>,
-            }}
-            sx={{ width: 80 }}
-          />
-          <IconButton
-            size="small"
-            onClick={handlePercentageMenuClick}
-            sx={{ p: 0.5 }}
-          >
-            <ArrowDown2 size="14" />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handlePercentageMenuClose}
-            PaperProps={{
-              sx: { minWidth: 100 }
-            }}
-          >
-            {[5, 10, 15, 20, 25, 30].map((percentage) => (
-              <MenuItem
-                key={percentage}
-                onClick={() => handlePercentageSelect(percentage)}
-                sx={{ fontSize: '0.875rem' }}
-              >
-                {percentage}%
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
-      );
-    }
-  }
-
-  // Display mode
-  if (column.type === 'editableText') {
+  if (!isEditing) {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        {column.render ? column.render(value, row) : (
-          <Typography variant="body2">
-            {value}
-          </Typography>
-        )}
+      <Box
+        sx={{
+          minHeight: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+          },
+        }}
+      >
+        <Typography variant="body2">
+          {column.type === 'editableMargin' ? (
+            value ? (
+              row[`${column.id}Mode`] === 'value' ? `$${value}` : `${value}%`
+            ) : (
+              row[`${column.id}Mode`] === 'value' ? '$0' : '0%'
+            )
+          ) : (
+            column.type === 'editablePercentage' ? `${value || 0}%` : 
+            column.type === 'editableCurrency' ? `$${value || 0}` : 
+            value || '-'
+          )}
+        </Typography>
+        
         <IconButton
           size="small"
-          onClick={handleEdit}
+          onClick={() => setIsEditing(true)}
           sx={{ 
-            opacity: 0.6,
-            '&:hover': { opacity: 1 },
-            p: 0.5
+            color: 'text.secondary',
+            ml: 1,
+            opacity: 0.7,
+            '&:hover': {
+              opacity: 1
+            }
           }}
         >
-          <Edit size="14" />
+          <Edit size="16" />
         </IconButton>
       </Box>
     );
   }
 
+  // Render margin editor with dropdown
+  if (column.type === 'editableMargin') {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
+        <TextField
+          ref={inputRef}
+          size="small"
+          type="number"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onKeyDown={handleKeyPress}
+          inputProps={{ 
+            min: 0, 
+            step: marginMode === 'percentage' ? 0.1 : 0.01,
+            max: marginMode === 'percentage' ? 100 : undefined
+          }}
+          sx={{ flex: 1, minWidth: 80 }}
+        />
+        <Select
+          size="small"
+          value={marginMode}
+          onChange={(e) => setMarginMode(e.target.value)}
+          sx={{ minWidth: 60 }}
+        >
+          <MenuItem value="percentage">%</MenuItem>
+          <MenuItem value="value">$</MenuItem>
+        </Select>
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <IconButton size="small" onClick={handleSave} color="primary">
+            <TickSquare size="16" />
+          </IconButton>
+          <IconButton size="small" onClick={handleCancel} color="secondary">
+            <CloseSquare size="16" />
+          </IconButton>
+        </Box>
+      </Box>
+    );
+  }
+
+  // Regular editable fields
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Typography variant="body2">
-        {column.type === 'editableCurrency' 
-          ? (typeof value === 'number' ? value.toLocaleString('en-US', {
-              style: 'currency',
-              currency: column.currency || 'USD'
-            }) : value)
-          : column.type === 'editablePercentage'
-          ? `${value}%`
-          : value
-        }
-      </Typography>
-      <IconButton
+      <TextField
+        ref={inputRef}
         size="small"
-        onClick={handleEdit}
-        sx={{ 
-          opacity: 0.6,
-          '&:hover': { opacity: 1 },
-          p: 0.5
-        }}
-      >
-        <Edit size="14" />
-      </IconButton>
+        type={column.type === 'editablePercentage' || column.type === 'editableCurrency' ? 'number' : 'text'}
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onKeyDown={handleKeyPress}
+        inputProps={
+          column.type === 'editablePercentage' 
+            ? { min: 0, max: 100, step: 0.1 }
+            : column.type === 'editableCurrency'
+            ? { min: 0, step: 0.01 }
+            : {}
+        }
+        InputProps={
+          column.type === 'editableCurrency' 
+            ? { startAdornment: <InputAdornment position="start">$</InputAdornment> }
+            : column.type === 'editablePercentage'
+            ? { endAdornment: <InputAdornment position="end">%</InputAdornment> }
+            : {}
+        }
+        sx={{ minWidth: 120 }}
+      />
+      <Box sx={{ display: 'flex', gap: 0.5 }}>
+        <IconButton size="small" onClick={handleSave} color="primary">
+          <TickSquare size="16" />
+        </IconButton>
+        <IconButton size="small" onClick={handleCancel} color="secondary">
+          <CloseSquare size="16" />
+        </IconButton>
+      </Box>
     </Box>
   );
 }
@@ -697,8 +683,13 @@ function CellRenderer({ column, value, row, onCellEdit }) {
     );
   }
 
-  // Handle editable fields with inline editing
-  if (column.editable && (column.type === 'editableCurrency' || column.type === 'editablePercentage' || column.type === 'editableText')) {
+  // Handle editable fields with inline editing - ADD editableMargin here
+  if (column.editable && (
+    column.type === 'editableCurrency' || 
+    column.type === 'editablePercentage' || 
+    column.type === 'editableText' ||
+    column.type === 'editableMargin'  // Add this line
+  )) {
     return (
       <EditableCell
         column={column}
