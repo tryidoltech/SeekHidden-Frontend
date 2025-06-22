@@ -298,7 +298,7 @@ const ClientTable = () => {
     setClientData(updatedData);
     toast.success(`Budget settings updated for ${selected.length} client(s)`);
 
-    // Reset and close popup
+    // Reset and close popup but keep selection
     setBudgetSettings({
       pacing: '',
       threshold: '',
@@ -306,7 +306,7 @@ const ClientTable = () => {
       frequency: ''
     });
     setBudgetPopupOpen(false);
-    setSelected([]);
+    // Don't clear selection: setSelected([]);
   };
 
   // Update margin action handler
@@ -408,7 +408,7 @@ const ClientTable = () => {
     const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
     toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} client(s)`);
 
-    // Reset and close popup
+    // Reset and close popup but keep selection
     setMarginSettings({
       markUpPercent: '',
       markUpValue: '',
@@ -419,7 +419,7 @@ const ClientTable = () => {
     setMarginType('');
     setMarginMode('percentage');
     setMarginPopupOpen(false);
-    setSelected([]);
+    // Don't clear selection: setSelected([]);
   };
 
   // Handle margin field updates with mode
@@ -764,7 +764,7 @@ const ClientTable = () => {
           );
           setClientData(updatedData);
           toast.success(`${selected.length} client(s) enabled successfully`);
-          setSelected([]);
+          // Don't clear selection for status changes
         }
         break;
 
@@ -777,7 +777,7 @@ const ClientTable = () => {
           );
           setClientData(updatedData);
           toast.success(`${selected.length} client(s) paused successfully`);
-          setSelected([]);
+          // Don't clear selection for status changes
         }
         break;
 
@@ -790,7 +790,7 @@ const ClientTable = () => {
           );
           setClientData(updatedData);
           toast.success(`${selected.length} client(s) deactivated successfully`);
-          setSelected([]);
+          // Don't clear selection for status changes
         }
         break;
 
@@ -810,7 +810,7 @@ const ClientTable = () => {
           
           setClientData(prev => [...prev, ...clonedItems]);
           toast.success(`${selected.length} client(s) cloned successfully`);
-          setSelected([]);
+          // Keep the original selection intact for further actions
         }
         break;
 
@@ -826,7 +826,7 @@ const ClientTable = () => {
               const updatedData = clientData.filter((item) => !selected.includes(item.id));
               setClientData(updatedData);
               toast.success(`${selected.length} client(s) deleted successfully`);
-              setSelected([]);
+              setSelected([]); // Only clear selection after deletion since items are removed
               setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
             }
           });
@@ -849,7 +849,7 @@ const ClientTable = () => {
           
           setClientData(prev => [...prev, ...duplicatedItems]);
           toast.success(`${selected.length} client(s) duplicated successfully`);
-          setSelected([]);
+          // Keep the original selection intact for further actions
         }
         break;
 
@@ -937,7 +937,7 @@ const ClientTable = () => {
           type: 'multiselect',
           key: 'columns',
           placeholder: 'Select Stats',
-          minWidth: 140,
+          minWidth: 160, // Increased width slightly
           options: columnOptions,
           onChange: handleColumnSelectionChange,
           selectedValues: visibleColumns.filter(col => !defaultColumns.includes(col))
@@ -1230,16 +1230,6 @@ const ClientTable = () => {
                 )}
               </>
             )}
-
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-              <Checkbox
-                checked={marginSettings.applyToAll}
-                onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
-              />
-              <Typography variant="body2">
-                Apply these {marginType === 'markup' ? 'mark up' : 'mark down'} {marginMode} settings to all selected clients
-              </Typography>
-            </Box>
           </Box>
         </DialogContent>
 
