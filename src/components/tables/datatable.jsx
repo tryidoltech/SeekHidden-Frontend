@@ -108,38 +108,104 @@ function DynamicTableHeader({
                           }
                         }}
                         input={<OutlinedInput label={filter.placeholder} />}
-                        renderValue={(selected) => (
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => {
-                              const option = filter.options?.find(opt => opt.value === value);
-                              return (
+                        renderValue={(selected) => {
+                          if (selected.length === 0) {
+                            return '';
+                          }
+                          
+                          // Show count if more than 3 selections, otherwise show chips
+                          if (selected.length > 3) {
+                            return (
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Chip 
-                                  key={value} 
-                                  label={option?.label || value} 
+                                  label={`${selected.length} selected`}
                                   size="small"
-                                  sx={{ height: 20, fontSize: '0.75rem' }}
+                                  color="primary"
+                                  variant="outlined"
+                                  sx={{ 
+                                    height: 20, 
+                                    fontSize: '0.75rem',
+                                    fontWeight: 500
+                                  }}
                                 />
-                              );
-                            })}
-                          </Box>
-                        )}
+                              </Box>
+                            );
+                          }
+                          
+                          // Show individual chips for 3 or fewer selections
+                          return (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {selected.map((value) => {
+                                const option = filter.options?.find(opt => opt.value === value);
+                                return (
+                                  <Chip 
+                                    key={value} 
+                                    label={option?.label || value} 
+                                    size="small"
+                                    sx={{ height: 20, fontSize: '0.75rem' }}
+                                  />
+                                );
+                              })}
+                            </Box>
+                          );
+                        }}
                         MenuProps={{
                           PaperProps: {
                             style: {
-                              maxHeight: 224,
-                              width: 250,
+                              maxHeight: 300,
+                              width: 280,
                             },
                           },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
-                          backgroundColor: 'white'
+                          backgroundColor: 'white',
+                          '& .MuiSelect-select': {
+                            maxHeight: '40px',
+                            overflow: 'hidden'
+                          }
                         }}
                       >
+                        {/* Add "Select All" and "Clear All" options at the top */}
+                        <MenuItem 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (filter.selectedValues?.length === filter.options?.length) {
+                              // Clear all
+                              if (filter.onChange) {
+                                filter.onChange([]);
+                              }
+                            } else {
+                              // Select all
+                              if (filter.onChange) {
+                                filter.onChange(filter.options?.map(opt => opt.value) || []);
+                              }
+                            }
+                          }}
+                          sx={{ 
+                            borderBottom: '1px solid #e0e0e0', 
+                            mb: 1,
+                            fontWeight: 500,
+                            color: 'primary.main'
+                          }}
+                        >
+                          {filter.selectedValues?.length === filter.options?.length ? 'Clear All' : 'Select All'}
+                        </MenuItem>
+                        
                         {filter.options?.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
-                            <Checkbox checked={(filter.selectedValues || []).indexOf(option.value) > -1} />
-                            <ListItemText primary={option.label} />
+                            <Checkbox 
+                              checked={(filter.selectedValues || []).indexOf(option.value) > -1} 
+                              size="small"
+                            />
+                            <ListItemText 
+                              primary={option.label} 
+                              sx={{ 
+                                '& .MuiTypography-root': { 
+                                  fontSize: '0.875rem' 
+                                } 
+                              }}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -295,38 +361,104 @@ function DynamicTableHeader({
                           }
                         }}
                         input={<OutlinedInput label={filter.placeholder} />}
-                        renderValue={(selected) => (
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => {
-                              const option = filter.options?.find(opt => opt.value === value);
-                              return (
+                        renderValue={(selected) => {
+                          if (selected.length === 0) {
+                            return '';
+                          }
+                          
+                          // Show count if more than 3 selections, otherwise show chips
+                          if (selected.length > 3) {
+                            return (
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Chip 
-                                  key={value} 
-                                  label={option?.label || value} 
+                                  label={`${selected.length} selected`}
                                   size="small"
-                                  sx={{ height: 20, fontSize: '0.75rem' }}
+                                  color="primary"
+                                  variant="outlined"
+                                  sx={{ 
+                                    height: 20, 
+                                    fontSize: '0.75rem',
+                                    fontWeight: 500
+                                  }}
                                 />
-                              );
-                            })}
-                          </Box>
-                        )}
+                              </Box>
+                            );
+                          }
+                          
+                          // Show individual chips for 3 or fewer selections
+                          return (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {selected.map((value) => {
+                                const option = filter.options?.find(opt => opt.value === value);
+                                return (
+                                  <Chip 
+                                    key={value} 
+                                    label={option?.label || value} 
+                                    size="small"
+                                    sx={{ height: 20, fontSize: '0.75rem' }}
+                                  />
+                                );
+                              })}
+                            </Box>
+                          );
+                        }}
                         MenuProps={{
                           PaperProps: {
                             style: {
-                              maxHeight: 224,
-                              width: 250,
+                              maxHeight: 300,
+                              width: 280,
                             },
                           },
                         }}
                         sx={{
                           '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
-                          backgroundColor: 'white'
+                          backgroundColor: 'white',
+                          '& .MuiSelect-select': {
+                            maxHeight: '40px',
+                            overflow: 'hidden'
+                          }
                         }}
                       >
+                        {/* Add "Select All" and "Clear All" options at the top */}
+                        <MenuItem 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (filter.selectedValues?.length === filter.options?.length) {
+                              // Clear all
+                              if (filter.onChange) {
+                                filter.onChange([]);
+                              }
+                            } else {
+                              // Select all
+                              if (filter.onChange) {
+                                filter.onChange(filter.options?.map(opt => opt.value) || []);
+                              }
+                            }
+                          }}
+                          sx={{ 
+                            borderBottom: '1px solid #e0e0e0', 
+                            mb: 1,
+                            fontWeight: 500,
+                            color: 'primary.main'
+                          }}
+                        >
+                          {filter.selectedValues?.length === filter.options?.length ? 'Clear All' : 'Select All'}
+                        </MenuItem>
+                        
                         {filter.options?.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
-                            <Checkbox checked={(filter.selectedValues || []).indexOf(option.value) > -1} />
-                            <ListItemText primary={option.label} />
+                            <Checkbox 
+                              checked={(filter.selectedValues || []).indexOf(option.value) > -1} 
+                              size="small"
+                            />
+                            <ListItemText 
+                              primary={option.label} 
+                              sx={{ 
+                                '& .MuiTypography-root': { 
+                                  fontSize: '0.875rem' 
+                                } 
+                              }}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -570,7 +702,7 @@ function EditableCell({ column, value, row, onUpdate }) {
   // Render margin editor with dropdown
   if (column.type === 'editableMargin') {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200, maxWidth: 200 }}>
         <TextField
           ref={inputRef}
           size="small"
@@ -583,23 +715,58 @@ function EditableCell({ column, value, row, onUpdate }) {
             step: marginMode === 'percentage' ? 0.1 : 0.01,
             max: marginMode === 'percentage' ? 100 : undefined
           }}
-          sx={{ flex: 1, minWidth: 80 }}
+          sx={{ 
+            flex: '1 1 60px',
+            minWidth: 60,
+            maxWidth: 80,
+            '& .MuiInputBase-input': {
+              fontSize: '0.875rem',
+              padding: '4px 8px'
+            }
+          }}
         />
         <Select
           size="small"
           value={marginMode}
           onChange={(e) => setMarginMode(e.target.value)}
-          sx={{ minWidth: 60 }}
+          sx={{ 
+            minWidth: 45,
+            maxWidth: 45,
+            '& .MuiSelect-select': {
+              fontSize: '0.75rem',
+              padding: '4px 8px',
+              paddingRight: '20px !important'
+            },
+            '& .MuiSvgIcon-root': {
+              fontSize: '1rem'
+            }
+          }}
         >
-          <MenuItem value="percentage">%</MenuItem>
-          <MenuItem value="value">$</MenuItem>
+          <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }}>%</MenuItem>
+          <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
         </Select>
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size="small" onClick={handleSave} color="primary">
-            <TickSquare size="16" />
+        <Box sx={{ display: 'flex', gap: 0.5, minWidth: 60 }}>
+          <IconButton 
+            size="small" 
+            onClick={handleSave} 
+            color="primary"
+            sx={{ 
+              padding: '2px',
+              '& svg': { fontSize: '14px' }
+            }}
+          >
+            <TickSquare size="14" />
           </IconButton>
-          <IconButton size="small" onClick={handleCancel} color="secondary">
-            <CloseSquare size="16" />
+          <IconButton 
+            size="small" 
+            onClick={handleCancel} 
+            color="secondary"
+            sx={{ 
+              padding: '2px',
+              '& svg': { fontSize: '14px' }
+            }}
+          >
+            <CloseSquare size="14" />
           </IconButton>
         </Box>
       </Box>
@@ -608,7 +775,7 @@ function EditableCell({ column, value, row, onUpdate }) {
 
   // Regular editable fields
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, maxWidth: 200 }}>
       <TextField
         ref={inputRef}
         size="small"
@@ -630,14 +797,38 @@ function EditableCell({ column, value, row, onUpdate }) {
             ? { endAdornment: <InputAdornment position="end">%</InputAdornment> }
             : {}
         }
-        sx={{ minWidth: 120 }}
+        sx={{ 
+          flex: '1 1 100px',
+          minWidth: 100,
+          maxWidth: 140,
+          '& .MuiInputBase-input': {
+            fontSize: '0.875rem',
+            padding: '6px 8px'
+          }
+        }}
       />
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
-        <IconButton size="small" onClick={handleSave} color="primary">
-          <TickSquare size="16" />
+      <Box sx={{ display: 'flex', gap: 0.5, minWidth: 60 }}>
+        <IconButton 
+          size="small" 
+          onClick={handleSave} 
+          color="primary"
+          sx={{ 
+            padding: '3px',
+            '& svg': { fontSize: '14px' }
+          }}
+        >
+          <TickSquare size="14" />
         </IconButton>
-        <IconButton size="small" onClick={handleCancel} color="secondary">
-          <CloseSquare size="16" />
+        <IconButton 
+          size="small" 
+          onClick={handleCancel} 
+          color="secondary"
+          sx={{ 
+            padding: '3px',
+            '& svg': { fontSize: '14px' }
+          }}
+        >
+          <CloseSquare size="14" />
         </IconButton>
       </Box>
     </Box>
