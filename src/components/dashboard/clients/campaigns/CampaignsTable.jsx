@@ -414,7 +414,7 @@ const CampaignsTable = () => {
         setCampaignData(updatedData);
         toast.success(`Budget settings updated for ${selected.length} campaign(s)`);
 
-        // Reset and close popup
+        // Reset and close popup but keep selection
         setBudgetSettings({
             pacing: '',
             threshold: '',
@@ -422,7 +422,7 @@ const CampaignsTable = () => {
             frequency: ''
         });
         setBudgetPopupOpen(false);
-        setSelected([]);
+        // Don't clear selection: setSelected([]);
     };
 
     // Update margin action handler
@@ -497,20 +497,20 @@ const CampaignsTable = () => {
                 if (marginType === 'markup') {
                     if (marginMode === 'percentage' && marginSettings.markUpPercent) {
                         updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
-                        updates.markUpPercentMode = 'percentage';
+                        updates.markUpValue = 0; // Clear the other field
                     } else if (marginMode === 'value' && marginSettings.markUpValue) {
-                        updates.markUpPercent = parseFloat(marginSettings.markUpValue);
-                        updates.markUpPercentMode = 'value';
+                        updates.markUpValue = parseFloat(marginSettings.markUpValue);
+                        updates.markUpPercent = 0; // Clear the other field
                     }
                 }
                 
                 if (marginType === 'markdown') {
                     if (marginMode === 'percentage' && marginSettings.markDownPercent) {
                         updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
-                        updates.markDownPercentMode = 'percentage';
+                        updates.markDownValue = 0; // Clear the other field
                     } else if (marginMode === 'value' && marginSettings.markDownValue) {
-                        updates.markDownPercent = parseFloat(marginSettings.markDownValue);
-                        updates.markDownPercentMode = 'value';
+                        updates.markDownValue = parseFloat(marginSettings.markDownValue);
+                        updates.markDownPercent = 0; // Clear the other field
                     }
                 }
                 
@@ -524,7 +524,7 @@ const CampaignsTable = () => {
         const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
         toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} campaign(s)`);
 
-        // Reset and close popup
+        // Reset and close popup but keep selection
         setMarginSettings({
             markUpPercent: '',
             markUpValue: '',
@@ -535,7 +535,7 @@ const CampaignsTable = () => {
         setMarginType('');
         setMarginMode('percentage');
         setMarginPopupOpen(false);
-        setSelected([]);
+        // Don't clear selection: setSelected([]);
     };
 
     // Handle margin field updates with mode
@@ -606,7 +606,10 @@ const CampaignsTable = () => {
             onUpdate: (id, value) => handleFieldUpdate(id, 'campaignName', value),
             render: (value, row) => (
                 <span
-                    onClick={() => navigate('/campaigns/job-group')}
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click event
+                        navigate('/campaigns/job-group');
+                    }}
                     style={{
                         color: '#1976d2',
                         cursor: 'pointer',
@@ -885,7 +888,7 @@ const CampaignsTable = () => {
                     );
                     setCampaignData(updatedData);
                     toast.success(`${selected.length} campaign(s) enabled successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -898,7 +901,7 @@ const CampaignsTable = () => {
                     );
                     setCampaignData(updatedData);
                     toast.success(`${selected.length} campaign(s) paused successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -911,7 +914,7 @@ const CampaignsTable = () => {
                     );
                     setCampaignData(updatedData);
                     toast.success(`${selected.length} campaign(s) deactivated successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -931,7 +934,7 @@ const CampaignsTable = () => {
                     
                     setCampaignData(prev => [...prev, ...clonedItems]);
                     toast.success(`${selected.length} campaign(s) cloned successfully`);
-                    setSelected([]);
+                    // Keep the original selection intact for further actions
                 }
                 break;
 
@@ -947,7 +950,7 @@ const CampaignsTable = () => {
                             const updatedData = campaignData.filter((item) => !selected.includes(item.id));
                             setCampaignData(updatedData);
                             toast.success(`${selected.length} campaign(s) deleted successfully`);
-                            setSelected([]);
+                            setSelected([]); // Only clear selection after deletion since items are removed
                             setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
                         }
                     });
@@ -970,7 +973,7 @@ const CampaignsTable = () => {
                     
                     setCampaignData(prev => [...prev, ...duplicatedItems]);
                     toast.success(`${selected.length} campaign(s) duplicated successfully`);
-                    setSelected([]);
+                    // Keep the original selection intact for further actions
                 }
                 break;
 
@@ -1058,7 +1061,7 @@ const CampaignsTable = () => {
                     type: 'multiselect',
                     key: 'columns',
                     placeholder: 'Select Stats',
-                    minWidth: 140,
+                    minWidth: 160, // Increased width slightly
                     options: columnOptions,
                     onChange: handleColumnSelectionChange,
                     selectedValues: visibleColumns.filter(col => !defaultColumns.includes(col))
@@ -1333,16 +1336,6 @@ const CampaignsTable = () => {
                                 )}
                             </>
                         )}
-
-                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                            <Checkbox
-                                checked={marginSettings.applyToAll}
-                                onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
-                            />
-                            <Typography variant="body2">
-                                Apply these {marginType === 'markup' ? 'mark up' : 'mark down'} {marginMode} settings to all selected campaigns
-                            </Typography>
-                        </Box>
                     </Box>
                 </DialogContent>
 
@@ -1388,16 +1381,11 @@ const CampaignsTable = () => {
                         Cancel
                     </Button>
                     <Button
-                        onClick={() => {
-                            // Execute the confirmed action (delete)
-                            if (confirmDialog.onConfirm) {
-                                confirmDialog.onConfirm();
-                            }
-                        }}
+                        onClick={confirmDialog.onConfirm}
                         variant="contained"
-                        color="primary"
+                        color="error"
                     >
-                        Confirm
+                        Delete
                     </Button>
                 </DialogActions>
             </Dialog>

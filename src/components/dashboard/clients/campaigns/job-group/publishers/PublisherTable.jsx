@@ -76,122 +76,122 @@ const PublisherTable = () => {
     });
 
     const [publisherData, setPublisherData] = useState([
-        { 
-            id: 1, 
-            publisherName: 'ATTB US CPA', 
-            status: 'active', 
-            budgetCap: 1000.00, 
-            spend: 450.00, 
-            reconSpend: 430.00, 
-            clicks: 150, 
-            validClicks: 145, 
-            invalidClicks: 5, 
-            markUpPercent: 15.0, 
+        {
+            id: 1,
+            publisherName: 'ATTB US CPA',
+            status: 'active',
+            budgetCap: 1000.00,
+            spend: 450.00,
+            reconSpend: 430.00,
+            clicks: 150,
+            validClicks: 145,
+            invalidClicks: 5,
+            markUpPercent: 15.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 5.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 2, 
-            publisherName: 'TechSol Media', 
-            status: 'active', 
-            budgetCap: 2000.00, 
-            spend: 800.00, 
-            reconSpend: 790.00, 
-            clicks: 200, 
-            validClicks: 195, 
-            invalidClicks: 5, 
-            markUpPercent: 0.40, 
+        {
+            id: 2,
+            publisherName: 'TechSol Media',
+            status: 'active',
+            budgetCap: 2000.00,
+            spend: 800.00,
+            reconSpend: 790.00,
+            clicks: 200,
+            validClicks: 195,
+            invalidClicks: 5,
+            markUpPercent: 0.40,
             markUpPercentMode: 'value',
             markDownPercent: 3.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 3, 
-            publisherName: 'Digital Partners', 
-            status: 'paused', 
-            budgetCap: 1500.00, 
-            spend: 600.00, 
-            reconSpend: 580.00, 
-            clicks: 120, 
-            validClicks: 115, 
-            invalidClicks: 5, 
-            markUpPercent: 18.0, 
+        {
+            id: 3,
+            publisherName: 'Digital Partners',
+            status: 'paused',
+            budgetCap: 1500.00,
+            spend: 600.00,
+            reconSpend: 580.00,
+            clicks: 120,
+            validClicks: 115,
+            invalidClicks: 5,
+            markUpPercent: 18.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 7.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 4, 
-            publisherName: 'Global Media Network', 
-            status: 'inactive', 
-            budgetCap: 3000.00, 
-            spend: 0.00, 
-            reconSpend: 0.00, 
-            clicks: 0, 
-            validClicks: 0, 
-            invalidClicks: 0, 
-            markUpPercent: 20.0, 
+        {
+            id: 4,
+            publisherName: 'Global Media Network',
+            status: 'inactive',
+            budgetCap: 3000.00,
+            spend: 0.00,
+            reconSpend: 0.00,
+            clicks: 0,
+            validClicks: 0,
+            invalidClicks: 0,
+            markUpPercent: 20.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 8.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 5, 
-            publisherName: 'Creative Solutions', 
-            status: 'active', 
-            budgetCap: 1800.00, 
-            spend: 900.00, 
-            reconSpend: 880.00, 
-            clicks: 180, 
-            validClicks: 175, 
-            invalidClicks: 5, 
-            markUpPercent: 16.0, 
+        {
+            id: 5,
+            publisherName: 'Creative Solutions',
+            status: 'active',
+            budgetCap: 1800.00,
+            spend: 900.00,
+            reconSpend: 880.00,
+            clicks: 180,
+            validClicks: 175,
+            invalidClicks: 5,
+            markUpPercent: 16.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 4.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 6, 
-            publisherName: 'Marketing Plus', 
-            status: 'inactive', 
-            budgetCap: 2500.00, 
-            spend: 0.00, 
-            reconSpend: 0.00, 
-            clicks: 0, 
-            validClicks: 0, 
-            invalidClicks: 0, 
-            markUpPercent: 14.0, 
+        {
+            id: 6,
+            publisherName: 'Marketing Plus',
+            status: 'inactive',
+            budgetCap: 2500.00,
+            spend: 0.00,
+            reconSpend: 0.00,
+            clicks: 0,
+            validClicks: 0,
+            invalidClicks: 0,
+            markUpPercent: 14.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 6.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 7, 
-            publisherName: 'Media Partners', 
-            status: 'active', 
-            budgetCap: 2200.00, 
-            spend: 1100.00, 
-            reconSpend: 1080.00, 
-            clicks: 220, 
-            validClicks: 210, 
-            invalidClicks: 10, 
-            markUpPercent: 13.0, 
+        {
+            id: 7,
+            publisherName: 'Media Partners',
+            status: 'active',
+            budgetCap: 2200.00,
+            spend: 1100.00,
+            reconSpend: 1080.00,
+            clicks: 220,
+            validClicks: 210,
+            invalidClicks: 10,
+            markUpPercent: 13.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 2.0,
             markDownPercentMode: 'percentage'
         },
-        { 
-            id: 8, 
-            publisherName: 'Data Insights', 
-            status: 'paused', 
-            budgetCap: 1200.00, 
-            spend: 300.00, 
-            reconSpend: 290.00, 
-            clicks: 60, 
-            validClicks: 58, 
-            invalidClicks: 2, 
-            markUpPercent: 10.0, 
+        {
+            id: 8,
+            publisherName: 'Data Insights',
+            status: 'paused',
+            budgetCap: 1200.00,
+            spend: 300.00,
+            reconSpend: 290.00,
+            clicks: 60,
+            validClicks: 58,
+            invalidClicks: 2,
+            markUpPercent: 10.0,
             markUpPercentMode: 'percentage',
             markDownPercent: 1.0,
             markDownPercentMode: 'percentage'
@@ -237,7 +237,7 @@ const PublisherTable = () => {
         setPublisherData(updatedData);
         toast.success(`Budget settings updated for ${selected.length} publisher(s)`);
 
-        // Reset and close popup
+        // Reset and close popup but keep selection
         setBudgetSettings({
             pacing: '',
             threshold: '',
@@ -245,13 +245,13 @@ const PublisherTable = () => {
             frequency: ''
         });
         setBudgetPopupOpen(false);
-        setSelected([]);
+        // Don't clear selection: setSelected([]);
     };
 
     // Update margin action handler
     const handleMarginAction = (selectedMarginType) => {
         if (!selectedMarginType) return;
-        
+
         if (selected.length === 0) {
             toast.error('Please select publishers to update margin settings');
             return;
@@ -260,7 +260,7 @@ const PublisherTable = () => {
         // Set the margin type and pre-fill the popup
         setMarginType(selectedMarginType);
         setMarginMode('percentage'); // Default to percentage
-        
+
         if (selectedMarginType === 'markup') {
             setMarginSettings({
                 markUpPercent: '',
@@ -278,7 +278,7 @@ const PublisherTable = () => {
                 applyToAll: false
             });
         }
-        
+
         setMarginPopupOpen(true);
     };
 
@@ -316,7 +316,7 @@ const PublisherTable = () => {
         const updatedData = publisherData.map(item => {
             if (selected.includes(item.id)) {
                 const updates = {};
-                
+
                 if (marginType === 'markup') {
                     if (marginMode === 'percentage' && marginSettings.markUpPercent) {
                         updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
@@ -326,7 +326,7 @@ const PublisherTable = () => {
                         updates.markUpPercentMode = 'value';
                     }
                 }
-                
+
                 if (marginType === 'markdown') {
                     if (marginMode === 'percentage' && marginSettings.markDownPercent) {
                         updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
@@ -336,7 +336,7 @@ const PublisherTable = () => {
                         updates.markDownPercentMode = 'value';
                     }
                 }
-                
+
                 return { ...item, ...updates };
             }
             return item;
@@ -347,7 +347,7 @@ const PublisherTable = () => {
         const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
         toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} publisher(s)`);
 
-        // Reset and close popup
+        // Reset and close popup but keep selection
         setMarginSettings({
             markUpPercent: '',
             markUpValue: '',
@@ -358,7 +358,7 @@ const PublisherTable = () => {
         setMarginType('');
         setMarginMode('percentage');
         setMarginPopupOpen(false);
-        setSelected([]);
+        // Don't clear selection: setSelected([]);
     };
 
     // Handle margin field updates with mode
@@ -366,8 +366,8 @@ const PublisherTable = () => {
         setPublisherData(prevData =>
             prevData.map(item =>
                 item.id === id
-                    ? { 
-                        ...item, 
+                    ? {
+                        ...item,
                         [fieldName]: parseFloat(value) || 0,
                         [`${fieldName}Mode`]: mode
                     }
@@ -532,6 +532,7 @@ const PublisherTable = () => {
         }
     ];
 
+    // Update the handleActionChange function to match ClientTable
     const handleActionChange = (action) => {
         if (!action) return;
 
@@ -558,7 +559,7 @@ const PublisherTable = () => {
                     );
                     setPublisherData(updatedData);
                     toast.success(`${selected.length} publisher(s) enabled successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -571,7 +572,7 @@ const PublisherTable = () => {
                     );
                     setPublisherData(updatedData);
                     toast.success(`${selected.length} publisher(s) paused successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -584,7 +585,7 @@ const PublisherTable = () => {
                     );
                     setPublisherData(updatedData);
                     toast.success(`${selected.length} publisher(s) deactivated successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -594,17 +595,17 @@ const PublisherTable = () => {
                 } else {
                     const itemsToClone = publisherData.filter(item => selected.includes(item.id));
                     const maxId = Math.max(...publisherData.map(d => d.id));
-                    
+
                     const clonedItems = itemsToClone.map((item, index) => ({
                         ...item,
                         id: maxId + index + 1,
                         publisherName: `${item.publisherName} (Clone)`,
                         status: 'inactive'
                     }));
-                    
+
                     setPublisherData(prev => [...prev, ...clonedItems]);
                     toast.success(`${selected.length} publisher(s) cloned successfully`);
-                    setSelected([]);
+                    // Keep the original selection intact for further actions
                 }
                 break;
 
@@ -620,7 +621,7 @@ const PublisherTable = () => {
                             const updatedData = publisherData.filter((item) => !selected.includes(item.id));
                             setPublisherData(updatedData);
                             toast.success(`${selected.length} publisher(s) deleted successfully`);
-                            setSelected([]);
+                            setSelected([]); // Only clear selection after deletion since items are removed
                             setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
                         }
                     });
@@ -633,17 +634,17 @@ const PublisherTable = () => {
                 } else {
                     const itemsToDuplicate = publisherData.filter(item => selected.includes(item.id));
                     const maxId = Math.max(...publisherData.map(d => d.id));
-                    
+
                     const duplicatedItems = itemsToDuplicate.map((item, index) => ({
                         ...item,
                         id: maxId + index + 1,
                         publisherName: `${item.publisherName} (Copy)`,
                         status: 'inactive'
                     }));
-                    
+
                     setPublisherData(prev => [...prev, ...duplicatedItems]);
                     toast.success(`${selected.length} publisher(s) duplicated successfully`);
-                    setSelected([]);
+                    // Keep the original selection intact for further actions
                 }
                 break;
 
@@ -680,7 +681,8 @@ const PublisherTable = () => {
                     options: [
                         { value: 'markup', label: 'Mark Up' },
                         { value: 'markdown', label: 'Mark Down' }
-                    ]
+                    ],
+                    onChange: handleMarginAction // Add this line
                 },
                 {
                     type: 'button',
@@ -694,20 +696,7 @@ const PublisherTable = () => {
                             setBudgetPopupOpen(true);
                         }
                     }
-                },
-                // {
-                //     type: 'button',
-                //     label: 'Update Margin',
-                //     variant: 'outlined',
-                //     color: 'secondary',
-                //     onClick: () => {
-                //         if (selected.length === 0) {
-                //             toast.error('Please select publishers to update margin settings');
-                //         } else {
-                //             setMarginPopupOpen(true);
-                //         }
-                //     }
-                // }
+                }
             ],
             rightFilters: [
                 {
@@ -916,74 +905,114 @@ const PublisherTable = () => {
             {/* Margin Settings Popup */}
             <Dialog
                 open={marginPopupOpen}
-                onClose={() => setMarginPopupOpen(false)}
+                onClose={() => {
+                    setMarginPopupOpen(false);
+                    setMarginType('');
+                    setMarginMode('percentage');
+                }}
                 maxWidth="sm"
                 fullWidth
             >
                 <DialogTitle>
-                    Update Margin Settings
+                    Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} Settings
                     <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        Updating margin settings for {selected.length} selected publisher(s)
+                        Updating {marginType === 'markup' ? 'mark up' : 'mark down'} settings for {selected.length} selected publisher(s)
                     </Typography>
                 </DialogTitle>
 
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-                        <TextField
-                            fullWidth
-                            label="Mark Up Percentage (%)"
-                            type="number"
-                            value={marginSettings.markUpPercent}
-                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
-                            helperText="Percentage to mark up from base cost"
-                            inputProps={{ min: 0, max: 100, step: 0.1 }}
-                        />
+                        {/* Mode Selection */}
+                        <FormControl fullWidth>
+                            <InputLabel>Margin Mode</InputLabel>
+                            <Select
+                                value={marginMode}
+                                label="Margin Mode"
+                                onChange={(e) => setMarginMode(e.target.value)}
+                            >
+                                <MenuItem value="percentage">Percentage (%)</MenuItem>
+                                <MenuItem value="value">Value ($)</MenuItem>
+                            </Select>
+                        </FormControl>
 
-                        <TextField
-                            fullWidth
-                            label="Mark Up Value ($)"
-                            type="number"
-                            value={marginSettings.markUpValue}
-                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpValue: e.target.value }))}
-                            helperText="Fixed amount to mark up from base cost"
-                            inputProps={{ min: 0, step: 0.01 }}
-                        />
+                        {/* Mark Up Fields */}
+                        {marginType === 'markup' && (
+                            <>
+                                {marginMode === 'percentage' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Up Percentage (%)"
+                                        type="number"
+                                        value={marginSettings.markUpPercent}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
+                                        helperText="Percentage to mark up from base cost"
+                                        inputProps={{ min: 0, max: 100, step: 0.1 }}
+                                        autoFocus
+                                    />
+                                )}
 
-                        <TextField
-                            fullWidth
-                            label="Mark Down Percentage (%)"
-                            type="number"
-                            value={marginSettings.markDownPercent}
-                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
-                            helperText="Percentage to mark down from base cost"
-                            inputProps={{ min: 0, max: 100, step: 0.1 }}
-                        />
+                                {marginMode === 'value' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Up Value ($)"
+                                        type="number"
+                                        value={marginSettings.markUpValue}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpValue: e.target.value }))}
+                                        helperText="Fixed dollar amount to mark up from base cost"
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                        }}
+                                        inputProps={{ min: 0, step: 0.01 }}
+                                        autoFocus
+                                    />
+                                )}
+                            </>
+                        )}
 
-                        <TextField
-                            fullWidth
-                            label="Mark Down Value ($)"
-                            type="number"
-                            value={marginSettings.markDownValue}
-                            onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownValue: e.target.value }))}
-                            helperText="Fixed amount to mark down from base cost"
-                            inputProps={{ min: 0, step: 0.01 }}
-                        />
+                        {/* Mark Down Fields */}
+                        {marginType === 'markdown' && (
+                            <>
+                                {marginMode === 'percentage' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Down Percentage (%)"
+                                        type="number"
+                                        value={marginSettings.markDownPercent}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
+                                        helperText="Percentage to mark down from base cost"
+                                        inputProps={{ min: 0, max: 100, step: 0.1 }}
+                                        autoFocus
+                                    />
+                                )}
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                            <Checkbox
-                                checked={marginSettings.applyToAll}
-                                onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
-                            />
-                            <Typography variant="body2">
-                                Apply these margin settings to all selected publishers
-                            </Typography>
-                        </Box>
+                                {marginMode === 'value' && (
+                                    <TextField
+                                        fullWidth
+                                        label="Mark Down Value ($)"
+                                        type="number"
+                                        value={marginSettings.markDownValue}
+                                        onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownValue: e.target.value }))}
+                                        helperText="Fixed dollar amount to mark down from base cost"
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                        }}
+                                        inputProps={{ min: 0, step: 0.01 }}
+                                        autoFocus
+                                    />
+                                )}
+                            </>
+                        )}
+
                     </Box>
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3 }}>
                     <Button
-                        onClick={() => setMarginPopupOpen(false)}
+                        onClick={() => {
+                            setMarginPopupOpen(false);
+                            setMarginType('');
+                            setMarginMode('percentage');
+                        }}
                         variant="outlined"
                     >
                         Cancel
@@ -993,7 +1022,7 @@ const PublisherTable = () => {
                         variant="contained"
                         color="primary"
                     >
-                        Update Margin Settings
+                        Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} {marginMode === 'percentage' ? 'Percentage' : 'Value'}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -1001,7 +1030,9 @@ const PublisherTable = () => {
             {/* Confirmation Dialog */}
             <Dialog
                 open={confirmDialog.open}
-                onClose={() => setConfirmDialog(prev => ({ ...prev, open: false }))}
+                onClose={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
+                maxWidth="sm"
+                fullWidth
             >
                 <DialogTitle>{confirmDialog.title}</DialogTitle>
                 <DialogContent>
@@ -1009,20 +1040,19 @@ const PublisherTable = () => {
                         {confirmDialog.message}
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setConfirmDialog(prev => ({ ...prev, open: false }))} color="primary">
+                <DialogActions sx={{ p: 3 }}>
+                    <Button
+                        onClick={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
+                        variant="outlined"
+                    >
                         Cancel
                     </Button>
                     <Button
-                        onClick={() => {
-                            if (confirmDialog.onConfirm) {
-                                confirmDialog.onConfirm();
-                            }
-                        }}
-                        color="secondary"
+                        onClick={confirmDialog.onConfirm}
                         variant="contained"
+                        color="error"
                     >
-                        Confirm
+                        Delete
                     </Button>
                 </DialogActions>
             </Dialog>

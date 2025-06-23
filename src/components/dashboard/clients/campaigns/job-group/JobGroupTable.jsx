@@ -236,7 +236,7 @@ const JobGroupTable = () => {
         setClientData(updatedData);
         toast.success(`Budget settings updated for ${selected.length} job group(s)`);
 
-        // Reset and close popup
+        // Reset and close popup but keep selection
         setBudgetSettings({
             pacing: '',
             threshold: '',
@@ -244,7 +244,7 @@ const JobGroupTable = () => {
             frequency: ''
         });
         setBudgetPopupOpen(false);
-        setSelected([]);
+        // Don't clear selection: setSelected([]);
     };
 
     // Update margin action handler
@@ -346,7 +346,7 @@ const JobGroupTable = () => {
         const modeText = marginMode === 'percentage' ? 'percentage' : 'value';
         toast.success(`${fieldName} ${modeText} settings updated for ${selected.length} job group(s)`);
 
-        // Reset and close popup
+        // Reset and close popup but keep selection
         setMarginSettings({
             markUpPercent: '',
             markUpValue: '',
@@ -357,7 +357,7 @@ const JobGroupTable = () => {
         setMarginType('');
         setMarginMode('percentage');
         setMarginPopupOpen(false);
-        setSelected([]);
+        // Don't clear selection: setSelected([]);
     };
 
     // Handle margin field updates with mode
@@ -539,6 +539,7 @@ const JobGroupTable = () => {
         }
     ];
 
+    // Update the handleActionChange function to match ClientTable
     const handleActionChange = (action) => {
         if (!action) return;
 
@@ -565,7 +566,7 @@ const JobGroupTable = () => {
                     );
                     setClientData(updatedData);
                     toast.success(`${selected.length} job group(s) enabled successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -578,7 +579,7 @@ const JobGroupTable = () => {
                     );
                     setClientData(updatedData);
                     toast.success(`${selected.length} job group(s) paused successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -591,7 +592,7 @@ const JobGroupTable = () => {
                     );
                     setClientData(updatedData);
                     toast.success(`${selected.length} job group(s) deactivated successfully`);
-                    setSelected([]);
+                    // Don't clear selection for status changes
                 }
                 break;
 
@@ -611,7 +612,7 @@ const JobGroupTable = () => {
                     
                     setClientData(prev => [...prev, ...clonedItems]);
                     toast.success(`${selected.length} job group(s) cloned successfully`);
-                    setSelected([]);
+                    // Keep the original selection intact for further actions
                 }
                 break;
 
@@ -627,7 +628,7 @@ const JobGroupTable = () => {
                             const updatedData = clientData.filter((item) => !selected.includes(item.id));
                             setClientData(updatedData);
                             toast.success(`${selected.length} job group(s) deleted successfully`);
-                            setSelected([]);
+                            setSelected([]); // Only clear selection after deletion since items are removed
                             setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
                         }
                     });
@@ -650,7 +651,7 @@ const JobGroupTable = () => {
                     
                     setClientData(prev => [...prev, ...duplicatedItems]);
                     toast.success(`${selected.length} job group(s) duplicated successfully`);
-                    setSelected([]);
+                    // Keep the original selection intact for further actions
                 }
                 break;
 
@@ -1008,16 +1009,6 @@ const JobGroupTable = () => {
                                 )}
                             </>
                         )}
-
-                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                            <Checkbox
-                                checked={marginSettings.applyToAll}
-                                onChange={(e) => setMarginSettings(prev => ({ ...prev, applyToAll: e.target.checked }))}
-                            />
-                            <Typography variant="body2">
-                                Apply these {marginType === 'markup' ? 'mark up' : 'mark down'} {marginMode} settings to all selected job groups
-                            </Typography>
-                        </Box>
                     </Box>
                 </DialogContent>
 
