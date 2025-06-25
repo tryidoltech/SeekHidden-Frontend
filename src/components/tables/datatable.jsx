@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare, ArrowDown2 } from "iconsax-react";
 import { visuallyHidden } from "@mui/utils";
+import { Link } from 'react-router-dom';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -611,7 +612,7 @@ function DynamicTableHead({
 
 function EditableCell({ column, value, row, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value || '');
+  const [editValue, setEditValue] = useState(value||'');
   const [marginMode, setMarginMode] = useState(row[`${column.id}Mode`] || 'percentage');
   const inputRef = useRef(null);
 
@@ -653,45 +654,41 @@ function EditableCell({ column, value, row, onUpdate }) {
   };
 
   if (!isEditing) {
+    const displayNode = column.id === 'clientName'
+      ? (
+        <Link
+          to={`/campaigns`}
+          onClick={e => e.stopPropagation()}
+          style={{
+            color: '#1976d2',
+            cursor: 'pointer',
+            textDecoration: 'underline'
+          }}
+        >
+          {value}
+        </Link>
+      )
+      : (
+        <Typography variant="body2">
+          {value ?? '-'}
+        </Typography>
+      );
+
     return (
       <Box
         sx={{
-          minHeight: '24px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '4px 8px',
-          borderRadius: '4px',
-          '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04)',
-          },
+          '&:hover': { backgroundColor: 'action.hover' }
         }}
       >
-        <Typography variant="body2">
-          {column.type === 'editableMargin' ? (
-            value ? (
-              row[`${column.id}Mode`] === 'value' ? `$${value}` : `${value}%`
-            ) : (
-              row[`${column.id}Mode`] === 'value' ? '$0' : '0%'
-            )
-          ) : (
-            column.type === 'editablePercentage' ? `${value || 0}%` : 
-            column.type === 'editableCurrency' ? `$${value || 0}` : 
-            value || '-'
-          )}
-        </Typography>
-        
+        {displayNode}
         <IconButton
           size="small"
           onClick={() => setIsEditing(true)}
-          sx={{ 
-            color: 'text.secondary',
-            ml: 1,
-            opacity: 0.7,
-            '&:hover': {
-              opacity: 1
-            }
-          }}
+          sx={{ opacity: 0.6, '&:hover': { opacity: 1 } }}
         >
           <Edit size="16" />
         </IconButton>
@@ -836,8 +833,13 @@ function EditableCell({ column, value, row, onUpdate }) {
 }
 
 function CellRenderer({ column, value, row, onCellEdit }) {
-  if (column.render && !column.editable) {
-    return column.render(value, row);
+  if (column.render) {
+    // stopPropagation here so row‐click won’t swallow it
+    return (
+      <span onClick={e => e.stopPropagation()}>
+        {column.render(value, row)}
+      </span>
+    );
   }
 
   // Handle editable fields with custom edit handlers

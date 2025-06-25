@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { AddSquare, Filter } from 'iconsax-react';
-import { useNavigate } from 'react-router-dom';
+import { AddSquare, Filter, Edit } from 'iconsax-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import DynamicTable from '../../tables/datatable';
 // Add these imports for the popup
@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  DialogContentText, // Add this import
+  DialogContentText,
   Button,
   TextField,
   FormControl,
@@ -20,7 +20,8 @@ import {
   Typography,
   Checkbox,
   ListItemText,
-  InputAdornment
+  InputAdornment,
+  IconButton  // ← add this
 } from '@mui/material';
 
 const ClientTable = () => {
@@ -487,24 +488,7 @@ const ClientTable = () => {
       disablePadding: true,
       editable: true,
       type: 'editableText',
-      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value),
-      render: (value, row) => (
-        <span
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent row click event
-            navigate('/campaigns');
-          }}
-          style={{
-            color: '#1976d2',
-            cursor: 'pointer',
-            textDecoration: 'underline'
-          }}
-          onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
-          onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
-        >
-          {value}
-        </span>
-      )
+      onUpdate: (id, value) => handleFieldUpdate(id, 'clientName', value)
     },
     {
       id: 'clientType',
@@ -1025,6 +1009,14 @@ const ClientTable = () => {
 
     if (onRowClick) {
       onRowClick(row, rowId);
+    }
+  };
+
+  // add this above your columns array
+  const handleClientNameEdit = row => {
+    const newName = prompt('Edit Client Name:', row.clientName);
+    if (newName != null && newName !== row.clientName) {
+      handleFieldUpdate(row.id, 'clientName', newName);
     }
   };
 
