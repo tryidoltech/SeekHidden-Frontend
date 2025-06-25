@@ -16,6 +16,7 @@ import JobGroupPage from '../pages/job-group';
 import JobGroupForm from '../components/dashboard/clients/campaigns/job-group/JobGroupForm';
 import Publishers from '../components/dashboard/clients/campaigns/job-group/publishers';
 import ClickLogsPage from '../pages/click-logs';
+import InspectFeedClient from '../components/dashboard/clients/InspectFeed';
 
 // render - sample page
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
@@ -46,6 +47,10 @@ const MainRoutes = {
         {
           path: 'clients/add-client',
           element: <AddClient />
+        },
+        {
+          path: 'clients/add-client/inspect-feed',
+          element: <InspectFeedClient />
         },
         {
           path: 'clients/add-client-user',

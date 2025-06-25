@@ -25,9 +25,11 @@ import {
   DialogTitle,    // Add this
   DialogContent,  // Add this
   DialogActions,  // Add this
+  Link
 } from '@mui/material';
 import { ArrowLeft, Eye, Download, RotateCcw } from 'lucide-react';
 import { toast } from 'react-toastify'; // Add this import
+import { useNavigate } from 'react-router-dom';
 
 const AddClient = () => {
   // State for form fields
@@ -93,7 +95,7 @@ const AddClient = () => {
   const [newFeedUrl, setNewFeedUrl] = useState('');
   const [isLoadingNewFeed, setIsLoadingNewFeed] = useState(false);
   const [newFeedError, setNewFeedError] = useState('');
-  
+
   // Add this new state for tab functionality
   const [activeTab, setActiveTab] = useState('jobData');
 
@@ -517,6 +519,65 @@ const AddClient = () => {
     ));
   };
 
+  const navigate = useNavigate();
+
+  // --- add to your useState declarations ---
+  const [editingFeedId, setEditingFeedId] = useState(null)
+  const [editingFeedUrl, setEditingFeedUrl] = useState('')
+
+  // when “Edit Feed” is clicked
+  const handleEditFeed = (feedId) => {
+    const toEdit = feeds.find(f => f.id === feedId)
+    if (!toEdit) return
+
+    setEditingFeedId(feedId)
+    setEditingFeedUrl(toEdit.url)
+  }
+
+  // when “Save” is clicked
+  const handleSaveFeedUrl = (feedId) => {
+    setFeeds(feeds.map(f =>
+      f.id === feedId ? { ...f, url: editingFeedUrl } : f
+    ));
+    setEditingFeedId(null);
+    setEditingFeedUrl('');
+  };
+
+  // Show the Feed Details modal for an existing feed
+  const handleViewFeedNodes = (feedId) => {
+    const selected = feeds.find(f => f.id === feedId)
+    if (!selected) return
+
+    setFeedData({
+      url:        selected.url,        // ← add this
+      totalJobs:  selected.totalJobs,
+      nodes:      selected.nodes,
+      lastUpdated:selected.lastUpdated,
+      feedType:   selected.feedType,
+      encoding:   selected.encoding
+    })
+
+    setFeedDetails({ jobs: selected.jobs || [] })
+    setShowFeedModal(true)
+  }
+
+  const [mappingFeedId, setMappingFeedId] = useState(null);
+
+  // replace your existing handleMapFeed
+  const handleMapFeed = (feedId) => {
+    const selected = feeds.find(f => f.id === feedId);
+    if (!selected) return;
+
+    // set the feed we’re mapping
+    setMappingFeedId(feedId);
+
+    // load that feed’s nodes into the dropdown
+    setAvailableNodes(selected.nodes);
+
+    // initialize the mapping selects with whatever the feed already has (or blanks)
+    setMappings({ ...selected.mappings });
+  };
+
   return (
     <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
       {/* Header */}
@@ -542,27 +603,7 @@ const AddClient = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 1, width: '80%' }}>
-          <TextField
-            size="small"
-            placeholder="Enter feed URL here..."
-            value={feedUrl}
-            onChange={(e) => setFeedUrl(e.target.value)}
-            sx={{
-              width: '100%',
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: 'white',
-              }
-            }}
-          />
-          <IconButton
-            size="small"
-            sx={{ backgroundColor: 'white' }}
-            onClick={handleViewFeedDetails}
-            disabled={!feedData}
-          >
-            <Eye size={16} />
-          </IconButton>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
             variant="outlined"
             size="small"
@@ -656,32 +697,50 @@ const AddClient = () => {
 
                 {/* Tab Content */}
                 {activeTab === 'jobData' && (
-                  <TableContainer sx={{ maxHeight: 400 }}>
-                    <Table stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Jobs</TableCell>
-                          <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Job fields</TableCell>
-                          <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Value</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {feedDetails.jobs.map((job, jobIndex) => (
-                          Object.entries(job.fields).map(([field, value], fieldIndex) => (
-                            <TableRow key={`${jobIndex}-${fieldIndex}`}>
-                              <TableCell sx={{ backgroundColor: '#f9f9f9', fontWeight: 500 }}>
-                                {fieldIndex === 0 ? job.id : ''}
-                              </TableCell>
-                              <TableCell>{field}</TableCell>
-                              <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>
-                                {value}
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <Box>
+                    {/* show the feed’s XML URL */}
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+                        Feed XML URL
+                      </Typography>
+                      <Link
+                        href={feedData?.url}
+                        target="_blank"
+                        rel="noopener"
+                        underline="hover"
+                        sx={{ wordBreak: 'break-all' }}
+                      >
+                        {feedData?.url}
+                      </Link>
+                    </Box>
+
+                    {/* <TableContainer sx={{ maxHeight: 400 }}>
+                      <Table stickyHeader>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Jobs</TableCell>
+                            <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Job fields</TableCell>
+                            <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Value</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {feedDetails.jobs.map((job, jobIndex) => (
+                            Object.entries(job.fields).map(([field, value], fieldIndex) => (
+                              <TableRow key={`${jobIndex}-${fieldIndex}`}>
+                                <TableCell sx={{ backgroundColor: '#f9f9f9', fontWeight: 500 }}>
+                                  {fieldIndex === 0 ? job.id : ''}
+                                </TableCell>
+                                <TableCell>{field}</TableCell>
+                                <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>
+                                  {value}
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer> */}
+                  </Box>
                 )}
 
                 {activeTab === 'jobFeedExtract' && (
@@ -760,14 +819,14 @@ const AddClient = () => {
                                 'New York', 'California', 'Texas', 'Singapore', 'London'
                               ];
                               const dataTypes = ['String', 'Number', 'Date', 'URL', 'Text'];
-                              
+
                               return (
                                 <TableRow key={node}>
                                   <TableCell sx={{ fontWeight: 500 }}>{node}</TableCell>
                                   <TableCell>
-                                    <Chip 
-                                      label={dataTypes[index % dataTypes.length]} 
-                                      size="small" 
+                                    <Chip
+                                      label={dataTypes[index % dataTypes.length]}
+                                      size="small"
                                       variant="outlined"
                                       sx={{ fontSize: '0.75rem' }}
                                     />
@@ -779,8 +838,8 @@ const AddClient = () => {
                                     {Math.floor(Math.random() * 1000) + 100}
                                   </TableCell>
                                   <TableCell>
-                                    <Chip 
-                                      label={isMapped ? 'Mapped' : 'Unmapped'} 
+                                    <Chip
+                                      label={isMapped ? 'Mapped' : 'Unmapped'}
                                       size="small"
                                       color={isMapped ? 'success' : 'default'}
                                       sx={{ fontSize: '0.75rem' }}
@@ -845,11 +904,11 @@ const AddClient = () => {
                       <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                         Processing Log
                       </Typography>
-                      <Box sx={{ 
-                        backgroundColor: '#f8f9fa', 
-                        p: 2, 
-                        borderRadius: 1, 
-                        maxHeight: 200, 
+                      <Box sx={{
+                        backgroundColor: '#f8f9fa',
+                        p: 2,
+                        borderRadius: 1,
+                        maxHeight: 200,
                         overflowY: 'auto',
                         fontFamily: 'monospace',
                         fontSize: '0.875rem'
@@ -881,7 +940,7 @@ const AddClient = () => {
           </Box>
         )}
         {/* Add Feed Dialog - ADD THIS SECTION */}
-        
+
         <Dialog open={showAddFeedDialog} onClose={handleAddFeedCancel} maxWidth="sm" fullWidth>
           <DialogTitle>Add New Feed</DialogTitle>
           <DialogContent>
@@ -931,410 +990,222 @@ const AddClient = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Feed Mapping Section - Shows automatically when URL is entered */}
-        {feedData && (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              backgroundColor: '#ffffff',
-              borderRadius: 2,
-              mb: 3,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-              Feed Mapping
-            </Typography>
+        {/* Feed Mapping Section */}
+        {feeds.map(feed => (
+          <Paper key={feed.id} elevation={1} sx={{ mb:3, p:2, borderRadius:2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+              <TextField
+                label="Feed URL"
+                type="url"
+                size="small"
+                value={editingFeedId === feed.id ? editingFeedUrl : feed.url}
+                onChange={e => editingFeedId === feed.id && setEditingFeedUrl(e.target.value)}
+                disabled={editingFeedId !== feed.id}
+                sx={{ flexGrow: 1 }}
+              />
 
-            {feedError && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {feedError}
-              </Alert>
-            )}
-
-            {feedData && (
-              <Box sx={{ mb: 3 }}>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                  <Grid item xs={3}>
-                    <Typography variant="body2" color="textSecondary">
-                      Total Jobs: <strong>{feedData.totalJobs}</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="body2" color="textSecondary">
-                      Feed Type: <strong>{feedData.feedType}</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="body2" color="textSecondary">
-                      Last Updated: <strong>{new Date(feedData.lastUpdated).toLocaleDateString()}</strong>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="body2" color="textSecondary">
-                      Nodes Found: <strong>{feedData.nodes.length}</strong>
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Divider sx={{ my: 2 }} />
-
-                <Grid container spacing={3}>
-                  <Grid item xs={4}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                      Default Career Fields
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {Object.keys(mappings).map((field) => {
-                        const isDefaultField = defaultFields.includes(field);
-
-                        return (
-                          <Box key={field} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            {editingField === field && !isDefaultField ? (
-                              <TextField
-                                fullWidth
-                                size="small"
-                                value={editingFieldName}
-                                onChange={(e) => setEditingFieldName(e.target.value)}
-                                onKeyPress={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleConfirmEditField();
-                                  } else if (e.key === 'Escape') {
-                                    handleCancelEditField();
-                                  }
-                                }}
-                                sx={{ backgroundColor: 'white' }}
-                                autoFocus
-                              />
-                            ) : (
-                              <TextField
-                                fullWidth
-                                size="small"
-                                label={field}
-                                value={field}
-                                disabled
-                                sx={{
-                                  backgroundColor: isDefaultField ? '#f9f9f9' : '#fff3e0' // Different color for custom fields
-                                }}
-                              />
-                            )}
-
-                            <Box sx={{ display: 'flex', gap: 0.5, minWidth: 'fit-content' }}>
-                              {editingField === field && !isDefaultField ? (
-                                <>
-                                  <IconButton
-                                    size="small"
-                                    onClick={handleConfirmEditField}
-                                    disabled={!editingFieldName.trim() || (editingFieldName.trim() !== editingField && mappings.hasOwnProperty(editingFieldName.trim()))}
-                                    sx={{ color: 'green' }}
-                                  >
-                                    ✓
-                                  </IconButton>
-                                  <IconButton
-                                    size="small"
-                                    onClick={handleCancelEditField}
-                                    sx={{ color: 'red' }}
-                                  >
-                                    ✕
-                                  </IconButton>
-                                </>
-                              ) : (
-                                // Only show edit/delete buttons for custom fields (non-default)
-                                !isDefaultField && (
-                                  <>
-                                    <IconButton
-                                      size="small"
-                                      onClick={() => handleEditField(field)}
-                                      sx={{ color: '#666' }}
-                                    >
-                                      ✏️
-                                    </IconButton>
-                                    <IconButton
-                                      size="small"
-                                      onClick={() => handleDeleteField(field)}
-                                      sx={{ color: 'red' }}
-                                    >
-                                      🗑️
-                                    </IconButton>
-                                  </>
-                                )
-                              )}
-                            </Box>
-                          </Box>
-                        );
-                      })}
-
-                      {/* Add new field row */}
-                      {isAddingField && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            placeholder="Enter field name"
-                            value={newFieldName}
-                            onChange={(e) => setNewFieldName(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                handleConfirmAddField();
-                              } else if (e.key === 'Escape') {
-                                handleCancelAddField();
-                              }
-                            }}
-                            sx={{ backgroundColor: 'white' }}
-                            autoFocus
-                          />
-                          <Box sx={{ display: 'flex', gap: 0.5, minWidth: 'fit-content' }}>
-                            <IconButton
-                              size="small"
-                              onClick={handleConfirmAddField}
-                              disabled={!newFieldName.trim() || mappings.hasOwnProperty(newFieldName.trim())}
-                              sx={{ color: 'green' }}
-                            >
-                              ✓
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              onClick={handleCancelAddField}
-                              sx={{ color: 'red' }}
-                            >
-                              ✕
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      )}
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                      Feed Nodes
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {Object.keys(mappings).map((field) => (
-                        <FormControl key={field} fullWidth size="small">
-                          <InputLabel>Select Node</InputLabel>
-                          <Select
-                            value={mappings[field]}
-                            label="Select Node"
-                            onChange={(e) => handleMappingChange(field, e.target.value)}
-                          >
-                            <MenuItem value="">
-                              <em>None</em>
-                            </MenuItem>
-                            {availableNodes
-                              .filter(node =>
-                                // Show node if it's not mapped to any other field OR if it's currently mapped to this field
-                                !Object.entries(mappings).some(([key, value]) => value === node && key !== field)
-                              )
-                              .map((node) => (
-                                <MenuItem key={node} value={node}>
-                                  {node}
-                                </MenuItem>
-                              ))}
-                          </Select>
-                        </FormControl>
-                      ))}
-
-                      {/* Placeholder for new field mapping */}
-                      {isAddingField && (
-                        <FormControl fullWidth size="small" disabled>
-                          <InputLabel>Select Node</InputLabel>
-                          <Select
-                            value=""
-                            label="Select Node"
-                            sx={{ backgroundColor: '#f5f5f5' }}
-                          >
-                            <MenuItem value="">
-                              <em>Add field first</em>
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      )}
-                    </Box>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, my: 3 }}>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={handleAddField}
-                        disabled={isAddingField || editingField !== null}
-                        sx={{
-                          textTransform: 'none',
-                          borderColor: '#ddd',
-                          color: '#666'
-                        }}
-                      >
-                        Add Field
-                      </Button>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={handleMapFields}
-                        sx={{
-                          backgroundColor: '#000',
-                          textTransform: 'none',
-                          '&:hover': { backgroundColor: '#333' }
-                        }}
-                      >
-                        Map
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={handleResetMappings}
-                        sx={{
-                          textTransform: 'none',
-                          borderColor: '#ddd',
-                          color: '#666'
-                        }}
-                        startIcon={<RotateCcw size={16} />}
-                      >
-                        Reset
-                      </Button>
-                    </Box>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                      Unmapped Feed Nodes
-                    </Typography>
-                    <Box sx={{
-                      backgroundColor: '#f9f9f9',
-                      p: 2,
-                      borderRadius: 1,
-                      maxHeight: 300,
-                      overflowY: 'auto'
-                    }}>
-                      {availableNodes
-                        .filter(node => !Object.values(mappings).includes(node))
-                        .map((node) => (
-                          <Chip
-                            key={node}
-                            label={node}
-                            size="small"
-                            sx={{ m: 0.5 }}
-                            variant="outlined"
-                          />
-                        ))}
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-            )}
-          </Paper>
-        )}
-
-        {/* Additional Feeds Section */}
-        {feeds.map((feed, index) => (
-          <Paper
-            key={feed.id}
-            elevation={0}
-            sx={{
-              p: 3,
-              backgroundColor: '#ffffff',
-              borderRadius: 2,
-              mb: 3,
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Feed Mapping {index + 2}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <TextField
-                  size="small"
-                  value={feed.url}
-                  disabled
-                  sx={{
-                    width: 300,
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#f5f5f5',
-                    },
-                    '& .MuiInputBase-input': {
-                      fontSize: '0.875rem',
-                      color: 'rgba(0, 0, 0, 0.6)',
-                    }
-                  }}
-                />
-                <IconButton
-                  size="small"
-                  color="error"
-                  onClick={() => handleRemoveFeed(feed.id)}
-                  sx={{ ml: 1 }}
-                >
-                  <Box sx={{ fontSize: 16 }}>×</Box>
-                </IconButton>
-              </Box>
+              {editingFeedId === feed.id
+                ? <>
+                    <Button
+                      size="small"
+                      onClick={() => handleSaveFeedUrl(feed.id)}
+                      disabled={!editingFeedUrl.trim()}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => setEditingFeedId(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                : <>
+                    <Button
+                      size="small"
+                      onClick={() => handleEditFeed(feed.id)}
+                    >
+                      Edit Feed
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => handleViewFeedNodes(feed.id)}
+                    >
+                      View Nodes
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => navigate('/clients/add-client/inspect-feed', { state: { feed } })}
+                    >
+                      Inspect Feed
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => handleMapFeed(feed.id)}
+                    >
+                      Map Feed
+                    </Button>
+                    <Button
+                      size="small"
+                      color="error"
+                      onClick={() => handleRemoveFeed(feed.id)}
+                    >
+                      Delete
+                    </Button>
+                  </>
+              }
             </Box>
 
-            <Box sx={{ mb: 3 }}>
-              <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid item xs={3}>
-                  <Typography variant="body2" color="textSecondary">
-                    Total Jobs: <strong>{feed.totalJobs}</strong>
-                  </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="body2" color="textSecondary">
-                    Feed Type: <strong>{feed.feedType}</strong>
-                  </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="body2" color="textSecondary">
-                    Last Updated: <strong>{new Date(feed.lastUpdated).toLocaleDateString()}</strong>
-                  </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="body2" color="textSecondary">
-                    Nodes Found: <strong>{feed.nodes.length}</strong>
-                  </Typography>
-                </Grid>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={3}>
+                <Typography variant="body2" color="textSecondary">
+                  Total Jobs: <strong>{feed.totalJobs}</strong>
+                </Typography>
               </Grid>
+              <Grid item xs={3}>
+                <Typography variant="body2" color="textSecondary">
+                  Feed Type: <strong>{feed.feedType}</strong>
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography variant="body2" color="textSecondary">
+                  Last Updated:{' '}
+                  <strong>{new Date(feed.lastUpdated).toLocaleDateString()}</strong>
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography variant="body2" color="textSecondary">
+                  Nodes Found: <strong>{feed.nodes.length}</strong>
+                </Typography>
+              </Grid>
+            </Grid>
 
-              <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 2 }} />
 
+            {mappingFeedId === feed.id && (
               <Grid container spacing={3}>
                 <Grid item xs={4}>
                   <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                    Career Fields
+                    Default Career Fields
                   </Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {Object.keys(feed.mappings).map((field) => {
+                    {Object.keys(mappings).map((field) => {
                       const isDefaultField = defaultFields.includes(field);
 
                       return (
                         <Box key={field} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            label={field}
-                            value={field}
-                            disabled
-                            sx={{
-                              backgroundColor: isDefaultField ? '#f9f9f9' : '#fff3e0' // Different color for custom fields
-                            }}
-                          />
-                          {/* Only show delete button for custom fields (non-default) */}
-                          {!isDefaultField && (
-                            <IconButton
+                          {editingField === field && !isDefaultField ? (
+                            <TextField
+                              fullWidth
                               size="small"
-                              onClick={() => {
-                                const newMappings = { ...feed.mappings };
-                                delete newMappings[field];
-                                setFeeds(prev => prev.map(f =>
-                                  f.id === feed.id
-                                    ? { ...f, mappings: newMappings }
-                                    : f
-                                ));
+                              value={editingFieldName}
+                              onChange={(e) => setEditingFieldName(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleConfirmEditField();
+                                } else if (e.key === 'Escape') {
+                                  handleCancelEditField();
+                                }
                               }}
-                              sx={{ color: 'red' }}
-                            >
-                              🗑️
-                            </IconButton>
+                              sx={{ backgroundColor: 'white' }}
+                              autoFocus
+                            />
+                          ) : (
+                            <TextField
+                              fullWidth
+                              size="small"
+                              label={field}
+                              value={field}
+                              InputProps={{ readOnly: true }}
+                              sx={{
+                                backgroundColor: isDefaultField ? '#f9f9f9' : '#fff3e0' // Different color for custom fields
+                              }}
+                            />
                           )}
+
+                          <Box sx={{ display: 'flex', gap: 0.5, minWidth: 'fit-content' }}>
+                            {editingField === field && !isDefaultField ? (
+                              <>
+                                <IconButton
+                                  size="small"
+                                  onClick={handleConfirmEditField}
+                                  disabled={!editingFieldName.trim() || (editingFieldName.trim() !== editingField && mappings.hasOwnProperty(editingFieldName.trim()))}
+                                  sx={{ color: 'green' }}
+                                >
+                                  ✓
+                                </IconButton>
+                                <IconButton
+                                  size="small"
+                                  onClick={handleCancelEditField}
+                                  sx={{ color: 'red' }}
+                                >
+                                  ✕
+                                </IconButton>
+                              </>
+                            ) : (
+                              // Only show edit/delete buttons for custom fields (non-default)
+                              !isDefaultField && (
+                                <>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleEditField(field)}
+                                    sx={{ color: '#666' }}
+                                  >
+                                    ✏️
+                                  </IconButton>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleDeleteField(field)}
+                                    sx={{ color: 'red' }}
+                                  >
+                                    🗑️
+                                  </IconButton>
+                                </>
+                              )
+                            )}
+                          </Box>
                         </Box>
                       );
                     })}
+
+                    {/* Add new field row */}
+                    {isAddingField && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          placeholder="Enter field name"
+                          value={newFieldName}
+                          onChange={(e) => setNewFieldName(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              handleConfirmAddField();
+                            } else if (e.key === 'Escape') {
+                              handleCancelAddField();
+                            }
+                          }}
+                          sx={{ backgroundColor: 'white' }}
+                          autoFocus
+                        />
+                        <Box sx={{ display: 'flex', gap: 0.5, minWidth: 'fit-content' }}>
+                          <IconButton
+                            size="small"
+                            onClick={handleConfirmAddField}
+                            disabled={!newFieldName.trim() || mappings.hasOwnProperty(newFieldName.trim())}
+                            sx={{ color: 'green' }}
+                          >
+                            ✓
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={handleCancelAddField}
+                            sx={{ color: 'red' }}
+                          >
+                            ✕
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    )}
                   </Box>
                 </Grid>
 
@@ -1343,42 +1214,59 @@ const AddClient = () => {
                     Feed Nodes
                   </Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {Object.keys(feed.mappings).map((field) => (
+                    {Object.keys(mappings).map((field) => (
                       <FormControl key={field} fullWidth size="small">
                         <InputLabel>Select Node</InputLabel>
                         <Select
-                          value={feed.mappings[field]}
+                          value={mappings[field]}
                           label="Select Node"
-                          onChange={(e) => handleAdditionalFeedMappingChange(feed.id, field, e.target.value)}
+                          onChange={(e) => handleMappingChange(field, e.target.value)}
                         >
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
-                          {feed.nodes
-                            .filter(node =>
-                              // Show node if it's not mapped to any other field OR if it's currently mapped to this field
-                              !Object.entries(feed.mappings).some(([key, value]) => value === node && key !== field)
-                            )
-                            .map((node) => (
-                              <MenuItem key={node} value={node}>
+                          {availableNodes.map((node) => {
+                            // disable if some other field already has this node
+                            const takenByOther = Object.entries(mappings)
+                              .some(([otherField, val]) => val === node && otherField !== field);
+
+                            return (
+                              <MenuItem
+                                key={node}
+                                value={node}
+                                disabled={takenByOther}
+                              >
                                 {node}
                               </MenuItem>
-                            ))}
+                            )
+                          })}
                         </Select>
                       </FormControl>
                     ))}
+
+                    {/* Placeholder for new field mapping */}
+                    {isAddingField && (
+                      <FormControl fullWidth size="small" disabled>
+                        <InputLabel>Select Node</InputLabel>
+                        <Select
+                          value=""
+                          label="Select Node"
+                          sx={{ backgroundColor: '#f5f5f5' }}
+                        >
+                          <MenuItem value="">
+                            <em>Add field first</em>
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
                   </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, my: 3 }}>
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => {
-                        const fieldName = prompt('Enter field name:');
-                        if (fieldName && fieldName.trim() && !feed.mappings.hasOwnProperty(fieldName.trim())) {
-                          handleAddFieldToFeed(feed.id, fieldName.trim());
-                        }
-                      }}
+                      onClick={handleAddField}
+                      disabled={isAddingField || editingField !== null}
                       sx={{
                         textTransform: 'none',
                         borderColor: '#ddd',
@@ -1390,14 +1278,7 @@ const AddClient = () => {
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={() => {
-                        const mappedFields = Object.entries(feed.mappings).filter(([key, value]) => value.trim() !== '');
-                        if (mappedFields.length === 0) {
-                          alert('Please map at least one field before proceeding.');
-                          return;
-                        }
-                        console.log(`Feed ${feed.id} mappings saved:`, feed.mappings);
-                      }}
+                      onClick={handleMapFields}
                       sx={{
                         backgroundColor: '#000',
                         textTransform: 'none',
@@ -1409,17 +1290,7 @@ const AddClient = () => {
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => {
-                        const resetMappings = Object.keys(feed.mappings).reduce((acc, key) => {
-                          acc[key] = '';
-                          return acc;
-                        }, {});
-                        setFeeds(prev => prev.map(f =>
-                          f.id === feed.id
-                            ? { ...f, mappings: resetMappings }
-                            : f
-                        ));
-                      }}
+                      onClick={handleResetMappings}
                       sx={{
                         textTransform: 'none',
                         borderColor: '#ddd',
@@ -1443,8 +1314,8 @@ const AddClient = () => {
                     maxHeight: 300,
                     overflowY: 'auto'
                   }}>
-                    {feed.nodes
-                      .filter(node => !Object.values(feed.mappings).includes(node))
+                    {availableNodes
+                      .filter(node => !Object.values(mappings).includes(node))
                       .map((node) => (
                         <Chip
                           key={node}
@@ -1457,7 +1328,7 @@ const AddClient = () => {
                   </Box>
                 </Grid>
               </Grid>
-            </Box>
+            )}
           </Paper>
         ))}
 
@@ -1720,316 +1591,26 @@ const AddClient = () => {
 
         {/* Inspect Feed Section - ADD THIS NEW SECTION */}
         {(feedData || feeds.length > 0) && (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              backgroundColor: '#ffffff',
-              borderRadius: 2,
-              mb: 3,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-              Inspect Feed
-            </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-              Shows respective count and details for all the Nodes in the feed.
-            </Typography>
-
-            {/* Main Feed Inspection */}
-            {feedData && (
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                  Primary Feed
-                </Typography>
-                
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <FormControl size="small" sx={{ minWidth: 200 }}>
-                    <InputLabel>Select Nodes</InputLabel>
-                    <Select
-                      value=""
-                      label="Select Nodes"
-                    >
-                      <MenuItem value="">Select an option</MenuItem>
-                      {availableNodes.map((node) => (
-                        <MenuItem key={node} value={node}>
-                          {node}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
-                      Rows per page:
-                    </Typography>
-                    <FormControl size="small" sx={{ minWidth: 60 }}>
-                      <Select value={10} sx={{ fontSize: '0.875rem' }}>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={25}>25</MenuItem>
-                        <MenuItem value={50}>50</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>
-                  {/* Career Fields Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Career Fields
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {availableNodes.slice(0, 10).map((node, index) => (
-                        <Typography key={node} variant="body2" sx={{ py: 0.5 }}>
-                          {node.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </Typography>
-                      ))}
-                    </Box>
-                  </Box>
-
-                  {/* Feed Nodes Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Feed Nodes
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {availableNodes.slice(0, 10).map((node, index) => (
-                        <Typography key={node} variant="body2" sx={{ py: 0.5, fontWeight: 500 }}>
-                          {Math.floor(Math.random() * 1000) + 100}
-                        </Typography>
-                      ))}
-                    </Box>
-                  </Box>
-
-                  {/* Actions Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Actions
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {availableNodes.slice(0, 10).map((node, index) => (
-                        <Box key={node} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
-                          <Button
-                            size="small"
-                            sx={{
-                              textTransform: 'none',
-                              color: '#1976d2',
-                              fontSize: '0.75rem',
-                              minWidth: 'auto',
-                              p: 0
-                            }}
-                            onClick={() => toast.info(`Viewing details for ${node}`)}
-                          >
-                            👁 Details
-                          </Button>
-                          <Button
-                            size="small"
-                            sx={{
-                              textTransform: 'none',
-                              color: '#1976d2',
-                              fontSize: '0.75rem',
-                              minWidth: 'auto',
-                              p: 0,
-                              ml: 1
-                            }}
-                            onClick={() => toast.success(`Downloading CSV for ${node}`)}
-                          >
-                            📥 Download CSV
-                          </Button>
-                        </Box>
-                      ))}
-                    </Box>
-                  </Box>
-
-                  {/* Chart Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Chart
-                    </Typography>
-                    <Box sx={{
-                      height: 200,
-                      backgroundColor: '#f8f9fa',
-                      borderRadius: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '1px solid #e0e0e0'
-                    }}>
-                      <Box sx={{ textAlign: 'center' }}>
-                        <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                          {[40, 60, 30, 80, 90, 35].map((height, i) => (
-                            <Box
-                              key={i}
-                              sx={{
-                                width: 15,
-                                height: height,
-                                backgroundColor: i % 2 === 0 ? '#4caf50' : '#2196f3',
-                                borderRadius: '2px 2px 0 0'
-                              }}
-                            />
-                          ))}
-                        </Box>
-                        <Typography variant="caption" color="textSecondary">
-                          Node Distribution
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-
-                <Typography variant="body2" sx={{ color: '#666', mt: 2 }}>
-                  Total Count: <strong>{feedData.totalJobs}</strong>
-                </Typography>
-              </Box>
-            )}
-
-            {/* Additional Feeds Inspection */}
-            {feeds.map((feed, index) => (
-              <Box key={feed.id} sx={{ mb: 4 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                  Additional Feed #{index + 1}
-                </Typography>
-                
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <FormControl size="small" sx={{ minWidth: 200 }}>
-                    <InputLabel>Select Nodes</InputLabel>
-                    <Select
-                      value=""
-                      label="Select Nodes"
-                    >
-                      <MenuItem value="">Select an option</MenuItem>
-                      {feed.nodes.map((node) => (
-                        <MenuItem key={node} value={node}>
-                          {node}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
-                      Rows per page:
-                    </Typography>
-                    <FormControl size="small" sx={{ minWidth: 60 }}>
-                      <Select value={10} sx={{ fontSize: '0.875rem' }}>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={25}>25</MenuItem>
-                        <MenuItem value={50}>50</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>
-                  {/* Career Fields Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Career Fields
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {feed.nodes.slice(0, 10).map((node, nodeIndex) => (
-                        <Typography key={node} variant="body2" sx={{ py: 0.5 }}>
-                          {node.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </Typography>
-                      ))}
-                    </Box>
-                  </Box>
-
-                  {/* Feed Nodes Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Feed Nodes
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {feed.nodes.slice(0, 10).map((node, nodeIndex) => (
-                        <Typography key={node} variant="body2" sx={{ py: 0.5, fontWeight: 500 }}>
-                          {Math.floor(Math.random() * 1000) + 100}
-                        </Typography>
-                      ))}
-                    </Box>
-                  </Box>
-
-                  {/* Actions Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Actions
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      {feed.nodes.slice(0, 10).map((node, nodeIndex) => (
-                        <Box key={node} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
-                          <Button
-                            size="small"
-                            sx={{
-                              textTransform: 'none',
-                              color: '#1976d2',
-                              fontSize: '0.75rem',
-                              minWidth: 'auto',
-                              p: 0
-                            }}
-                            onClick={() => toast.info(`Viewing details for ${node} in feed ${index + 2}`)}
-                          >
-                            👁 Details
-                          </Button>
-                          <Button
-                            size="small"
-                            sx={{
-                              textTransform: 'none',
-                              color: '#1976d2',
-                              fontSize: '0.75rem',
-                              minWidth: 'auto',
-                              p: 0,
-                              ml: 1
-                            }}
-                            onClick={() => toast.success(`Downloading CSV for ${node} from feed ${index + 2}`)}
-                          >
-                            📥 Download CSV
-                          </Button>
-                        </Box>
-                      ))}
-                    </Box>
-                  </Box>
-
-                  {/* Chart Column */}
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-                      Chart
-                    </Typography>
-                    <Box sx={{
-                      height: 200,
-                      backgroundColor: '#f8f9fa',
-                      borderRadius: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '1px solid #e0e0e0'
-                    }}>
-                      <Box sx={{ textAlign: 'center' }}>
-                        <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                          {[35, 70, 45, 60, 80, 25].map((height, i) => (
-                            <Box
-                              key={i}
-                              sx={{
-                                width: 15,
-                                height: height,
-                                backgroundColor: i % 2 === 0 ? '#ff9800' : '#9c27b0',
-                                borderRadius: '2px 2px 0 0'
-                              }}
-                            />
-                          ))}
-                        </Box>
-                        <Typography variant="caption" color="textSecondary">
-                          Node Distribution
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-
-                <Typography variant="body2" sx={{ color: '#666', mt: 2 }}>
-                  Total Count: <strong>{feed.totalJobs}</strong>
-                </Typography>
-              </Box>
-            ))}
-          </Paper>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => navigate('/dashboard/inspect-feed')}
+              sx={{
+                textTransform: 'none',
+                px: 4,
+                py: 1.5,
+                borderColor: '#000',
+                color: '#000',
+                '&:hover': {
+                  backgroundColor: '#000',
+                  color: '#fff'
+                }
+              }}
+            >
+              🔍 Inspect Feeds
+            </Button>
+          </Box>
         )}
 
         {/* Submit Button */}
