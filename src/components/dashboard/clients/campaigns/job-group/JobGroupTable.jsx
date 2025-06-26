@@ -433,12 +433,11 @@ const JobGroupTable = () => {
                         navigate('/campaigns/job-group/publishers');
                     }}
                     style={{
-                        color: '#1976d2',
+                        textDecoration: 'none',
+                        color: 'inherit',
                         cursor: 'pointer',
-                        textDecoration: 'underline'
                     }}
                     onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
-                    onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
                 >
                     {value}
                 </span>

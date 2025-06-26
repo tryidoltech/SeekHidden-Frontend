@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Box,
   Paper,
@@ -119,11 +119,18 @@ const AddClient = () => {
   const [addFeedUrl, setAddFeedUrl] = useState('');
   const [isLoadingAddFeed, setIsLoadingAddFeed] = useState(false);
   const [newFeedData, setNewFeedData] = useState(null);
-  const [newFeedMappings, setNewFeedMappings] = useState({
-    Source: '', Jobs: '', Job: '', Company: '', Title: '', City: '', State: '',
-    Country: '', Zip: '', Description: '', URL: '', Category: '',
-    'JobId/Ref Number': '', 'Published Date': '', 'Modified Date': '',
-    JobType: '', 'CPC Bid': '', 'CPA Bid': ''
+  const [newFeedMappings, setNewFeedMappings] = useState(() => {
+    const defaultMappings = {};
+    const fields = [
+      'Source', 'Jobs', 'Job', 'Company', 'Title', 'City', 'State',
+      'Country', 'Zip', 'Description', 'URL', 'Category',
+      'JobId/Ref Number', 'Published Date', 'Modified Date',
+      'JobType', 'CPC Bid', 'CPA Bid'
+    ];
+    fields.forEach(field => {
+      defaultMappings[field] = '';
+    });
+    return defaultMappings;
   });
 
   // State for default feed URL input
@@ -181,6 +188,17 @@ const AddClient = () => {
     'CPA Bid'
   ]);
 
+  // Helper function to create default mappings object
+  const createDefaultMappings = () => {
+    return defaultFields.reduce((acc, field) => {
+      acc[field] = '';
+      return acc;
+    }, {});
+  };
+
+  // Ref for add feed input auto-focus
+  const addFeedInputRef = useRef(null);
+
   const handleBack = () => {
     window.history.back();
   };
@@ -198,6 +216,15 @@ const AddClient = () => {
       setAvailableNodes([]);
     }
   }, [feedUrl]);
+
+  // Auto-focus add feed input when section is shown
+  useEffect(() => {
+    if (showAddFeedSection && addFeedInputRef.current) {
+      setTimeout(() => {
+        addFeedInputRef.current.focus();
+      }, 100); // Small delay to ensure the input is rendered
+    }
+  }, [showAddFeedSection]);
 
   const extractFeedData = async () => {
     if (!feedUrl.trim()) {
@@ -442,8 +469,11 @@ const AddClient = () => {
         return;
       }
 
-      // Check if URL already exists
-      if (feeds.some(feed => feed.url === headerFeedUrl.trim())) {
+      // Check if URL already exists in feeds array or main feedUrl
+      const urlExists = feeds.some(feed => feed.url === headerFeedUrl.trim()) ||
+        feedUrl.trim() === headerFeedUrl.trim();
+
+      if (urlExists) {
         toast.error('This feed URL already exists');
         return;
       }
@@ -469,26 +499,7 @@ const AddClient = () => {
             'city', 'state', 'country', 'zip_code', 'source', 'modified_date',
             'cpc_bid', 'cpa_bid', 'publisher', 'job_reference', 'contact_email'
           ],
-          mappings: {
-            Source: '',
-            Jobs: '',
-            Job: '',
-            Company: '',
-            Title: '',
-            City: '',
-            State: '',
-            Country: '',
-            Zip: '',
-            Description: '',
-            URL: '',
-            Category: '',
-            'JobId/Ref Number': '',
-            'Published Date': '',
-            'Modified Date': '',
-            JobType: '',
-            'CPC Bid': '',
-            'CPA Bid': ''
-          }
+          mappings: createDefaultMappings()
         };
 
         // Add to feeds array
@@ -554,11 +565,21 @@ const AddClient = () => {
 
   // when “Save” is clicked
   const handleSaveFeedUrl = (feedId) => {
+    // Check if URL already exists in other feeds or main feedUrl (excluding current feed being edited)
+    const urlExists = feeds.some(feed => feed.id !== feedId && feed.url === editingFeedUrl.trim()) ||
+      feedUrl.trim() === editingFeedUrl.trim();
+
+    if (urlExists) {
+      toast.error('This feed URL already exists');
+      return;
+    }
+
     setFeeds(feeds.map(f =>
       f.id === feedId ? { ...f, url: editingFeedUrl } : f
     ));
     setEditingFeedId(null);
     setEditingFeedUrl('');
+    toast.success('Feed URL updated successfully');
   };
 
   // Show the Feed Details modal for an existing feed
@@ -740,6 +761,15 @@ const AddClient = () => {
         return;
       }
 
+      // Check if URL already exists in feeds array or main feedUrl
+      const urlExists = feeds.some(feed => feed.url === addFeedUrl.trim()) ||
+        feedUrl.trim() === addFeedUrl.trim();
+
+      if (urlExists) {
+        toast.error('This feed URL already exists');
+        return;
+      }
+
       setIsLoadingAddFeed(true);
       toast.info('Loading feed data...');
 
@@ -770,13 +800,7 @@ const AddClient = () => {
         setShowAddFeedSection(false);
         setAddFeedUrl('');
         setNewFeedData(null);
-        setNewFeedMappings({
-          'Job Title': '',
-          'Job Description': '',
-          'Company Name': '',
-          'Location': '',
-          'Salary': ''
-        });
+        setNewFeedMappings(createDefaultMappings());
 
         toast.success(`Feed added successfully! Found ${mockNewFeedData.totalJobs} jobs`);
 
@@ -792,12 +816,7 @@ const AddClient = () => {
     setShowAddFeedSection(false);
     setAddFeedUrl('');
     setNewFeedData(null);
-    setNewFeedMappings({
-      Source: '', Jobs: '', Job: '', Company: '', Title: '', City: '', State: '',
-      Country: '', Zip: '', Description: '', URL: '', Category: '',
-      'JobId/Ref Number': '', 'Published Date': '', 'Modified Date': '',
-      JobType: '', 'CPC Bid': '', 'CPA Bid': ''
-    });
+    setNewFeedMappings(createDefaultMappings());
   };
 
   // New feed mapping handler
@@ -1344,11 +1363,84 @@ const AddClient = () => {
               onKeyPress={handleAddFeedFromSection}
               placeholder="Enter feed URL and press Enter"
               disabled={isLoadingAddFeed}
+              inputRef={addFeedInputRef} // Add ref here
             />
-
-            <Button size="small" onClick={handleCancelAddFeed} disabled={isLoadingAddFeed}>
-              Cancel
-            </Button>
+            <>
+              <IconButton
+                size="small"
+                disabled={true}
+                sx={{
+                  border: '1px solid #ddd',
+                  color: '#ccc',
+                  backgroundColor: '#f9f9f9'
+                }}
+                title="Edit Feed"
+              >
+                <Edit size={16} />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={true}
+                sx={{
+                  border: '1px solid #ddd',
+                  color: '#ccc',
+                  backgroundColor: '#f9f9f9'
+                }}
+                title="View Nodes"
+              >
+                <Eye size={16} />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={true}
+                sx={{
+                  border: '1px solid #ddd',
+                  color: '#ccc',
+                  backgroundColor: '#f9f9f9'
+                }}
+                title="Inspect Feed"
+              >
+                <Search size={16} />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={true}
+                sx={{
+                  border: '1px solid #ddd',
+                  color: '#ccc',
+                  backgroundColor: '#f9f9f9'
+                }}
+                title="Map Feed"
+              >
+                <MapPin size={16} />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={isLoadingAddFeed}
+                sx={{
+                  border: '1px solid #f44336',
+                  color: '#f44336',
+                  '&:hover': { backgroundColor: '#ffebee' }
+                }}
+                title="Delete"
+                onClick={handleCancelAddFeed}
+              >
+                <Trash2 size={16} />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={true}
+                onClick={handleAddFeed}
+                sx={{
+                  border: '1px solid #4caf50',
+                  color: '#4caf50',
+                  '&:hover': { backgroundColor: '#e8f5e8' }
+                }}
+                title="Add Feed"
+              >
+                <Plus size={16} />
+              </IconButton>
+            </>
             {isLoadingAddFeed && <CircularProgress size={20} />}
           </Box>
         </Paper>
@@ -1466,7 +1558,7 @@ const AddClient = () => {
                         </TableHead>
                         <TableBody>
                           {feedDetails?.jobs && feedDetails.jobs.length > 0 ? (
-                            feedDetails.jobs.map((job, jobIndex) => (
+                            feedDetails.jobs.flatMap((job, jobIndex) =>
                               Object.entries(job.fields).map(([field, value], fieldIndex) => (
                                 <TableRow key={`${jobIndex}-${fieldIndex}`}>
                                   <TableCell sx={{ backgroundColor: '#f9f9f9', fontWeight: 500 }}>
@@ -1478,7 +1570,7 @@ const AddClient = () => {
                                   </TableCell>
                                 </TableRow>
                               ))
-                            ))
+                            )
                           ) : (
                             <TableRow>
                               <TableCell colSpan={3} sx={{ textAlign: 'center', py: 4 }}>
@@ -1659,9 +1751,9 @@ const AddClient = () => {
                   </Typography>
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{ 
-                        p: 3, 
-                        textAlign: 'center', 
+                      <Paper sx={{
+                        p: 3,
+                        textAlign: 'center',
                         backgroundColor: '#f8f9fa',
                         border: '1px solid #e9ecef',
                         borderRadius: 2,
@@ -1679,9 +1771,9 @@ const AddClient = () => {
                       </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{ 
-                        p: 3, 
-                        textAlign: 'center', 
+                      <Paper sx={{
+                        p: 3,
+                        textAlign: 'center',
                         backgroundColor: '#f8f9fa',
                         border: '1px solid #e9ecef',
                         borderRadius: 2,
@@ -1699,9 +1791,9 @@ const AddClient = () => {
                       </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{ 
-                        p: 3, 
-                        textAlign: 'center', 
+                      <Paper sx={{
+                        p: 3,
+                        textAlign: 'center',
                         backgroundColor: '#f8f9fa',
                         border: '1px solid #e9ecef',
                         borderRadius: 2,
@@ -1719,9 +1811,9 @@ const AddClient = () => {
                       </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{ 
-                        p: 3, 
-                        textAlign: 'center', 
+                      <Paper sx={{
+                        p: 3,
+                        textAlign: 'center',
                         backgroundColor: '#f8f9fa',
                         border: '1px solid #e9ecef',
                         borderRadius: 2,
@@ -1746,8 +1838,8 @@ const AddClient = () => {
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Node Analysis
                   </Typography>
-                  <TableContainer component={Paper} sx={{ 
-                    maxHeight: 500, 
+                  <TableContainer component={Paper} sx={{
+                    maxHeight: 500,
                     borderRadius: 2,
                     border: '1px solid #e0e0e0',
                     '& .MuiTableHead-root': {
@@ -1778,9 +1870,9 @@ const AddClient = () => {
                           const recordCount = Math.floor(Math.random() * 1000) + 100;
 
                           return (
-                            <TableRow 
-                              key={node} 
-                              sx={{ 
+                            <TableRow
+                              key={node}
+                              sx={{
                                 '&:hover': { backgroundColor: '#f8f9fa' },
                                 '&:nth-of-type(odd)': { backgroundColor: '#fafafa' }
                               }}
@@ -1795,7 +1887,7 @@ const AddClient = () => {
                                   label={dataTypes[index % dataTypes.length]}
                                   size="small"
                                   variant="outlined"
-                                  sx={{ 
+                                  sx={{
                                     fontSize: '0.75rem',
                                     fontWeight: 500,
                                     backgroundColor: '#fff'
@@ -1872,7 +1964,7 @@ const AddClient = () => {
                           value={feedData.url}
                           disabled
                           size="small"
-                          sx={{ 
+                          sx={{
                             mb: 2,
                             '& .MuiInputBase-input': {
                               fontFamily: 'monospace',
@@ -1926,11 +2018,11 @@ const AddClient = () => {
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Processing Log
                   </Typography>
-                  <Paper sx={{ 
-                    p: 3, 
-                    borderRadius: 2, 
+                  <Paper sx={{
+                    p: 3,
+                    borderRadius: 2,
                     border: '1px solid #e0e0e0',
-                    backgroundColor: '#fafafa' 
+                    backgroundColor: '#fafafa'
                   }}>
                     <Box sx={{
                       backgroundColor: '#fff',
@@ -2161,6 +2253,7 @@ const AddClient = () => {
                           onChange={(e) => setNewFieldName(e.target.value)}
                           onKeyPress={(e) => {
                             if (e.key === 'Enter') {
+
                               handleConfirmAddField();
                             } else if (e.key === 'Escape') {
                               handleCancelAddField();
@@ -2184,11 +2277,7 @@ const AddClient = () => {
                             sx={{ color: 'red' }}
                           >
                             ✕
-                          </IconButton>
-                        </Box>
-                      </Box>
-                    )}
-                  </Box>
+                         
                 </Grid>
 
                 <Grid item xs={4}>
@@ -2221,8 +2310,8 @@ const AddClient = () => {
                               </MenuItem>
                             )
                           })}
-                        </Select>
-                      </FormControl>
+                        </FormControl>
+                      </Box>
                     ))}
 
                     {isAddingField && (
@@ -2286,7 +2375,7 @@ const AddClient = () => {
                 <Grid item xs={4}>
                   <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
                     Unmapped Feed Nodes
-                  </Typography>
+                    </Typography>
                   <Box sx={{
                     backgroundColor: '#f9f9f9',
                     p: 2,

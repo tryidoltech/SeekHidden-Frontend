@@ -660,9 +660,8 @@ function EditableCell({ column, value, row, onUpdate }) {
           to={`/campaigns`}
           onClick={e => e.stopPropagation()}
           style={{
-            color: '#1976d2',
-            cursor: 'pointer',
-            textDecoration: 'underline'
+            textDecoration: 'none',
+            color: 'inherit',
           }}
         >
           {value}

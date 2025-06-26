@@ -611,12 +611,11 @@ const CampaignsTable = () => {
                         navigate('/campaigns/job-group');
                     }}
                     style={{
-                        color: '#1976d2',
-                        cursor: 'pointer',
-                        textDecoration: 'underline'
+                        textDecoration: 'none',
+                        color: 'inherit',
+                        cursor: 'pointer'
                     }}
                     onMouseEnter={(e) => e.target.style.textDecoration = 'none'}
-                    onMouseLeave={(e) => e.target.style.textDecoration = 'underline'}
                 >
                     {value}
                 </span>
