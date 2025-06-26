@@ -687,20 +687,30 @@ const AddClient = () => {
   };
 
   const [mappingFeedId, setMappingFeedId] = useState(null);
+  const [toggleMapSection, setToggleMapSection] = useState(true);
 
   // replace your existing handleMapFeed
   const handleMapFeed = (feedId) => {
     const selected = feeds.find(f => f.id === feedId);
     if (!selected) return;
 
-    // set the feed we’re mapping
-    setMappingFeedId(feedId);
+    if (toggleMapSection) {
+      // set the feed we’re mapping
+      setMappingFeedId(feedId);
 
-    // load that feed’s nodes into the dropdown
-    setAvailableNodes(selected.nodes);
+      // load that feed’s nodes into the dropdown
+      setAvailableNodes(selected.nodes);
 
-    // initialize the mapping selects with whatever the feed already has (or blanks)
-    setMappings({ ...selected.mappings });
+      // initialize the mapping selects with whatever the feed already has (or blanks)
+      setMappings({ ...selected.mappings });
+
+    }else{
+      setMappingFeedId(null);
+      setAvailableNodes([]);
+      setMappings(createDefaultMappings());
+
+    }
+    setToggleMapSection(!toggleMapSection)
   };
 
   // Function to handle default feed URL input change
