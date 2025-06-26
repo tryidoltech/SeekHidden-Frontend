@@ -2569,30 +2569,6 @@ const AddClient = () => {
           </Grid>
         </Paper>
 
-        {/* Inspect Feed Section - ADD THIS NEW SECTION */}
-        {(feedData || feeds.length > 0) && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={() => navigate('/dashboard/inspect-feed')}
-              sx={{
-                textTransform: 'none',
-                px: 4,
-                py: 1.5,
-                borderColor: '#000',
-                color: '#000',
-                '&:hover': {
-                  backgroundColor: '#000',
-                  color: '#fff'
-                }
-              }}
-            >
-              🔍 Inspect Feeds
-            </Button>
-          </Box>
-        )}
-
         {/* Submit Button */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Button
