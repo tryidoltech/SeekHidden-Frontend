@@ -549,15 +549,82 @@ const AddClient = () => {
     if (!selected) return
 
     setFeedData({
-      url:        selected.url,        // ← add this
-      totalJobs:  selected.totalJobs,
-      nodes:      selected.nodes,
-      lastUpdated:selected.lastUpdated,
-      feedType:   selected.feedType,
-      encoding:   selected.encoding
+      url: selected.url,        // ← add this
+      totalJobs: selected.totalJobs,
+      nodes: selected.nodes,
+      lastUpdated: selected.lastUpdated,
+      feedType: selected.feedType,
+      encoding: selected.encoding
     })
 
-    setFeedDetails({ jobs: selected.jobs || [] })
+    // Create mock job data for the selected feed
+    const mockJobsData = [
+      {
+        id: 'Job Data 1',
+        fields: {
+          '/source': 'JobStreet',
+          '/job_id': '361739158034579456386B0',
+          '/title': 'Interior Designer (Hospitality and F&B)',
+          '/company': 'Gough Recruitment (Hong Kong) Pty Limited',
+          '/city': 'Singapore',
+          '/state': 'Central',
+          '/country': 'SG',
+          '/zip_code': '068806',
+          '/description': 'We are seeking an experienced Interior Designer...',
+          '/apply_url': selected.url + '/job1',
+          '/posted_date': '2025-03-29',
+          '/modified_date': '2025-03-29',
+          '/job_type': 'Full Time',
+          '/category': 'Design',
+          '/cpc_bid': '0.50',
+          '/cpa_bid': '15.00'
+        }
+      },
+      {
+        id: 'Job Data 2',
+        fields: {
+          '/source': 'JobStreet',
+          '/job_id': '361739158034579456386B1',
+          '/title': 'Software Engineer',
+          '/company': 'Tech Solutions Pte Ltd',
+          '/city': 'Singapore',
+          '/state': 'Raffles Place',
+          '/country': 'SG',
+          '/zip_code': '048623',
+          '/description': 'Join our dynamic team as a Software Engineer...',
+          '/apply_url': selected.url + '/job2',
+          '/posted_date': '2025-03-28',
+          '/modified_date': '2025-03-28',
+          '/job_type': 'Full Time',
+          '/category': 'Information Technology',
+          '/cpc_bid': '0.75',
+          '/cpa_bid': '25.00'
+        }
+      },
+      {
+        id: 'Job Data 3',
+        fields: {
+          '/source': 'Custom Feed',
+          '/job_id': 'CF001',
+          '/title': 'Marketing Manager',
+          '/company': 'Digital Marketing Co',
+          '/city': 'New York',
+          '/state': 'New York',
+          '/country': 'US',
+          '/zip_code': '10001',
+          '/description': 'Looking for an experienced Marketing Manager...',
+          '/apply_url': selected.url + '/job3',
+          '/posted_date': '2025-03-27',
+          '/modified_date': '2025-03-27',
+          '/job_type': 'Full Time',
+          '/category': 'Marketing',
+          '/cpc_bid': '0.65',
+          '/cpa_bid': '20.00'
+        }
+      }
+    ];
+
+    setFeedDetails({ jobs: mockJobsData })
     setShowFeedModal(true)
   }
 
@@ -698,24 +765,8 @@ const AddClient = () => {
                 {/* Tab Content */}
                 {activeTab === 'jobData' && (
                   <Box>
-                    {/* show the feed’s XML URL */}
-                    <Box sx={{ mb: 2 }}>
-                      <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                        Feed XML URL
-                      </Typography>
-                      <Link
-                        href={feedData?.url}
-                        target="_blank"
-                        rel="noopener"
-                        underline="hover"
-                        sx={{ wordBreak: 'break-all' }}
-                      >
-                        {feedData?.url}
-                      </Link>
-                    </Box>
-
-                    {/* <TableContainer sx={{ maxHeight: 400 }}>
-                      <Table stickyHeader>
+                    <TableContainer sx={{ maxHeight: 400 }}>
+                      <Table>
                         <TableHead>
                           <TableRow>
                             <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Jobs</TableCell>
@@ -724,213 +775,95 @@ const AddClient = () => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {feedDetails.jobs.map((job, jobIndex) => (
-                            Object.entries(job.fields).map(([field, value], fieldIndex) => (
-                              <TableRow key={`${jobIndex}-${fieldIndex}`}>
-                                <TableCell sx={{ backgroundColor: '#f9f9f9', fontWeight: 500 }}>
-                                  {fieldIndex === 0 ? job.id : ''}
-                                </TableCell>
-                                <TableCell>{field}</TableCell>
-                                <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>
-                                  {value}
-                                </TableCell>
-                              </TableRow>
+                          {feedDetails?.jobs && feedDetails.jobs.length > 0 ? (
+                            feedDetails.jobs.map((job, jobIndex) => (
+                              Object.entries(job.fields).map(([field, value], fieldIndex) => (
+                                <TableRow key={`${jobIndex}-${fieldIndex}`}>
+                                  <TableCell sx={{ backgroundColor: '#f9f9f9', fontWeight: 500 }}>
+                                    {fieldIndex === 0 ? job.id : ''}
+                                  </TableCell>
+                                  <TableCell>{field}</TableCell>
+                                  <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>
+                                    {value}
+                                  </TableCell>
+                                </TableRow>
+                              ))
                             ))
-                          ))}
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={3} sx={{ textAlign: 'center', py: 4 }}>
+                                <Typography variant="body2" color="textSecondary">
+                                  No job data available. Please check the feed URL or try refreshing.
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          )}
                         </TableBody>
                       </Table>
-                    </TableContainer> */}
+                    </TableContainer>
                   </Box>
                 )}
 
                 {activeTab === 'jobFeedExtract' && (
                   <Box>
-                    {/* Feed Summary Statistics */}
-                    <Box sx={{ mb: 3 }}>
+                    {/* Raw XML Display */}
+                    <Box sx={{ mb: 2 }}>
                       <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                        Feed Extract Summary
-                      </Typography>
-                      <Grid container spacing={2}>
-                        <Grid item xs={3}>
-                          <Paper sx={{ p: 2, textAlign: 'center', backgroundColor: '#f8f9fa' }}>
-                            <Typography variant="h4" sx={{ fontWeight: 600, color: '#2e7d32' }}>
-                              {feedData?.totalJobs || 0}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Total Jobs
-                            </Typography>
-                          </Paper>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Paper sx={{ p: 2, textAlign: 'center', backgroundColor: '#f8f9fa' }}>
-                            <Typography variant="h4" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                              {feedData?.nodes?.length || 0}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Feed Nodes
-                            </Typography>
-                          </Paper>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Paper sx={{ p: 2, textAlign: 'center', backgroundColor: '#f8f9fa' }}>
-                            <Typography variant="h4" sx={{ fontWeight: 600, color: '#ed6c02' }}>
-                              {Object.values(mappings).filter(v => v.trim() !== '').length}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Mapped Fields
-                            </Typography>
-                          </Paper>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Paper sx={{ p: 2, textAlign: 'center', backgroundColor: '#f8f9fa' }}>
-                            <Typography variant="h4" sx={{ fontWeight: 600, color: '#d32f2f' }}>
-                              {feedData?.nodes?.filter(node => !Object.values(mappings).includes(node)).length || 0}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              Unmapped Nodes
-                            </Typography>
-                          </Paper>
-                        </Grid>
-                      </Grid>
-                    </Box>
-
-                    {/* Feed Extraction Details */}
-                    <Box sx={{ mb: 3 }}>
-                      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                        Extraction Details
-                      </Typography>
-                      <TableContainer sx={{ maxHeight: 400 }}>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Node Name</TableCell>
-                              <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Data Type</TableCell>
-                              <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Sample Value</TableCell>
-                              <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Extraction Count</TableCell>
-                              <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5' }}>Status</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {feedData?.nodes?.map((node, index) => {
-                              const isMapped = Object.values(mappings).includes(node);
-                              const sampleValues = [
-                                'Software Engineer', 'Marketing Manager', 'Data Analyst', 'Product Designer',
-                                'Sales Representative', 'Full Time', 'Part Time', 'Contract', 'Remote',
-                                'New York', 'California', 'Texas', 'Singapore', 'London'
-                              ];
-                              const dataTypes = ['String', 'Number', 'Date', 'URL', 'Text'];
-
-                              return (
-                                <TableRow key={node}>
-                                  <TableCell sx={{ fontWeight: 500 }}>{node}</TableCell>
-                                  <TableCell>
-                                    <Chip
-                                      label={dataTypes[index % dataTypes.length]}
-                                      size="small"
-                                      variant="outlined"
-                                      sx={{ fontSize: '0.75rem' }}
-                                    />
-                                  </TableCell>
-                                  <TableCell sx={{ maxWidth: 200, wordBreak: 'break-word' }}>
-                                    {sampleValues[index % sampleValues.length]}
-                                  </TableCell>
-                                  <TableCell sx={{ fontWeight: 500 }}>
-                                    {Math.floor(Math.random() * 1000) + 100}
-                                  </TableCell>
-                                  <TableCell>
-                                    <Chip
-                                      label={isMapped ? 'Mapped' : 'Unmapped'}
-                                      size="small"
-                                      color={isMapped ? 'success' : 'default'}
-                                      sx={{ fontSize: '0.75rem' }}
-                                    />
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Box>
-
-                    {/* Feed URL and Metadata */}
-                    <Box sx={{ mb: 3 }}>
-                      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                        Feed Metadata
-                      </Typography>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <TextField
-                            fullWidth
-                            label="Feed URL"
-                            value={feedUrl}
-                            disabled
-                            size="small"
-                            sx={{ mb: 2 }}
-                          />
-                        </Grid>
-                        <Grid item xs={4}>
-                          <TextField
-                            fullWidth
-                            label="Feed Type"
-                            value={feedData?.feedType || 'XML'}
-                            disabled
-                            size="small"
-                          />
-                        </Grid>
-                        <Grid item xs={4}>
-                          <TextField
-                            fullWidth
-                            label="Encoding"
-                            value={feedData?.encoding || 'UTF-8'}
-                            disabled
-                            size="small"
-                          />
-                        </Grid>
-                        <Grid item xs={4}>
-                          <TextField
-                            fullWidth
-                            label="Last Updated"
-                            value={feedData?.lastUpdated ? new Date(feedData.lastUpdated).toLocaleString() : ''}
-                            disabled
-                            size="small"
-                          />
-                        </Grid>
-                      </Grid>
-                    </Box>
-
-                    {/* Processing Log */}
-                    <Box>
-                      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                        Processing Log
+                        Raw XML Feed
                       </Typography>
                       <Box sx={{
                         backgroundColor: '#f8f9fa',
                         p: 2,
                         borderRadius: 1,
-                        maxHeight: 200,
+                        maxHeight: 500,
                         overflowY: 'auto',
+                        border: '1px solid #e0e0e0',
                         fontFamily: 'monospace',
-                        fontSize: '0.875rem'
+                        fontSize: '0.875rem',
+                        lineHeight: 1.6
                       }}>
-                        <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5 }}>
-                          ✓ Feed URL validated successfully
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5 }}>
-                          ✓ XML structure parsed - {feedData?.nodes?.length || 0} nodes found
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5 }}>
-                          ✓ Job data extracted - {feedData?.totalJobs || 0} jobs processed
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: '#ffc107', mb: 0.5 }}>
-                          ⚠ {feedData?.nodes?.filter(node => !Object.values(mappings).includes(node)).length || 0} nodes remain unmapped
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5 }}>
-                          ✓ Data validation completed
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: '#6c757d' }}>
-                          Last updated: {new Date().toLocaleString()}
-                        </Typography>
+                        <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                          {feedData?.rawXml || `<?xml version="1.0" encoding="UTF-8"?>
+<source>
+  <publisher>Example Job Board</publisher>
+  <publisherurl>https://example.com</publisherurl>
+  <lastBuildDate>2024-01-15T10:30:00Z</lastBuildDate>
+  <job>
+    <title>Software Engineer</title>
+    <date>2024-01-15</date>
+    <referencenumber>JOB001</referencenumber>
+    <url>https://example.com/jobs/software-engineer</url>
+    <company>Tech Corp</company>
+    <city>San Francisco</city>
+    <state>California</state>
+    <country>US</country>
+    <postalcode>94105</postalcode>
+    <description><![CDATA[We are looking for a talented Software Engineer...]]></description>
+    <salary>120000</salary>
+    <education>Bachelor's Degree</education>
+    <jobtype>Full Time</jobtype>
+    <category>Technology</category>
+    <experience>3-5 years</experience>
+  </job>
+  <job>
+    <title>Marketing Manager</title>
+    <date>2024-01-14</date>
+    <referencenumber>JOB002</referencenumber>
+    <url>https://example.com/jobs/marketing-manager</url>
+    <company>Marketing Solutions</company>
+    <city>New York</city>
+    <state>New York</state>
+    <country>US</country>
+    <postalcode>10001</postalcode>
+    <description><![CDATA[Join our dynamic marketing team...]]></description>
+    <salary>95000</salary>
+    <education>Bachelor's Degree</education>
+    <jobtype>Full Time</jobtype>
+    <category>Marketing</category>
+    <experience>5+ years</experience>
+  </job>
+</source>`}
+                        </pre>
                       </Box>
                     </Box>
                   </Box>
@@ -992,7 +925,7 @@ const AddClient = () => {
 
         {/* Feed Mapping Section */}
         {feeds.map(feed => (
-          <Paper key={feed.id} elevation={1} sx={{ mb:3, p:2, borderRadius:2 }}>
+          <Paper key={feed.id} elevation={1} sx={{ mb: 3, p: 2, borderRadius: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
               <TextField
                 label="Feed URL"
@@ -1006,53 +939,53 @@ const AddClient = () => {
 
               {editingFeedId === feed.id
                 ? <>
-                    <Button
-                      size="small"
-                      onClick={() => handleSaveFeedUrl(feed.id)}
-                      disabled={!editingFeedUrl.trim()}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      size="small"
-                      onClick={() => setEditingFeedId(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </>
+                  <Button
+                    size="small"
+                    onClick={() => handleSaveFeedUrl(feed.id)}
+                    disabled={!editingFeedUrl.trim()}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => setEditingFeedId(null)}
+                  >
+                    Cancel
+                  </Button>
+                </>
                 : <>
-                    <Button
-                      size="small"
-                      onClick={() => handleEditFeed(feed.id)}
-                    >
-                      Edit Feed
-                    </Button>
-                    <Button
-                      size="small"
-                      onClick={() => handleViewFeedNodes(feed.id)}
-                    >
-                      View Nodes
-                    </Button>
-                    <Button
-                      size="small"
-                      onClick={() => navigate('/clients/add-client/inspect-feed', { state: { feed } })}
-                    >
-                      Inspect Feed
-                    </Button>
-                    <Button
-                      size="small"
-                      onClick={() => handleMapFeed(feed.id)}
-                    >
-                      Map Feed
-                    </Button>
-                    <Button
-                      size="small"
-                      color="error"
-                      onClick={() => handleRemoveFeed(feed.id)}
-                    >
-                      Delete
-                    </Button>
-                  </>
+                  <Button
+                    size="small"
+                    onClick={() => handleEditFeed(feed.id)}
+                  >
+                    Edit Feed
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => handleViewFeedNodes(feed.id)}
+                  >
+                    View Nodes
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => navigate('/clients/add-client/inspect-feed', { state: { feed } })}
+                  >
+                    Inspect Feed
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => handleMapFeed(feed.id)}
+                  >
+                    Map Feed
+                  </Button>
+                  <Button
+                    size="small"
+                    color="error"
+                    onClick={() => handleRemoveFeed(feed.id)}
+                  >
+                    Delete
+                  </Button>
+                </>
               }
             </Box>
 
