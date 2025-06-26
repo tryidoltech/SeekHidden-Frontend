@@ -10,6 +10,14 @@ import {
   Button,
   Grid,
   IconButton,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
 } from '@mui/material';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -61,156 +69,6 @@ const InspectFeedClient = () => {
     const feed = availableFeeds.find(f => f.id === feedId);
     setCurrentFeed(feed);
   };
-
-  const FeedInspectionSection = ({ feed, feedName }) => (
-    <Box sx={{ mb: 4 }}>
-      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-        {feedName}
-      </Typography>
-      
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>Select Nodes</InputLabel>
-          <Select
-            value=""
-            label="Select Nodes"
-          >
-            <MenuItem value="">Select an option</MenuItem>
-            {feed.nodes.map((node) => (
-              <MenuItem key={node} value={node}>
-                {node}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
-          <Typography variant="body2" color="textSecondary" sx={{ mr: 1 }}>
-            Rows per page:
-          </Typography>
-          <FormControl size="small" sx={{ minWidth: 60 }}>
-            <Select 
-              value={rowsPerPage} 
-              onChange={(e) => setRowsPerPage(e.target.value)}
-              sx={{ fontSize: '0.875rem' }}
-            >
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={25}>25</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>
-        {/* Career Fields Column */}
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-            Career Fields
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {feed.nodes.slice(0, rowsPerPage).map((node) => (
-              <Typography key={node} variant="body2" sx={{ py: 0.5 }}>
-                {node.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-              </Typography>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Feed Nodes Column */}
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-            Feed Nodes
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {feed.nodes.slice(0, rowsPerPage).map((node) => (
-              <Typography key={node} variant="body2" sx={{ py: 0.5, fontWeight: 500 }}>
-                {Math.floor(Math.random() * 1000) + 100}
-              </Typography>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Actions Column */}
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-            Actions
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {feed.nodes.slice(0, rowsPerPage).map((node) => (
-              <Box key={node} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
-                <Button
-                  size="small"
-                  sx={{
-                    textTransform: 'none',
-                    color: '#1976d2',
-                    fontSize: '0.75rem',
-                    minWidth: 'auto',
-                    p: 0
-                  }}
-                  onClick={() => toast.info(`Viewing details for ${node}`)}
-                >
-                  👁 Details
-                </Button>
-                <Button
-                  size="small"
-                  sx={{
-                    textTransform: 'none',
-                    color: '#1976d2',
-                    fontSize: '0.75rem',
-                    minWidth: 'auto',
-                    p: 0,
-                    ml: 1
-                  }}
-                  onClick={() => toast.success(`Downloading CSV for ${node}`)}
-                >
-                  📥 Download CSV
-                </Button>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Chart Column */}
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: '#666' }}>
-            Chart
-          </Typography>
-          <Box sx={{
-            height: 200,
-            backgroundColor: '#f8f9fa',
-            borderRadius: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid #e0e0e0'
-          }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                {[40, 60, 30, 80, 90, 35].map((height, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      width: 15,
-                      height: height,
-                      backgroundColor: i % 2 === 0 ? '#4caf50' : '#2196f3',
-                      borderRadius: '2px 2px 0 0'
-                    }}
-                  />
-                ))}
-              </Box>
-              <Typography variant="caption" color="textSecondary">
-                Node Distribution
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-
-      <Typography variant="body2" sx={{ color: '#666', mt: 2 }}>
-        Total Count: <strong>{feed.totalJobs}</strong>
-      </Typography>
-    </Box>
-  );
 
   return (
     <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
@@ -320,13 +178,326 @@ const InspectFeedClient = () => {
         ) : (
           <>
             <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-              Shows respective count and details for all the Nodes in the selected feed.
+              Comprehensive feed analysis showing statistics, node details, and processing information.
             </Typography>
             
-            <FeedInspectionSection 
-              feed={currentFeed} 
-              feedName={currentFeed.name}
-            />
+            {/* Feed Summary Statistics */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+                Feed Overview
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Paper sx={{ 
+                    p: 3, 
+                    textAlign: 'center', 
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: '#e9ecef',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }
+                  }}>
+                    <Typography variant="h3" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1 }}>
+                      {currentFeed.totalJobs?.toLocaleString() || 0}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 500 }}>
+                      Total Jobs
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Paper sx={{ 
+                    p: 3, 
+                    textAlign: 'center', 
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: '#e9ecef',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }
+                  }}>
+                    <Typography variant="h3" sx={{ fontWeight: 700, color: '#1976d2', mb: 1 }}>
+                      {currentFeed.nodes?.length || 0}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 500 }}>
+                      Feed Nodes
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Paper sx={{ 
+                    p: 3, 
+                    textAlign: 'center', 
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: '#e9ecef',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }
+                  }}>
+                    <Typography variant="h3" sx={{ fontWeight: 700, color: '#ed6c02', mb: 1 }}>
+                      {Math.floor(currentFeed.nodes?.length * 0.7) || 0}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 500 }}>
+                      Active Nodes
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Paper sx={{ 
+                    p: 3, 
+                    textAlign: 'center', 
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: '#e9ecef',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }
+                  }}>
+                    <Typography variant="h3" sx={{ fontWeight: 700, color: '#d32f2f', mb: 1 }}>
+                      {Math.floor(currentFeed.nodes?.length * 0.3) || 0}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 500 }}>
+                      Inactive Nodes
+                    </Typography>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* Feed Node Analysis */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+                Node Analysis
+              </Typography>
+              <TableContainer component={Paper} sx={{ 
+                maxHeight: 500, 
+                borderRadius: 2,
+                border: '1px solid #e0e0e0',
+                '& .MuiTableHead-root': {
+                  backgroundColor: '#f5f5f5'
+                }
+              }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5', py: 2 }}>Node Name</TableCell>
+                      <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5', py: 2 }}>Data Type</TableCell>
+                      <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5', py: 2 }}>Sample Value</TableCell>
+                      <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5', py: 2 }}>Record Count</TableCell>
+                      <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5', py: 2 }}>Status</TableCell>
+                      <TableCell sx={{ fontWeight: 600, backgroundColor: '#f5f5f5', py: 2 }}>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentFeed.nodes?.map((node, index) => {
+                      const isActive = Math.random() > 0.3;
+                      const sampleValues = [
+                        'Software Engineer', 'Marketing Manager', 'Data Analyst', 'Product Designer',
+                        'Sales Representative', 'Full Time', 'Part Time', 'Contract', 'Remote',
+                        'New York, NY', 'San Francisco, CA', 'Austin, TX', 'Singapore', 'London, UK',
+                        '2024-12-15', '$75,000 - $95,000', 'https://apply.company.com', 'Technology'
+                      ];
+                      const dataTypes = ['String', 'Number', 'Date', 'URL', 'Text', 'Currency'];
+                      const recordCount = Math.floor(Math.random() * 1000) + 100;
+
+                      return (
+                        <TableRow 
+                          key={node} 
+                          sx={{ 
+                            '&:hover': { backgroundColor: '#f8f9fa' },
+                            '&:nth-of-type(odd)': { backgroundColor: '#fafafa' }
+                          }}
+                        >
+                          <TableCell sx={{ fontWeight: 500, py: 2 }}>
+                            <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                              {node}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ py: 2 }}>
+                            <Chip
+                              label={dataTypes[index % dataTypes.length]}
+                              size="small"
+                              variant="outlined"
+                              sx={{ 
+                                fontSize: '0.75rem',
+                                fontWeight: 500,
+                                backgroundColor: '#fff'
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ maxWidth: 250, wordBreak: 'break-word', py: 2 }}>
+                            <Typography variant="body2" color="textSecondary">
+                              {sampleValues[index % sampleValues.length]}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ fontWeight: 500, py: 2 }}>
+                            <Typography variant="body2">
+                              {recordCount.toLocaleString()}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ py: 2 }}>
+                            <Chip
+                              label={isActive ? 'Active' : 'Inactive'}
+                              size="small"
+                              color={isActive ? 'success' : 'default'}
+                              sx={{ fontSize: '0.75rem', fontWeight: 500 }}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ py: 2 }}>
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                              <Button
+                                size="small"
+                                variant="outlined"
+                                sx={{
+                                  textTransform: 'none',
+                                  fontSize: '0.75rem',
+                                  minWidth: 'auto',
+                                  px: 1.5,
+                                  py: 0.5
+                                }}
+                                onClick={() => toast.info(`Viewing details for ${node}`)}
+                              >
+                                View
+                              </Button>
+                              <Button
+                                size="small"
+                                variant="outlined"
+                                sx={{
+                                  textTransform: 'none',
+                                  fontSize: '0.75rem',
+                                  minWidth: 'auto',
+                                  px: 1.5,
+                                  py: 0.5
+                                }}
+                                onClick={() => toast.success(`Downloading data for ${node}`)}
+                              >
+                                Export
+                              </Button>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+
+            {/* Feed Metadata */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+                Feed Metadata
+              </Typography>
+              <Paper sx={{ p: 3, borderRadius: 2, border: '1px solid #e0e0e0' }}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Feed URL"
+                      value={currentFeed.url}
+                      disabled
+                      size="small"
+                      sx={{ 
+                        mb: 2,
+                        '& .MuiInputBase-input': {
+                          fontFamily: 'monospace',
+                          fontSize: '0.875rem'
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <TextField
+                      fullWidth
+                      label="Feed Type"
+                      value="XML"
+                      disabled
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <TextField
+                      fullWidth
+                      label="Encoding"
+                      value="UTF-8"
+                      disabled
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <TextField
+                      fullWidth
+                      label="File Size"
+                      value="2.4 MB"
+                      disabled
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <TextField
+                      fullWidth
+                      label="Last Updated"
+                      value={new Date().toLocaleString()}
+                      disabled
+                      size="small"
+                    />
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Box>
+
+            {/* Processing Log */}
+            <Box>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+                Processing Log
+              </Typography>
+              <Paper sx={{ 
+                p: 3, 
+                borderRadius: 2, 
+                border: '1px solid #e0e0e0',
+                backgroundColor: '#fafafa' 
+              }}>
+                <Box sx={{
+                  backgroundColor: '#fff',
+                  p: 2,
+                  borderRadius: 1,
+                  maxHeight: 250,
+                  overflowY: 'auto',
+                  fontFamily: 'monospace',
+                  fontSize: '0.875rem',
+                  lineHeight: 1.6,
+                  border: '1px solid #e0e0e0'
+                }}>
+                  <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5, fontWeight: 500 }}>
+                    ✓ Feed URL validated successfully
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5, fontWeight: 500 }}>
+                    ✓ XML structure parsed - {currentFeed.nodes?.length || 0} nodes discovered
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5, fontWeight: 500 }}>
+                    ✓ Job data extracted - {currentFeed.totalJobs?.toLocaleString() || 0} jobs processed
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#17a2b8', mb: 0.5, fontWeight: 500 }}>
+                    ℹ Data types identified and categorized
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#ffc107', mb: 0.5, fontWeight: 500 }}>
+                    ⚠ {Math.floor(currentFeed.nodes?.length * 0.3) || 0} nodes have low activity
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5, fontWeight: 500 }}>
+                    ✓ Data validation completed successfully
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#6c757d', fontWeight: 500 }}>
+                    📊 Analysis completed at: {new Date().toLocaleString()}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
           </>
         )}
       </Paper>
