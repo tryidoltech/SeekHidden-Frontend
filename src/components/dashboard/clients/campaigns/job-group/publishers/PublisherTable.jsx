@@ -430,7 +430,8 @@ const PublisherTable = () => {
             render: (value, row) => (
                 <span
                     style={{
-                        color: '#1976d2',
+                        textDecoration: 'none',
+                        color: 'inherit'
                     }}
                 >
                     {value}
