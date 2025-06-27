@@ -61,6 +61,7 @@ const AddClient = () => {
   const [markup, setMarkup] = useState('');
   const [markdown, setMarkdown] = useState('');
   const [frequency, setFrequency] = useState('');
+  const [customFrequency, setCustomFrequency] = useState('');
   const [timeZone, setTimeZone] = useState('');
   const [clientType, setClientType] = useState('');
   const [showDashboards, setShowDashboards] = useState('');
@@ -199,6 +200,9 @@ const AddClient = () => {
 
   // Ref for add feed input auto-focus
   const addFeedInputRef = useRef(null);
+  
+  // Ref for custom frequency input auto-focus
+  const customFrequencyInputRef = useRef(null);
 
   const handleBack = () => {
     window.history.back();
@@ -226,6 +230,15 @@ const AddClient = () => {
       }, 100); // Small delay to ensure the input is rendered
     }
   }, [showAddFeedSection]);
+
+  // Auto-focus custom frequency input when frequency is set to 'custom'
+  useEffect(() => {
+    if (frequency === 'custom' && customFrequencyInputRef.current) {
+      setTimeout(() => {
+        customFrequencyInputRef.current.focus();
+      }, 100); // Small delay to ensure the input is rendered
+    }
+  }, [frequency]);
 
   const extractFeedData = async () => {
     if (!feedUrl.trim()) {
@@ -2628,25 +2641,40 @@ const AddClient = () => {
                 <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Frequency</InputLabel>
-                <Select
-                  value={frequency}
-                  label="Frequency"
-                  onChange={(e) => setFrequency(e.target.value)}
-                >
-                  <MenuItem value="one">1</MenuItem>
-                  <MenuItem value="two">2</MenuItem>
-                  <MenuItem value="three">3</MenuItem>
-                  <MenuItem value="four">4</MenuItem>
-                  <MenuItem value="five">5</MenuItem>
-                  <MenuItem value="six">6</MenuItem>
-                  <MenuItem value="custom">Custom</MenuItem>
-
-                </Select>
-              </FormControl>
-            </Grid>
+            {frequency === 'custom' ? (
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Custom Frequency"
+                  value={customFrequency}
+                  onChange={(e) => setCustomFrequency(e.target.value)}
+                  size="small"
+                  type="number"
+                  placeholder="Enter custom frequency"
+                  inputProps={{ min: 1 }}
+                  inputRef={customFrequencyInputRef}
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Frequency</InputLabel>
+                  <Select
+                    value={frequency}
+                    label="Frequency"
+                    onChange={(e) => setFrequency(e.target.value)}
+                  >
+                    <MenuItem value="one">1</MenuItem>
+                    <MenuItem value="two">2</MenuItem>
+                    <MenuItem value="three">3</MenuItem>
+                    <MenuItem value="four">4</MenuItem>
+                    <MenuItem value="five">5</MenuItem>
+                    <MenuItem value="six">6</MenuItem>
+                    <MenuItem value="custom">Custom</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Time Zone</InputLabel>
