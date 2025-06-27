@@ -54,7 +54,7 @@ const MainRoutes = {
           element: <InspectFeedClient />
         },
         {
-          path: 'clients/add-client/job-data',
+          path: 'clients/add-client/feed-details',
           element: <JobData />
         },
         {

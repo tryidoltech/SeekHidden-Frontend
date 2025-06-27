@@ -585,13 +585,6 @@ const CampaignForm = () => {
                 size="small"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Calendar size="20" color="#666" />
-                    </InputAdornment>
-                  )
-                }}
               />
             </Grid>
 
@@ -605,13 +598,6 @@ const CampaignForm = () => {
                 size="small"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Calendar size="20" color="#666" />
-                    </InputAdornment>
-                  )
-                }}
               />
             </Grid>
           </Grid>

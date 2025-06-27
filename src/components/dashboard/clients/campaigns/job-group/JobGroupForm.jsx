@@ -650,13 +650,6 @@ const JobGroupForm = () => {
                 value={formData.startDate}
                 onChange={(e) => handleInputChange('startDate', e.target.value)}
                 InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Calendar size="20" color="#666" />
-                    </InputAdornment>
-                  )
-                }}
               />
             </Grid>
             
@@ -671,13 +664,6 @@ const JobGroupForm = () => {
                 value={formData.endDate}
                 onChange={(e) => handleInputChange('endDate', e.target.value)}
                 InputLabelProps={{ shrink: true }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Calendar size="20" color="#666" />
-                    </InputAdornment>
-                  )
-                }}
               />
             </Grid>
           </Grid>

@@ -483,7 +483,7 @@ function DynamicTableHeader({
                         color: filter.color ? undefined : 'text.primary',
                         '&:hover': {
                           borderColor: '#1976d2',
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                          backgroundColor: '#4680ff'
                         }
                       }}
                     >

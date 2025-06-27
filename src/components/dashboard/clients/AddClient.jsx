@@ -53,6 +53,7 @@ const AddClient = () => {
   const [currency, setCurrency] = useState('');
   const [country, setCountry] = useState('');
   const [industry, setIndustry] = useState('');
+  const [marginMode, setMarginMode] = useState('');
 
   // Settings section
   const [budget, setBudget] = useState('');
@@ -704,7 +705,7 @@ const AddClient = () => {
       // initialize the mapping selects with whatever the feed already has (or blanks)
       setMappings({ ...selected.mappings });
 
-    }else{
+    } else {
       setMappingFeedId(null);
       setAvailableNodes([]);
       setMappings(createDefaultMappings());
@@ -878,6 +879,24 @@ const AddClient = () => {
               placeholder="Enter feed URL and press Enter"
             />
             <>
+              {/* Add a submit button which will work like it is working when I enter url in text field */}
+              <IconButton
+                size="small"
+                sx={{
+                  backgroundColor: '#4caf50',
+                  color: '#fff',
+                  '&:hover': { backgroundColor: '#45a049' },
+                  border: '1px solid #ddd',
+                  height: '36px',
+                  width: '100px'
+
+                }}
+                onClick={() => handleHeaderFeedUrlKeyPress({ key: 'Enter' })}
+                disabled={isLoadingFeed || !headerFeedUrl.trim()}
+                title="Submit Feed URL"
+              >
+                Submit
+              </IconButton>
               <IconButton
                 size="small"
                 disabled={true}
@@ -1378,6 +1397,23 @@ const AddClient = () => {
             <>
               <IconButton
                 size="small"
+                sx={{
+                  backgroundColor: '#4caf50',
+                  color: '#fff',
+                  '&:hover': { backgroundColor: '#45a049' },
+                  border: '1px solid #ddd',
+                  height: '36px',
+                  width: '100px'
+
+                }}
+                onClick={() => handleAddFeedFromSection({ key: 'Enter' })}
+                disabled={isLoadingAddFeed}
+
+              >
+                Submit
+              </IconButton>
+              <IconButton
+                size="small"
                 disabled={true}
                 sx={{
                   border: '1px solid #ddd',
@@ -1493,7 +1529,7 @@ const AddClient = () => {
 
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <Link
-                    href={"/clients/add-client/job-data"}
+                    href={"/clients/add-client/feed-details"}
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
@@ -2526,20 +2562,7 @@ const AddClient = () => {
                 type="number"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Mark Type</InputLabel>
-                <Select
-                  value={markType}
-                  label="Mark Type"
-                  onChange={(e) => setMarkType(e.target.value)}
-                >
-                  <MenuItem value="Markup">Markup</MenuItem>
-                  <MenuItem value="Markdown">Markdown</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
                 fullWidth
                 label="Markup (%)"
@@ -2548,8 +2571,31 @@ const AddClient = () => {
                 size="small"
                 type="number"
               />
+
+              <Select
+                size="small"
+                value={marginMode}
+                onChange={(e) => setMarginMode(e.target.value)}
+                sx={{
+                  height: '100%',
+                  minWidth: 45,
+                  maxWidth: 45,
+                  '& .MuiSelect-select': {
+                    fontSize: '0.75rem',
+                    padding: '4px 8px',
+                    paddingRight: '20px !important'
+                  },
+                  '& .MuiSvgIcon-root': {
+                    fontSize: '1rem'
+                  }
+                }}
+                placeholder="Mode"
+              >
+                <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }} selected >%</MenuItem>
+                <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
+              </Select>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
                 fullWidth
                 label="Markdown (%)"
@@ -2558,6 +2604,29 @@ const AddClient = () => {
                 size="small"
                 type="number"
               />
+
+              <Select
+                size="small"
+                value={marginMode}
+                onChange={(e) => setMarginMode(e.target.value)}
+                sx={{
+                  height: '100%',
+                  minWidth: 45,
+                  maxWidth: 45,
+                  '& .MuiSelect-select': {
+                    fontSize: '0.75rem',
+                    padding: '4px 8px',
+                    paddingRight: '20px !important'
+                  },
+                  '& .MuiSvgIcon-root': {
+                    fontSize: '1rem'
+                  }
+                }}
+                placeholder="Mode"
+              >
+                <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }} selected >%</MenuItem>
+                <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
@@ -2567,9 +2636,14 @@ const AddClient = () => {
                   label="Frequency"
                   onChange={(e) => setFrequency(e.target.value)}
                 >
-                  <MenuItem value="Daily">Daily</MenuItem>
-                  <MenuItem value="Weekly">Weekly</MenuItem>
-                  <MenuItem value="Monthly">Monthly</MenuItem>
+                  <MenuItem value="one">1</MenuItem>
+                  <MenuItem value="two">2</MenuItem>
+                  <MenuItem value="three">3</MenuItem>
+                  <MenuItem value="four">4</MenuItem>
+                  <MenuItem value="five">5</MenuItem>
+                  <MenuItem value="six">6</MenuItem>
+                  <MenuItem value="custom">Custom</MenuItem>
+
                 </Select>
               </FormControl>
             </Grid>
@@ -2596,9 +2670,8 @@ const AddClient = () => {
                   label="Client Type"
                   onChange={(e) => setClientType(e.target.value)}
                 >
-                  <MenuItem value="Premium">Premium</MenuItem>
-                  <MenuItem value="Standard">Standard</MenuItem>
-                  <MenuItem value="Basic">Basic</MenuItem>
+                  <MenuItem value="cpa">CPA</MenuItem>
+                  <MenuItem value="cpc">CPC</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
