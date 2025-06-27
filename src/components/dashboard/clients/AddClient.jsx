@@ -2578,7 +2578,7 @@ const AddClient = () => {
             <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
                 fullWidth
-                label="Markup (%)"
+                label="Markup"
                 value={markup}
                 onChange={(e) => setMarkup(e.target.value)}
                 size="small"
@@ -2611,7 +2611,7 @@ const AddClient = () => {
             <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
                 fullWidth
-                label="Markdown (%)"
+                label="Markdown"
                 value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
                 size="small"
