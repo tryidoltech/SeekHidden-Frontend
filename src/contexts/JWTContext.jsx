@@ -21,23 +21,24 @@ const initialState = {
   user: null
 };
 
-const verifyToken = (serviceToken) => {
-  if (!serviceToken) {
+const verifyToken = (accessToken) => {
+  if (!accessToken) {
     return false;
   }
-  const decoded = jwtDecode(serviceToken);
-  /**
-   * Property 'exp' does not exist on type '<T = unknown>(token: string, options?: JwtDecodeOptions | undefined) => T'.
-   */
-  return decoded.exp > Date.now() / 1000;
+  try {
+    const decoded = jwtDecode(accessToken);
+    return decoded.exp > Date.now() / 1000;
+  } catch (e) {
+    return false;
+  }
 };
 
-const setSession = (serviceToken) => {
-  if (serviceToken) {
-    localStorage.setItem('serviceToken', serviceToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+const setSession = (accessToken) => {
+  if (accessToken) {
+    localStorage.setItem('accessToken', accessToken);
+    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
-    localStorage.removeItem('serviceToken');
+    localStorage.removeItem('accessToken');
     delete axios.defaults.headers.common.Authorization;
   }
 };
@@ -52,28 +53,50 @@ export const JWTProvider = ({ children }) => {
   useEffect(() => {
     const init = async () => {
       try {
-        const serviceToken = window.localStorage.getItem('serviceToken');
-        if (serviceToken && verifyToken(serviceToken)) {
-          setSession(serviceToken);
-          const response = await axios.get('/api/account/me');
-          const { user } = response.data;
-          dispatch({
-            type: LOGIN,
-            payload: {
-              isLoggedIn: true,
-              user
-            }
-          });
+        let accessToken = window.localStorage.getItem('accessToken');
+
+        // If token doesn't exist or is expired, try refresh
+        if (!verifyToken(accessToken)) {
+          const refreshResponse = await axios.post('/auth/refresh');
+          accessToken = refreshResponse.data.accessToken;
+
+          if (accessToken) {
+            setSession(accessToken);
+          } else {
+            throw new Error('Unable to refresh access token');
+          }
         } else {
-          dispatch({
-            type: LOGOUT
-          });
+          setSession(accessToken);
         }
+
+        // Decode user from token
+        const decoded = jwtDecode(accessToken);
+        const user = decoded.user || {
+          id: decoded.id,
+          name: decoded.name,
+          role: decoded.role
+        };
+
+        dispatch({
+          type: LOGIN,
+          payload: {
+            isLoggedIn: true,
+            user
+          }
+        });
       } catch (err) {
         console.error(err);
-        dispatch({
-          type: LOGOUT
-        });
+        setSession(null);
+        dispatch({ type: LOGOUT });
+      } finally {
+        // Always mark as initialized
+        dispatch((prev) => ({
+          ...prev,
+          type: 'INIT', // Optional: use in reducer if needed
+          payload: {
+            isInitialized: true
+          }
+        }));
       }
     };
 
@@ -81,9 +104,9 @@ export const JWTProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const response = await axios.post('/api/account/login', { email, password });
-    const { serviceToken, user } = response.data;
-    setSession(serviceToken);
+    const response = await axios.post('/auth/login', { email, password });
+    const { accessToken, user } = response.data;
+    setSession(accessToken);
     dispatch({
       type: LOGIN,
       payload: {
@@ -94,7 +117,6 @@ export const JWTProvider = ({ children }) => {
   };
 
   const register = async (email, password, firstName, lastName) => {
-    // todo: this flow need to be recode as it not verified
     const id = chance.bb_pin();
     const response = await axios.post('/api/account/register', {
       id,
@@ -132,11 +154,18 @@ export const JWTProvider = ({ children }) => {
 
   const updateProfile = () => {};
 
+  // Show loader until initialized
   if (state.isInitialized !== undefined && !state.isInitialized) {
     return <Loader />;
   }
 
-  return <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>;
+  return (
+    <JWTContext.Provider
+      value={{ ...state, login, logout, register, resetPassword, updateProfile }}
+    >
+      {children}
+    </JWTContext.Provider>
+  );
 };
 
 export default JWTContext;
