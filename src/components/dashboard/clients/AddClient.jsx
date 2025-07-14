@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-toastify'; // Add this import
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AddClient = () => {
   // State for form fields
@@ -54,6 +55,8 @@ const AddClient = () => {
   const [country, setCountry] = useState('');
   const [industry, setIndustry] = useState('');
   const [marginMode, setMarginMode] = useState('');
+  const [markupType, setMarkupType] = useState('');
+  const [markdownType, setMarkdownType] = useState('')
 
   // Settings section
   const [budget, setBudget] = useState('');
@@ -368,33 +371,67 @@ const AddClient = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Submitting client data:', {
-      clientName,
-      advertiserName,
-      exportedName,
-      currency,
-      country,
-      industry,
-      budget,
-      markType,
-      markup,
-      markdown,
-      frequency,
-      timeZone,
-      clientType,
-      showDashboards,
-      clickFilters,
-      clickFilterRedirectUrl,
-      startDate,
-      endDate,
-      spendTypeCpa,
-      feedUrl,
-      mappings,
-      additionalFeeds: feeds,
-    });
+const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const token = localStorage.getItem("accessToken");
+
+  // Convert mappings (object) → feed_node_mapping (array)
+  const feed_node_mapping = Object.entries(mappings).reduce((acc, [internalField, clientNode]) => {
+    if (clientNode?.trim()) {
+      acc.push({
+        client_node: clientNode,
+        internal_field: internalField,
+        sample_value: "" // optionally fill or ignore if backend handles it
+      });
+    }
+    return acc;
+  }, []);
+
+  const payload = {
+    internal_name: clientName,
+    external_name: exportedName,
+    advertiser_name: advertiserName,
+    currency: currency,
+    budget: {
+      threshold: Number(budget),
+    },
+    start_date: startDate,
+    end_date: endDate,
+    timezone: timeZone,
+    feed_refresh_frequency: frequency,
+    bid_margin: {
+      markup: {
+        type: markupType === "percentage"?"%":"fixed",
+        value: Number(markup),
+      },
+      markdown: {
+        type: markdownType === "%" ? "%" : "fixed", // or "$"
+        value: Number(markdown),
+      },
+    },
+    feed_source_url: feedUrl, // or defaultFeedUrl if that's the main one
+    feed_bid_type: clientType, // like "CPA"
+    industry: industry,
+    country: country,
+    show_dashboard: showDashboards === "Yes",
+    feed_node_mapping: feed_node_mapping
   };
+
+  axios.post("https://testing-79ja.onrender.com/clients", payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then(response => {
+      console.log("Success:", response.data);
+    })
+    .catch(error => {
+      console.error("Error submitting data:", error?.response?.data || error.message);
+    });
+};
+
 
   // New functions for adding fields and mapping
   const handleAddField = () => {
@@ -887,7 +924,7 @@ const AddClient = () => {
               size="small"
               sx={{ flexGrow: 1 }}
               value={headerFeedUrl}
-              onChange={(e) => setHeaderFeedUrl(e.target.value)}
+              onChange={(e) => {setHeaderFeedUrl(e.target.value); console.log(headerFeedUrl)}}
               onKeyPress={handleHeaderFeedUrlKeyPress}
               placeholder="Enter feed URL and press Enter"
             />
@@ -2587,8 +2624,8 @@ const AddClient = () => {
 
               <Select
                 size="small"
-                value={marginMode}
-                onChange={(e) => setMarginMode(e.target.value)}
+                value={markupType}
+                onChange={(e) => setMarkupType(e.target.value)}
                 sx={{
                   height: '100%',
                   minWidth: 45,
@@ -2620,8 +2657,8 @@ const AddClient = () => {
 
               <Select
                 size="small"
-                value={marginMode}
-                onChange={(e) => setMarginMode(e.target.value)}
+                value={markdownType}
+                onChange={(e) => setMarkdownType(e.target.value)}
                 sx={{
                   height: '100%',
                   minWidth: 45,
@@ -2698,8 +2735,8 @@ const AddClient = () => {
                   label="Client Type"
                   onChange={(e) => setClientType(e.target.value)}
                 >
-                  <MenuItem value="cpa">CPA</MenuItem>
-                  <MenuItem value="cpc">CPC</MenuItem>
+                  <MenuItem value="CPA">CPA</MenuItem>
+                  <MenuItem value="CPC">CPC</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
