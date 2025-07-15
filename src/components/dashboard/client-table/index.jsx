@@ -31,7 +31,7 @@ const [clientData, setClientData] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     axios
-      .get('https://testing-79ja.onrender.com/clients', {
+      .get('https://seekhidden-backend.onrender.com/clients', {
         headers: {
           Authorization: `Bearer ${token}`
         }
