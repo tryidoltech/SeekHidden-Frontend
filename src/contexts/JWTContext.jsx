@@ -11,6 +11,7 @@ import authReducer from 'contexts/auth-reducer/auth';
 // project-imports
 import Loader from 'components/Loader';
 import axios from 'utils/axios';
+const baseUrl = import.meta.env.VITE_APP_API_URL
 
 const chance = new Chance();
 
@@ -145,6 +146,7 @@ export const JWTProvider = ({ children }) => {
 
   const logout = () => {
     setSession(null);
+    axios.post(`${baseUrl}/auth/logout`)
     dispatch({ type: LOGOUT });
   };
 
