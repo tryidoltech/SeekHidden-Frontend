@@ -27,10 +27,7 @@ const SharedTable = ({ title, data, headers, withPagination = false }) => {
     <Box display="flex" alignItems="center" gap={1}>
       <Typography variant="body2">Rows per page:</Typography>
       <FormControl size="small" variant="outlined">
-        <Select
-          value={rowsPerPage}
-          onChange={handleChangeRowsPerPage}
-        >
+        <Select value={rowsPerPage} onChange={handleChangeRowsPerPage}>
           {[5, 10, 25, 50].map((count) => (
             <MenuItem key={count} value={count}>
               {count}

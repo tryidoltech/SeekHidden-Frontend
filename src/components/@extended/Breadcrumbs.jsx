@@ -51,10 +51,10 @@ export default function Breadcrumbs({
 
   // Generate breadcrumb paths from current location
   useEffect(() => {
-    const pathnames = location.pathname.split('/').filter(x => x);
+    const pathnames = location.pathname.split('/').filter((x) => x);
     const paths = pathnames.map((pathname, index) => {
       const path = `/${pathnames.slice(0, index + 1).join('/')}`;
-      const label = pathname.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const label = pathname.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
       return {
         path,
         label,

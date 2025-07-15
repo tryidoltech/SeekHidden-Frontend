@@ -16,7 +16,7 @@ const dashboardPage = {
   type: 'group',
   url: '/',
   icon: icons.dashboardPage,
-  breadcrumbs: false,
+  breadcrumbs: false
 };
 
 export default dashboardPage;

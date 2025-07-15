@@ -30,7 +30,7 @@ const pages = {
           type: 'item',
           url: '/clients',
           icon: icons.user
-        },
+        }
         // {
         //   id: 'publishers',
         //   title: 'Publishers',
@@ -62,7 +62,7 @@ const pages = {
         //   url: '/dashboard/job-group',
         // }
       ]
-    },
+    }
   ]
 };
 

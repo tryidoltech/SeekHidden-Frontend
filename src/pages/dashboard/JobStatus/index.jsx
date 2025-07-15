@@ -1,11 +1,10 @@
-import React from "react"
-import ApplyFilters from "../../../components/jobstatus/ApplyFilters"
-import ToggleMetrics from "../../../components/jobstatus/ToggleMetrics"
-import { Stack } from "@mui/system"
-import CustomTable from "../../../components/shareComponents/CustomTable"
-import MultiLineChart from "../../../components/shareComponents/MultiLineChart"
-import LineChart from "../../../components/shareComponents/LineChart"
-
+import React from 'react';
+import ApplyFilters from '../../../components/jobstatus/ApplyFilters';
+import ToggleMetrics from '../../../components/jobstatus/ToggleMetrics';
+import { Stack } from '@mui/system';
+import CustomTable from '../../../components/shareComponents/CustomTable';
+import MultiLineChart from '../../../components/shareComponents/MultiLineChart';
+import LineChart from '../../../components/shareComponents/LineChart';
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -50,8 +49,6 @@ const rows = [
   }
 ];
 
-
-
 const headers = [
   { label: 'ID', key: 'id' },
   { label: 'Country', key: 'country' },
@@ -59,7 +56,6 @@ const headers = [
   { label: 'DOD', key: 'dod' },
   { label: 'DOD%', key: 'dodPercent' }
 ];
-
 
 const countryCpsRows = [
   {
@@ -104,7 +100,6 @@ const countryCpsRows = [
   }
 ];
 
-
 const countryCpsheaders = [
   { label: 'ID', key: 'id' },
   { label: 'Country', key: 'country' },
@@ -118,68 +113,63 @@ const countryCpsheaders = [
 const sampleSeries = [
   {
     name: 'Series A',
-    data: [450, 800, 600, 900, 200, 1000, 700, 150, 850, 400],
+    data: [450, 800, 600, 900, 200, 1000, 700, 150, 850, 400]
   },
   {
     name: 'Series B',
-    data: [300, 500, 400, 700, 100, 950, 600, 100, 700, 450],
+    data: [300, 500, 400, 700, 100, 950, 600, 100, 700, 450]
   },
   {
     name: 'Series C',
-    data: [100, 250, 300, 850, 950, 200, 500, 850, 600, 1000],
-  },
+    data: [100, 250, 300, 850, 950, 200, 500, 850, 600, 1000]
+  }
 ];
 
 const xLabels = Array.from({ length: 10 }, (_, i) => i.toString());
 
 //lineChart
-  const chartSeries = [
-    {
-      name: 'www.abcxyz.com',
-      data: [80, 120, 190, 300, 270, 180],
-    },
-    {
-      name: 'www.abcxyz.com',
-      data: [250, 150, 0, 100, 260, 0],
-    },
-    {
-      name: 'www.abcxyz.com',
-      data: [100, 280, 230, 150, 260, 300],
-    },
-    {
-      name: 'www.abcxyz.com',
-      data: [20, 60, 90, 250, 270, 330],
-    },
-  ];
+const chartSeries = [
+  {
+    name: 'www.abcxyz.com',
+    data: [80, 120, 190, 300, 270, 180]
+  },
+  {
+    name: 'www.abcxyz.com',
+    data: [250, 150, 0, 100, 260, 0]
+  },
+  {
+    name: 'www.abcxyz.com',
+    data: [100, 280, 230, 150, 260, 300]
+  },
+  {
+    name: 'www.abcxyz.com',
+    data: [20, 60, 90, 250, 270, 330]
+  }
+];
 
-  const chartCategories = [0, 1, 2, 3, 4, 5];
-  const title = 'Line Chart - abcxyz.com';
-const JobStatus=()=>{
-
-  
-    return(
-        <Stack direction="column" spacing={2}>
-             <ApplyFilters />
-            <ToggleMetrics />
-            <MultiLineChart 
-            title=""
-            seriesData={sampleSeries}
-            categories={xLabels}/>
-            <CustomTable    
-            title="Top 10 Website Increase/Decrease"
-            data={rows}
-            headers={headers}
-            filename="basic-table-data.csv" 
-            withPagination={true}/>
+const chartCategories = [0, 1, 2, 3, 4, 5];
+const title = 'Line Chart - abcxyz.com';
+const JobStatus = () => {
+  return (
+    <Stack direction="column" spacing={2}>
+      <ApplyFilters />
+      <ToggleMetrics />
+      <MultiLineChart title="" seriesData={sampleSeries} categories={xLabels} />
+      <CustomTable
+        title="Top 10 Website Increase/Decrease"
+        data={rows}
+        headers={headers}
+        filename="basic-table-data.csv"
+        withPagination={true}
+      />
       <LineChart series={chartSeries} title="" categories={chartCategories} />
-         <CustomTable    
-      title="Top 25 Website Increasing Country CPC"
-      data={countryCpsRows}
-      headers={countryCpsheaders}
-      filename="basic-table-data.csv" />
-        </Stack>
-           
-  
-    )
-}
-export default JobStatus
+      <CustomTable
+        title="Top 25 Website Increasing Country CPC"
+        data={countryCpsRows}
+        headers={countryCpsheaders}
+        filename="basic-table-data.csv"
+      />
+    </Stack>
+  );
+};
+export default JobStatus;

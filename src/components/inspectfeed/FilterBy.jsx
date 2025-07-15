@@ -1,21 +1,14 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import MainCard from 'components/MainCard';
-import { Stack } from "@mui/system";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography
-} from "@mui/material";
+import { Stack } from '@mui/system';
+import { Box, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 
 const FilterBy = () => {
   const [filterBy, setFilterBy] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Dynamic arrays
-  const filterOptions = ["CPC", "CPA", "Company", "Category", "Stats", "City"];
+  const filterOptions = ['CPC', 'CPA', 'Company', 'Category', 'Stats', 'City'];
   const rowsPerPageOptions = [5, 10, 25, 50];
 
   const handleChangeRowsPerPage = (event) => {
@@ -26,13 +19,7 @@ const FilterBy = () => {
 
   return (
     <MainCard sx={{ overflow: 'visible' }}>
-      <Stack
-        direction="row"
-        spacing={2}
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="space-between"
-      >
+      <Stack direction="row" spacing={2} flexWrap="wrap" alignItems="center" justifyContent="space-between">
         {/* Filter Dropdown */}
         <Box sx={{ minWidth: 160, flexGrow: 1, maxWidth: 220 }}>
           <InputLabel id="filters">Filters</InputLabel>
@@ -42,9 +29,7 @@ const FilterBy = () => {
             onChange={(e) => setFilterBy(e.target.value)}
             displayEmpty
             fullWidth
-            renderValue={(selected) =>
-              selected ? selected : <span style={placeholderStyle}>Select an option</span>
-            }
+            renderValue={(selected) => (selected ? selected : <span style={placeholderStyle}>Select an option</span>)}
           >
             {filterOptions.map((option) => (
               <MenuItem key={option} value={option}>

@@ -1,5 +1,5 @@
 // material-ui
-import logo from 'assets/images/logo.png'
+import logo from 'assets/images/logo.png';
 
 /**
  * if you want to use image instead of <svg> uncomment following.
@@ -12,7 +12,6 @@ import logo from 'assets/images/logo.png'
 // ==============================|| LOGO ICON SVG ||============================== //
 
 export default function LogoIcon() {
-
   return (
     /**
      * if you want to use image instead of svg uncomment following, and comment out <svg> element.

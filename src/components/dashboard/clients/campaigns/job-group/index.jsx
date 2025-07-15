@@ -1,12 +1,12 @@
-import React from 'react'
-import JobGroupTable from './JobGroupTable'
+import React from 'react';
+import JobGroupTable from './JobGroupTable';
 
 function JobGroup() {
-    return (
-        <>
-            <JobGroupTable />
-        </>
-    )
+  return (
+    <>
+      <JobGroupTable />
+    </>
+  );
 }
 
-export default JobGroup
+export default JobGroup;

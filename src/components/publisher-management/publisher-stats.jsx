@@ -194,103 +194,103 @@
 //     </div>
 //   )
 // }
-"use client"
+'use client';
 
-import { useState, useMemo } from "react"
-import Button from "@mui/material/Button"
-import Stack from "@mui/material/Stack"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import TextField from "@mui/material/TextField"
-import Select from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
-import Checkbox from "@mui/material/Checkbox"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { Search, Filter } from "lucide-react"
+import { useState, useMemo } from 'react';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Checkbox from '@mui/material/Checkbox';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { Search, Filter } from 'lucide-react';
 
 const publisherStatsData = [
   {
     id: 1,
-    name: "Monester CPA UK",
-    grossSpend: "0.93 USD",
-    validClicks: "00",
-    foreignClicks: "00",
-    latentClicks: "00",
-    botClicks: "00",
-    duplicateClicks: "00",
+    name: 'Monester CPA UK',
+    grossSpend: '0.93 USD',
+    validClicks: '00',
+    foreignClicks: '00',
+    latentClicks: '00',
+    botClicks: '00',
+    duplicateClicks: '00'
   },
   {
     id: 2,
-    name: "ATTB US CPA",
-    grossSpend: "1.25 USD",
-    validClicks: "15",
-    foreignClicks: "02",
-    latentClicks: "03",
-    botClicks: "01",
-    duplicateClicks: "00",
+    name: 'ATTB US CPA',
+    grossSpend: '1.25 USD',
+    validClicks: '15',
+    foreignClicks: '02',
+    latentClicks: '03',
+    botClicks: '01',
+    duplicateClicks: '00'
   },
   {
     id: 3,
-    name: "Global Leads EU",
-    grossSpend: "2.50 USD",
-    validClicks: "28",
-    foreignClicks: "05",
-    latentClicks: "02",
-    botClicks: "03",
-    duplicateClicks: "01",
-  },
-]
+    name: 'Global Leads EU',
+    grossSpend: '2.50 USD',
+    validClicks: '28',
+    foreignClicks: '05',
+    latentClicks: '02',
+    botClicks: '03',
+    duplicateClicks: '01'
+  }
+];
 
 export function PublishersStats() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [selectedRows, setSelectedRows] = useState([])
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const filteredStats = useMemo(() => {
-    return publisherStatsData.filter((stat) => stat.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  }, [searchTerm])
+    return publisherStatsData.filter((stat) => stat.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [searchTerm]);
 
   const handleSelectAll = (event) => {
     if (event.target.checked) {
-      setSelectedRows(filteredStats.map((s) => s.id))
+      setSelectedRows(filteredStats.map((s) => s.id));
     } else {
-      setSelectedRows([])
+      setSelectedRows([]);
     }
-  }
+  };
 
   const handleSelectRow = (id) => {
-    const selectedIndex = selectedRows.indexOf(id)
-    let newSelected = []
+    const selectedIndex = selectedRows.indexOf(id);
+    let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selectedRows, id)
+      newSelected = newSelected.concat(selectedRows, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selectedRows.slice(1))
+      newSelected = newSelected.concat(selectedRows.slice(1));
     } else if (selectedIndex === selectedRows.length - 1) {
-      newSelected = newSelected.concat(selectedRows.slice(0, -1))
+      newSelected = newSelected.concat(selectedRows.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1))
+      newSelected = newSelected.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
     }
 
-    setSelectedRows(newSelected)
-  }
+    setSelectedRows(newSelected);
+  };
 
-  const isSelected = (id) => selectedRows.indexOf(id) !== -1
+  const isSelected = (id) => selectedRows.indexOf(id) !== -1;
 
   const applyFilters = () => {
-    console.log("Stats filters applied:", { searchTerm, startDate, endDate })
-  }
+    console.log('Stats filters applied:', { searchTerm, startDate, endDate });
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box>
         {/* Filters Row */}
-        <Stack direction="row" spacing={2} sx={{ p: 2, alignItems: "center", justifyContent: "space-between" }}>
+        <Stack direction="row" spacing={2} sx={{ p: 2, alignItems: 'center', justifyContent: 'space-between' }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Button variant="outlined" size="small">
               Actions
@@ -315,16 +315,16 @@ export function PublishersStats() {
         </Stack>
 
         {/* Search and Filter Row */}
-        <Stack direction="row" spacing={2} sx={{ px: 2, pb: 2, alignItems: "center", justifyContent: "space-between" }}>
+        <Stack direction="row" spacing={2} sx={{ px: 2, pb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Box
               sx={{
-                backgroundColor: "grey.100",
+                backgroundColor: 'grey.100',
                 px: 1.5,
                 py: 1,
                 borderRadius: 1,
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center'
               }}
             >
               <Typography variant="body2" color="text.secondary">
@@ -338,7 +338,7 @@ export function PublishersStats() {
               onChange={(e) => setSearchTerm(e.target.value)}
               sx={{ minWidth: 200 }}
               InputProps={{
-                startAdornment: <Search size="16" style={{ marginRight: 8, color: "#666" }} />,
+                startAdornment: <Search size="16" style={{ marginRight: 8, color: '#666' }} />
               }}
             />
 
@@ -361,53 +361,53 @@ export function PublishersStats() {
         </Stack>
 
         {/* Table */}
-        <Box sx={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <Box sx={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ backgroundColor: "#f5f5f5", borderBottom: "1px solid #e0e0e0" }}>
-                <th style={{ padding: "12px", textAlign: "left", width: "50px" }}>
+              <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
+                <th style={{ padding: '12px', textAlign: 'left', width: '50px' }}>
                   <Checkbox
                     checked={selectedRows.length === filteredStats.length && filteredStats.length > 0}
                     indeterminate={selectedRows.length > 0 && selectedRows.length < filteredStats.length}
                     onChange={handleSelectAll}
                   />
                 </th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Publisher Name</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Gross Spend</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Valid Clicks</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Foreign Clicks</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Latent Clicks</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Bot Clicks</th>
-                <th style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>Duplicate Clicks</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Publisher Name</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Gross Spend</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Valid Clicks</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Foreign Clicks</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Latent Clicks</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Bot Clicks</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>Duplicate Clicks</th>
               </tr>
             </thead>
             <tbody>
               {filteredStats.map((row) => (
-                <tr key={row.id} style={{ borderBottom: "1px solid #e0e0e0" }}>
-                  <td style={{ padding: "12px" }}>
+                <tr key={row.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                  <td style={{ padding: '12px' }}>
                     <Checkbox checked={isSelected(row.id)} onChange={() => handleSelectRow(row.id)} />
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
                       {row.name}
                     </Typography>
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2">{row.grossSpend}</Typography>
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2">{row.validClicks}</Typography>
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2">{row.foreignClicks}</Typography>
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2">{row.latentClicks}</Typography>
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2">{row.botClicks}</Typography>
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td style={{ padding: '12px' }}>
                     <Typography variant="body2">{row.duplicateClicks}</Typography>
                   </td>
                 </tr>
@@ -417,5 +417,5 @@ export function PublishersStats() {
         </Box>
       </Box>
     </LocalizationProvider>
-  )
+  );
 }

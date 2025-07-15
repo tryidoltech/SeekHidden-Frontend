@@ -1,31 +1,31 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import Box from "@mui/material/Box"
-import Typography from "@mui/material/Typography"
-import Paper from "@mui/material/Paper"
-import Grid from "@mui/material/Grid"
-import FormControl from "@mui/material/FormControl"
-import InputLabel from "@mui/material/InputLabel"
-import Select from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
-import Stack from "@mui/material/Stack"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { useTheme } from "@mui/material/styles"
-import ReactApexChart from "react-apexcharts"
+import { useState, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useTheme } from '@mui/material/styles';
+import ReactApexChart from 'react-apexcharts';
 
 export function PublisherGraphs() {
-  const theme = useTheme()
-  const mode = theme.palette.mode
-  const { primary, secondary } = theme.palette.text
-  const line = theme.palette.divider
+  const theme = useTheme();
+  const mode = theme.palette.mode;
+  const { primary, secondary } = theme.palette.text;
+  const line = theme.palette.divider;
 
-  const [dateRange, setDateRange] = useState('last7days')
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [metric, setMetric] = useState('all')
+  const [dateRange, setDateRange] = useState('last7days');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [metric, setMetric] = useState('all');
 
   // Line Chart Options
   const [lineChartOptions, setLineChartOptions] = useState({
@@ -61,7 +61,7 @@ export function PublisherGraphs() {
     legend: {
       position: 'top'
     }
-  })
+  });
 
   // Bar Chart Options
   const [barChartOptions, setBarChartOptions] = useState({
@@ -87,7 +87,7 @@ export function PublisherGraphs() {
     legend: {
       position: 'top'
     }
-  })
+  });
 
   // Donut Chart Options
   const [donutChartOptions, setDonutChartOptions] = useState({
@@ -107,7 +107,7 @@ export function PublisherGraphs() {
     legend: {
       position: 'bottom'
     }
-  })
+  });
 
   useEffect(() => {
     // Update Line Chart Options
@@ -147,7 +147,7 @@ export function PublisherGraphs() {
           colors: secondary
         }
       }
-    }))
+    }));
 
     // Update Bar Chart Options
     setBarChartOptions((prevState) => ({
@@ -186,7 +186,7 @@ export function PublisherGraphs() {
           colors: secondary
         }
       }
-    }))
+    }));
 
     // Update Donut Chart Options
     setDonutChartOptions((prevState) => ({
@@ -201,8 +201,8 @@ export function PublisherGraphs() {
       theme: {
         mode: mode === 'dark' ? 'dark' : 'light'
       }
-    }))
-  }, [mode, primary, secondary, line, theme])
+    }));
+  }, [mode, primary, secondary, line, theme]);
 
   // Chart Data
   const lineChartSeries = [
@@ -214,16 +214,16 @@ export function PublisherGraphs() {
       name: 'Spend',
       data: [8000, 12000, 10000, 18000, 15000, 20000]
     }
-  ]
+  ];
 
   const barChartSeries = [
     {
       name: 'Performance',
       data: [65, 59, 80, 81]
     }
-  ]
+  ];
 
-  const donutChartSeries = [70, 20, 10]
+  const donutChartSeries = [70, 20, 10];
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -233,11 +233,7 @@ export function PublisherGraphs() {
           <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap">
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <InputLabel>Date Range</InputLabel>
-              <Select
-                value={dateRange}
-                label="Date Range"
-                onChange={(e) => setDateRange(e.target.value)}
-              >
+              <Select value={dateRange} label="Date Range" onChange={(e) => setDateRange(e.target.value)}>
                 <MenuItem value="today">Today</MenuItem>
                 <MenuItem value="yesterday">Yesterday</MenuItem>
                 <MenuItem value="last7days">Last 7 Days</MenuItem>
@@ -277,11 +273,7 @@ export function PublisherGraphs() {
 
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <InputLabel>Metric</InputLabel>
-              <Select
-                value={metric}
-                label="Metric"
-                onChange={(e) => setMetric(e.target.value)}
-              >
+              <Select value={metric} label="Metric" onChange={(e) => setMetric(e.target.value)}>
                 <MenuItem value="all">All Metrics</MenuItem>
                 <MenuItem value="revenue">Revenue</MenuItem>
                 <MenuItem value="spend">Spend</MenuItem>
@@ -301,12 +293,7 @@ export function PublisherGraphs() {
                 Revenue vs Spend Trend
               </Typography>
               <Box sx={{ height: 400 }}>
-                <ReactApexChart 
-                  options={lineChartOptions} 
-                  series={lineChartSeries} 
-                  type="area" 
-                  height={350} 
-                />
+                <ReactApexChart options={lineChartOptions} series={lineChartSeries} type="area" height={350} />
               </Box>
             </Paper>
           </Grid>
@@ -318,12 +305,7 @@ export function PublisherGraphs() {
                 Publisher Status
               </Typography>
               <Box sx={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ReactApexChart 
-                  options={donutChartOptions} 
-                  series={donutChartSeries} 
-                  type="donut" 
-                  height={350} 
-                />
+                <ReactApexChart options={donutChartOptions} series={donutChartSeries} type="donut" height={350} />
               </Box>
             </Paper>
           </Grid>
@@ -335,12 +317,7 @@ export function PublisherGraphs() {
                 Publisher Performance Comparison
               </Typography>
               <Box sx={{ height: 400 }}>
-                <ReactApexChart 
-                  options={barChartOptions} 
-                  series={barChartSeries} 
-                  type="bar" 
-                  height={350} 
-                />
+                <ReactApexChart options={barChartOptions} series={barChartSeries} type="bar" height={350} />
               </Box>
             </Paper>
           </Grid>
@@ -392,5 +369,5 @@ export function PublisherGraphs() {
         </Grid>
       </Box>
     </LocalizationProvider>
-  )
+  );
 }

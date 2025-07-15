@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Typography, Box
-} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
 
 const CustomCountTable = ({ headers = [], rows = [] }) => {
   const totalCount = rows.reduce((acc, row) => acc + (row[headers[1].key] || 0), 0);

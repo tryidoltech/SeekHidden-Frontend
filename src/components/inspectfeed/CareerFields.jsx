@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Typography, Box
-} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
 import CustomCountTable from '../shareComponents/CustomCountTable';
 
 const headers = [
@@ -17,16 +14,14 @@ const data = [
   { field: 'Career Fields', feedCount: 480 },
   { field: 'Career Fields', feedCount: 500 },
   { field: 'Career Fields', feedCount: 600 },
-  { field: 'Career Fields', feedCount: 400 },
+  { field: 'Career Fields', feedCount: 400 }
 ];
 
 // Calculate total count
 const totalCount = data.reduce((acc, row) => acc + row.feedCount, 0);
 
 const CareerFeeds = () => {
-  return (
-    <CustomCountTable rows={data} headers={headers}/>
-  );
+  return <CustomCountTable rows={data} headers={headers} />;
 };
 
 export default CareerFeeds;

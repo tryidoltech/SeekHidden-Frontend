@@ -28,8 +28,8 @@ import {
   ListItemText,
   OutlinedInput
 } from '@mui/material';
-import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare, ArrowDown2 } from "iconsax-react";
-import { visuallyHidden } from "@mui/utils";
+import { SearchNormal1, Filter, Calendar, More, Edit, TickSquare, CloseSquare, ArrowDown2 } from 'iconsax-react';
+import { visuallyHidden } from '@mui/utils';
 import { Link } from 'react-router-dom';
 
 function descendingComparator(a, b, orderBy) {
@@ -59,7 +59,7 @@ function DynamicTableHeader({
   onApplyFilters,
   recordsFound,
   searchEnabled = true,
-  title = "Records"
+  title = 'Records'
 }) {
   return (
     <Paper sx={{ p: 2, mb: 2 }}>
@@ -113,18 +113,18 @@ function DynamicTableHeader({
                           if (selected.length === 0) {
                             return '';
                           }
-                          
+
                           // Show count if more than 3 selections, otherwise show chips
                           if (selected.length > 3) {
                             return (
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Chip 
+                                <Chip
                                   label={`${selected.length} selected`}
                                   size="small"
                                   color="primary"
                                   variant="outlined"
-                                  sx={{ 
-                                    height: 20, 
+                                  sx={{
+                                    height: 20,
                                     fontSize: '0.75rem',
                                     fontWeight: 500
                                   }}
@@ -132,19 +132,14 @@ function DynamicTableHeader({
                               </Box>
                             );
                           }
-                          
+
                           // Show individual chips for 3 or fewer selections
                           return (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                               {selected.map((value) => {
-                                const option = filter.options?.find(opt => opt.value === value);
+                                const option = filter.options?.find((opt) => opt.value === value);
                                 return (
-                                  <Chip 
-                                    key={value} 
-                                    label={option?.label || value} 
-                                    size="small"
-                                    sx={{ height: 20, fontSize: '0.75rem' }}
-                                  />
+                                  <Chip key={value} label={option?.label || value} size="small" sx={{ height: 20, fontSize: '0.75rem' }} />
                                 );
                               })}
                             </Box>
@@ -154,9 +149,9 @@ function DynamicTableHeader({
                           PaperProps: {
                             style: {
                               maxHeight: 300,
-                              width: 280,
-                            },
-                          },
+                              width: 280
+                            }
+                          }
                         }}
                         sx={{
                           '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
@@ -168,7 +163,7 @@ function DynamicTableHeader({
                         }}
                       >
                         {/* Add "Select All" and "Clear All" options at the top */}
-                        <MenuItem 
+                        <MenuItem
                           onClick={(e) => {
                             e.stopPropagation();
                             if (filter.selectedValues?.length === filter.options?.length) {
@@ -179,12 +174,12 @@ function DynamicTableHeader({
                             } else {
                               // Select all
                               if (filter.onChange) {
-                                filter.onChange(filter.options?.map(opt => opt.value) || []);
+                                filter.onChange(filter.options?.map((opt) => opt.value) || []);
                               }
                             }
                           }}
-                          sx={{ 
-                            borderBottom: '1px solid #e0e0e0', 
+                          sx={{
+                            borderBottom: '1px solid #e0e0e0',
                             mb: 1,
                             fontWeight: 500,
                             color: 'primary.main'
@@ -192,19 +187,16 @@ function DynamicTableHeader({
                         >
                           {filter.selectedValues?.length === filter.options?.length ? 'Clear All' : 'Select All'}
                         </MenuItem>
-                        
+
                         {filter.options?.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
-                            <Checkbox 
-                              checked={(filter.selectedValues || []).indexOf(option.value) > -1} 
-                              size="small"
-                            />
-                            <ListItemText 
-                              primary={option.label} 
-                              sx={{ 
-                                '& .MuiTypography-root': { 
-                                  fontSize: '0.875rem' 
-                                } 
+                            <Checkbox checked={(filter.selectedValues || []).indexOf(option.value) > -1} size="small" />
+                            <ListItemText
+                              primary={option.label}
+                              sx={{
+                                '& .MuiTypography-root': {
+                                  fontSize: '0.875rem'
+                                }
                               }}
                             />
                           </MenuItem>
@@ -219,13 +211,13 @@ function DynamicTableHeader({
                       value={filters[filter.key] || ''}
                       onChange={(e) => onFilterChange(filter.key, e.target.value)}
                       placeholder={filter.placeholder}
-                      InputProps={filter.icon ? {
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            {filter.icon}
-                          </InputAdornment>
-                        ),
-                      } : undefined}
+                      InputProps={
+                        filter.icon
+                          ? {
+                              endAdornment: <InputAdornment position="end">{filter.icon}</InputAdornment>
+                            }
+                          : undefined
+                      }
                       sx={{
                         minWidth: filter.minWidth || 120,
                         '& .MuiOutlinedInput-root': {
@@ -250,7 +242,7 @@ function DynamicTableHeader({
                   {filter.type === 'search' && searchEnabled && (
                     <TextField
                       size="small"
-                      placeholder={filter.placeholder || "Search..."}
+                      placeholder={filter.placeholder || 'Search...'}
                       value={filters.search || ''}
                       onChange={(e) => onSearch(e.target.value)}
                       InputProps={{
@@ -258,7 +250,7 @@ function DynamicTableHeader({
                           <InputAdornment position="start">
                             <SearchNormal1 size="20" />
                           </InputAdornment>
-                        ),
+                        )
                       }}
                       sx={{
                         minWidth: filter.minWidth || 200,
@@ -280,7 +272,7 @@ function DynamicTableHeader({
                           <InputAdornment position="end">
                             <Calendar size="20" />
                           </InputAdornment>
-                        ),
+                        )
                       }}
                       sx={{
                         minWidth: filter.minWidth || 200,
@@ -293,8 +285,8 @@ function DynamicTableHeader({
 
                   {filter.type === 'button' && (
                     <Button
-                      variant={filter.variant || "outlined"}
-                      color={filter.color || "primary"}
+                      variant={filter.variant || 'outlined'}
+                      color={filter.color || 'primary'}
                       startIcon={filter.icon}
                       onClick={() => {
                         if (filter.onClick) {
@@ -366,18 +358,18 @@ function DynamicTableHeader({
                           if (selected.length === 0) {
                             return '';
                           }
-                          
+
                           // Show count if more than 3 selections, otherwise show chips
                           if (selected.length > 3) {
                             return (
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Chip 
+                                <Chip
                                   label={`${selected.length} selected`}
                                   size="small"
                                   color="primary"
                                   variant="outlined"
-                                  sx={{ 
-                                    height: 20, 
+                                  sx={{
+                                    height: 20,
                                     fontSize: '0.75rem',
                                     fontWeight: 500
                                   }}
@@ -385,19 +377,14 @@ function DynamicTableHeader({
                               </Box>
                             );
                           }
-                          
+
                           // Show individual chips for 3 or fewer selections
                           return (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                               {selected.map((value) => {
-                                const option = filter.options?.find(opt => opt.value === value);
+                                const option = filter.options?.find((opt) => opt.value === value);
                                 return (
-                                  <Chip 
-                                    key={value} 
-                                    label={option?.label || value} 
-                                    size="small"
-                                    sx={{ height: 20, fontSize: '0.75rem' }}
-                                  />
+                                  <Chip key={value} label={option?.label || value} size="small" sx={{ height: 20, fontSize: '0.75rem' }} />
                                 );
                               })}
                             </Box>
@@ -407,9 +394,9 @@ function DynamicTableHeader({
                           PaperProps: {
                             style: {
                               maxHeight: 300,
-                              width: 280,
-                            },
-                          },
+                              width: 280
+                            }
+                          }
                         }}
                         sx={{
                           '& .MuiOutlinedInput-notchedOutline': { border: '1px solid #ddd' },
@@ -421,7 +408,7 @@ function DynamicTableHeader({
                         }}
                       >
                         {/* Add "Select All" and "Clear All" options at the top */}
-                        <MenuItem 
+                        <MenuItem
                           onClick={(e) => {
                             e.stopPropagation();
                             if (filter.selectedValues?.length === filter.options?.length) {
@@ -432,12 +419,12 @@ function DynamicTableHeader({
                             } else {
                               // Select all
                               if (filter.onChange) {
-                                filter.onChange(filter.options?.map(opt => opt.value) || []);
+                                filter.onChange(filter.options?.map((opt) => opt.value) || []);
                               }
                             }
                           }}
-                          sx={{ 
-                            borderBottom: '1px solid #e0e0e0', 
+                          sx={{
+                            borderBottom: '1px solid #e0e0e0',
                             mb: 1,
                             fontWeight: 500,
                             color: 'primary.main'
@@ -445,19 +432,16 @@ function DynamicTableHeader({
                         >
                           {filter.selectedValues?.length === filter.options?.length ? 'Clear All' : 'Select All'}
                         </MenuItem>
-                        
+
                         {filter.options?.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
-                            <Checkbox 
-                              checked={(filter.selectedValues || []).indexOf(option.value) > -1} 
-                              size="small"
-                            />
-                            <ListItemText 
-                              primary={option.label} 
-                              sx={{ 
-                                '& .MuiTypography-root': { 
-                                  fontSize: '0.875rem' 
-                                } 
+                            <Checkbox checked={(filter.selectedValues || []).indexOf(option.value) > -1} size="small" />
+                            <ListItemText
+                              primary={option.label}
+                              sx={{
+                                '& .MuiTypography-root': {
+                                  fontSize: '0.875rem'
+                                }
                               }}
                             />
                           </MenuItem>
@@ -468,8 +452,8 @@ function DynamicTableHeader({
 
                   {filter.type === 'button' && (
                     <Button
-                      variant={filter.variant || "outlined"}
-                      color={filter.color || "primary"}
+                      variant={filter.variant || 'outlined'}
+                      color={filter.color || 'primary'}
                       startIcon={filter.icon}
                       onClick={() => {
                         if (filter.onClick) {
@@ -520,9 +504,9 @@ function DynamicTableHead({
     <TableHead>
       <TableRow>
         {selectable && (
-          <TableCell 
-            padding="checkbox" 
-            sx={{ 
+          <TableCell
+            padding="checkbox"
+            sx={{
               pl: 3,
               position: 'sticky',
               left: 0,
@@ -541,8 +525,8 @@ function DynamicTableHead({
           </TableCell>
         )}
         {rowActionsEnabled && (
-          <TableCell 
-            sx={{ 
+          <TableCell
+            sx={{
               pl: 3,
               position: 'sticky',
               left: 0,
@@ -551,9 +535,7 @@ function DynamicTableHead({
               borderRight: '1px solid',
               borderColor: 'divider'
             }}
-          >
-            
-          </TableCell>
+          ></TableCell>
         )}
         {columns.map((column, index) => (
           <TableCell
@@ -582,9 +564,7 @@ function DynamicTableHead({
               >
                 {column.label}
                 {orderBy === column.id ? (
-                  <Box sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
+                  <Box sx={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
                 ) : null}
               </TableSortLabel>
             ) : (
@@ -593,8 +573,8 @@ function DynamicTableHead({
           </TableCell>
         ))}
         {actionsEnabled && (
-          <TableCell 
-            sx={{ 
+          <TableCell
+            sx={{
               minWidth: 60,
               position: 'sticky',
               right: 0,
@@ -602,7 +582,7 @@ function DynamicTableHead({
               zIndex: 1,
               borderLeft: '1px solid',
               borderColor: 'divider'
-            }} 
+            }}
           />
         )}
       </TableRow>
@@ -612,7 +592,7 @@ function DynamicTableHead({
 
 function EditableCell({ column, value, row, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value||'');
+  const [editValue, setEditValue] = useState(value || '');
   const [marginMode, setMarginMode] = useState(row[`${column.id}Mode`] || 'percentage');
   const inputRef = useRef(null);
 
@@ -654,23 +634,20 @@ function EditableCell({ column, value, row, onUpdate }) {
   };
 
   if (!isEditing) {
-    const displayNode = column.id === 'clientName'
-      ? (
+    const displayNode =
+      column.id === 'clientName' ? (
         <Link
           to={`/campaigns`}
-          onClick={e => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
           style={{
             textDecoration: 'none',
-            color: 'inherit',
+            color: 'inherit'
           }}
         >
           {value}
         </Link>
-      )
-      : (
-        <Typography variant="body2">
-          {value ?? '-'}
-        </Typography>
+      ) : (
+        <Typography variant="body2">{value ?? '-'}</Typography>
       );
 
     return (
@@ -684,11 +661,7 @@ function EditableCell({ column, value, row, onUpdate }) {
         }}
       >
         {displayNode}
-        <IconButton
-          size="small"
-          onClick={() => setIsEditing(true)}
-          sx={{ opacity: 0.6, '&:hover': { opacity: 1 } }}
-        >
+        <IconButton size="small" onClick={() => setIsEditing(true)} sx={{ opacity: 0.6, '&:hover': { opacity: 1 } }}>
           <Edit size="16" />
         </IconButton>
       </Box>
@@ -706,12 +679,12 @@ function EditableCell({ column, value, row, onUpdate }) {
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
           onKeyDown={handleKeyPress}
-          inputProps={{ 
-            min: 0, 
+          inputProps={{
+            min: 0,
             step: marginMode === 'percentage' ? 0.1 : 0.01,
             max: marginMode === 'percentage' ? 100 : undefined
           }}
-          sx={{ 
+          sx={{
             flex: '1 1 60px',
             minWidth: 60,
             maxWidth: 80,
@@ -725,7 +698,7 @@ function EditableCell({ column, value, row, onUpdate }) {
           size="small"
           value={marginMode}
           onChange={(e) => setMarginMode(e.target.value)}
-          sx={{ 
+          sx={{
             minWidth: 45,
             maxWidth: 45,
             '& .MuiSelect-select': {
@@ -738,26 +711,30 @@ function EditableCell({ column, value, row, onUpdate }) {
             }
           }}
         >
-          <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }}>%</MenuItem>
-          <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
+          <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }}>
+            %
+          </MenuItem>
+          <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>
+            $
+          </MenuItem>
         </Select>
         <Box sx={{ display: 'flex', gap: 0.5, minWidth: 60 }}>
-          <IconButton 
-            size="small" 
-            onClick={handleSave} 
+          <IconButton
+            size="small"
+            onClick={handleSave}
             color="primary"
-            sx={{ 
+            sx={{
               padding: '2px',
               '& svg': { fontSize: '14px' }
             }}
           >
             <TickSquare size="14" />
           </IconButton>
-          <IconButton 
-            size="small" 
-            onClick={handleCancel} 
+          <IconButton
+            size="small"
+            onClick={handleCancel}
             color="secondary"
-            sx={{ 
+            sx={{
               padding: '2px',
               '& svg': { fontSize: '14px' }
             }}
@@ -780,20 +757,20 @@ function EditableCell({ column, value, row, onUpdate }) {
         onChange={(e) => setEditValue(e.target.value)}
         onKeyDown={handleKeyPress}
         inputProps={
-          column.type === 'editablePercentage' 
+          column.type === 'editablePercentage'
             ? { min: 0, max: 100, step: 0.1 }
             : column.type === 'editableCurrency'
-            ? { min: 0, step: 0.01 }
-            : {}
+              ? { min: 0, step: 0.01 }
+              : {}
         }
         InputProps={
-          column.type === 'editableCurrency' 
+          column.type === 'editableCurrency'
             ? { startAdornment: <InputAdornment position="start">$</InputAdornment> }
             : column.type === 'editablePercentage'
-            ? { endAdornment: <InputAdornment position="end">%</InputAdornment> }
-            : {}
+              ? { endAdornment: <InputAdornment position="end">%</InputAdornment> }
+              : {}
         }
-        sx={{ 
+        sx={{
           flex: '1 1 100px',
           minWidth: 100,
           maxWidth: 140,
@@ -804,22 +781,22 @@ function EditableCell({ column, value, row, onUpdate }) {
         }}
       />
       <Box sx={{ display: 'flex', gap: 0.5, minWidth: 60 }}>
-        <IconButton 
-          size="small" 
-          onClick={handleSave} 
+        <IconButton
+          size="small"
+          onClick={handleSave}
           color="primary"
-          sx={{ 
+          sx={{
             padding: '3px',
             '& svg': { fontSize: '14px' }
           }}
         >
           <TickSquare size="14" />
         </IconButton>
-        <IconButton 
-          size="small" 
-          onClick={handleCancel} 
+        <IconButton
+          size="small"
+          onClick={handleCancel}
           color="secondary"
-          sx={{ 
+          sx={{
             padding: '3px',
             '& svg': { fontSize: '14px' }
           }}
@@ -834,11 +811,7 @@ function EditableCell({ column, value, row, onUpdate }) {
 function CellRenderer({ column, value, row, onCellEdit }) {
   if (column.render) {
     // stopPropagation here so row‐click won’t swallow it
-    return (
-      <span onClick={e => e.stopPropagation()}>
-        {column.render(value, row)}
-      </span>
-    );
+    return <span onClick={(e) => e.stopPropagation()}>{column.render(value, row)}</span>;
   }
 
   // Handle editable fields with custom edit handlers
@@ -846,15 +819,16 @@ function CellRenderer({ column, value, row, onCellEdit }) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Typography variant="body2">
-          {column.type === 'editableCurrency' 
-            ? (typeof value === 'number' ? value.toLocaleString('en-US', {
-                style: 'currency',
-                currency: column.currency || 'USD'
-              }) : value)
+          {column.type === 'editableCurrency'
+            ? typeof value === 'number'
+              ? value.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: column.currency || 'USD'
+                })
+              : value
             : column.type === 'editablePercentage'
-            ? `${value}%`
-            : value
-          }
+              ? `${value}%`
+              : value}
         </Typography>
         <IconButton
           size="small"
@@ -863,7 +837,7 @@ function CellRenderer({ column, value, row, onCellEdit }) {
               column.customEditHandler(row, column.id);
             }
           }}
-          sx={{ 
+          sx={{
             opacity: 0.6,
             '&:hover': { opacity: 1 },
             p: 0.5
@@ -876,20 +850,14 @@ function CellRenderer({ column, value, row, onCellEdit }) {
   }
 
   // Handle editable fields with inline editing - ADD editableMargin here
-  if (column.editable && (
-    column.type === 'editableCurrency' || 
-    column.type === 'editablePercentage' || 
-    column.type === 'editableText' ||
-    column.type === 'editableMargin'  // Add this line
-  )) {
-    return (
-      <EditableCell
-        column={column}
-        value={value}
-        row={row}
-        onUpdate={column.onUpdate}
-      />
-    );
+  if (
+    column.editable &&
+    (column.type === 'editableCurrency' ||
+      column.type === 'editablePercentage' ||
+      column.type === 'editableText' ||
+      column.type === 'editableMargin') // Add this line
+  ) {
+    return <EditableCell column={column} value={value} row={row} onUpdate={column.onUpdate} />;
   }
 
   // Handle custom render functions for non-editable fields
@@ -899,13 +867,7 @@ function CellRenderer({ column, value, row, onCellEdit }) {
 
   switch (column.type) {
     case 'chip':
-      return (
-        <Chip
-          label={value}
-          size="small"
-          sx={column.getChipStyle ? column.getChipStyle(value) : undefined}
-        />
-      );
+      return <Chip label={value} size="small" sx={column.getChipStyle ? column.getChipStyle(value) : undefined} />;
 
     case 'statusDot':
       return (
@@ -915,7 +877,7 @@ function CellRenderer({ column, value, row, onCellEdit }) {
               width: 8,
               height: 8,
               borderRadius: '50%',
-              backgroundColor: column.getStatusColor ? column.getStatusColor(value) : '#9e9e9e',
+              backgroundColor: column.getStatusColor ? column.getStatusColor(value) : '#9e9e9e'
             }}
           />
           <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
@@ -942,19 +904,17 @@ function CellRenderer({ column, value, row, onCellEdit }) {
     case 'editableCurrency':
       return (
         <Typography variant="body2">
-          {typeof value === 'number' ? value.toLocaleString('en-US', {
-            style: 'currency',
-            currency: column.currency || 'USD'
-          }) : value}
+          {typeof value === 'number'
+            ? value.toLocaleString('en-US', {
+                style: 'currency',
+                currency: column.currency || 'USD'
+              })
+            : value}
         </Typography>
       );
 
     case 'editablePercentage':
-      return (
-        <Typography variant="body2">
-          {value}%
-        </Typography>
-      );
+      return <Typography variant="body2">{value}%</Typography>;
 
     case 'number':
       return typeof value === 'number' ? value.toFixed(column.decimals || 0) : value;
@@ -1006,7 +966,7 @@ export default function DynamicTable({
   actionsEnabled = false,
   actions = [],
   rowActions = [], // Add new prop for row-level actions
-  title = "Records",
+  title = 'Records',
   rowsPerPageOptions = [5, 10, 25, 50],
   defaultRowsPerPage = 10,
   getRowId = (row, index) => row.id || `row-${index}`,
@@ -1026,11 +986,11 @@ export default function DynamicTable({
   });
 
   const filteredRows = useMemo(() => {
-    return data.filter(row => {
+    return data.filter((row) => {
       // Search filter
       if (filters.search && searchEnabled) {
-        const searchFields_ = searchFields.length > 0 ? searchFields : columns.map(col => col.id);
-        const matchesSearch = searchFields_.some(field => {
+        const searchFields_ = searchFields.length > 0 ? searchFields : columns.map((col) => col.id);
+        const matchesSearch = searchFields_.some((field) => {
           const value = row[field];
           return value && value.toString().toLowerCase().includes(filters.search.toLowerCase());
         });
@@ -1047,7 +1007,7 @@ export default function DynamicTable({
   }, [data, filters, searchEnabled, searchFields, columns, customFilter]);
 
   const handleFilterChange = (filterName, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       [filterName]: value
     }));
@@ -1055,7 +1015,7 @@ export default function DynamicTable({
   };
 
   const handleSearch = (searchValue) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       search: searchValue
     }));
@@ -1094,7 +1054,7 @@ export default function DynamicTable({
     if (selectedIndex === -1) {
       newSelected = [...selected, rowId];
     } else {
-      newSelected = selected.filter(id => id !== rowId);
+      newSelected = selected.filter((id) => id !== rowId);
     }
 
     setSelected(newSelected);
@@ -1122,7 +1082,7 @@ export default function DynamicTable({
 
   const handleChangeRowsPerPage = (event) => {
     const newRowsPerPage = parseInt(event.target.value, 10);
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       rowsPerPage: newRowsPerPage
     }));
@@ -1184,32 +1144,32 @@ export default function DynamicTable({
       )}
 
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer 
-          sx={{ 
+        <TableContainer
+          sx={{
             overflowX: 'auto',
             maxHeight: maxHeight,
             '&::-webkit-scrollbar': {
               height: 8,
-              width: 8,
+              width: 8
             },
             '&::-webkit-scrollbar-track': {
               backgroundColor: 'rgba(0,0,0,0.1)',
-              borderRadius: 4,
+              borderRadius: 4
             },
             '&::-webkit-scrollbar-thumb': {
               backgroundColor: 'rgba(0,0,0,0.3)',
               borderRadius: 4,
               '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.5)',
-              },
-            },
+                backgroundColor: 'rgba(0,0,0,0.5)'
+              }
+            }
           }}
         >
-          <Table 
-            sx={{ 
+          <Table
+            sx={{
               minWidth: 750,
               width: columns.length > 8 ? 'max-content' : '100%'
-            }} 
+            }}
             aria-labelledby="tableTitle"
             stickyHeader={maxHeight !== 'none'}
           >
@@ -1240,14 +1200,14 @@ export default function DynamicTable({
                       tabIndex={-1}
                       key={rowId}
                       selected={isItemSelected}
-                      sx={{ 
+                      sx={{
                         cursor: onRowClick ? 'pointer' : 'default'
                       }}
                     >
                       {selectable && (
-                        <TableCell 
-                          padding="checkbox" 
-                          sx={{ 
+                        <TableCell
+                          padding="checkbox"
+                          sx={{
                             pl: 3,
                             position: 'sticky',
                             left: 0,
@@ -1299,9 +1259,9 @@ export default function DynamicTable({
                       {columns.map((column, colIndex) => (
                         <TableCell
                           key={column.id}
-                          component={colIndex === 0 ? "th" : "td"}
+                          component={colIndex === 0 ? 'th' : 'td'}
                           id={colIndex === 0 ? labelId : undefined}
-                          scope={colIndex === 0 ? "row" : undefined}
+                          scope={colIndex === 0 ? 'row' : undefined}
                           padding={column.disablePadding ? 'none' : 'normal'}
                           align={column.align}
                           sx={{
@@ -1317,11 +1277,7 @@ export default function DynamicTable({
                             })
                           }}
                         >
-                          <CellRenderer
-                            column={column}
-                            value={row[column.id]}
-                            row={row}
-                          />
+                          <CellRenderer column={column} value={row[column.id]} row={row} />
                         </TableCell>
                       ))}
 
@@ -1371,7 +1327,7 @@ export default function DynamicTable({
           PaperProps={{
             sx: {
               minWidth: 180,
-              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
             }
           }}
           transformOrigin={{ horizontal: 'left', vertical: 'top' }}
@@ -1402,7 +1358,7 @@ export default function DynamicTable({
           PaperProps={{
             sx: {
               minWidth: 150,
-              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
             }
           }}
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -1442,22 +1398,24 @@ export default function DynamicTable({
 // Update PropTypes to include rowActions
 DynamicTable.propTypes = {
   data: PropTypes.array.isRequired,
-  columns: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    numeric: PropTypes.bool,
-    disablePadding: PropTypes.bool,
-    sortable: PropTypes.bool,
-    align: PropTypes.string,
-    type: PropTypes.oneOf(['chip', 'status', 'currency', 'number', 'boolean', 'date']),
-    render: PropTypes.func,
-    getChipStyle: PropTypes.func,
-    getStatusColor: PropTypes.func,
-    currency: PropTypes.string,
-    decimals: PropTypes.number,
-    minWidth: PropTypes.number,
-    sticky: PropTypes.bool
-  })).isRequired,
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      numeric: PropTypes.bool,
+      disablePadding: PropTypes.bool,
+      sortable: PropTypes.bool,
+      align: PropTypes.string,
+      type: PropTypes.oneOf(['chip', 'status', 'currency', 'number', 'boolean', 'date']),
+      render: PropTypes.func,
+      getChipStyle: PropTypes.func,
+      getStatusColor: PropTypes.func,
+      currency: PropTypes.string,
+      decimals: PropTypes.number,
+      minWidth: PropTypes.number,
+      sticky: PropTypes.bool
+    })
+  ).isRequired,
   filterConfig: PropTypes.array,
   initialFilters: PropTypes.object,
   onRowClick: PropTypes.func,
@@ -1468,14 +1426,18 @@ DynamicTable.propTypes = {
   searchEnabled: PropTypes.bool,
   searchFields: PropTypes.array,
   actionsEnabled: PropTypes.bool,
-  actions: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired
-  })), // Add actions prop type
-  rowActions: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired
-  })),
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ), // Add actions prop type
+  rowActions: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired
+    })
+  ),
   title: PropTypes.string,
   rowsPerPageOptions: PropTypes.array,
   defaultRowsPerPage: PropTypes.number,

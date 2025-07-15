@@ -20,13 +20,7 @@ import { useNavigate } from 'react-router';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`user-tabpanel-${index}`}
-      aria-labelledby={`user-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`user-tabpanel-${index}`} aria-labelledby={`user-tab-${index}`} {...other}>
       {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
     </div>
   );
@@ -35,7 +29,7 @@ function TabPanel({ children, value, index, ...other }) {
 function a11yProps(index) {
   return {
     id: `user-tab-${index}`,
-    "aria-controls": `user-tabpanel-${index}`,
+    'aria-controls': `user-tabpanel-${index}`
   };
 }
 
@@ -90,7 +84,7 @@ const AddUser = () => {
         filterCampaignJob,
         metricsAvailable,
         campaigns,
-        jobGroups,
+        jobGroups
       });
     } else {
       // Add publisher user logic
@@ -100,7 +94,7 @@ const AddUser = () => {
         password,
         publisherRole,
         accessLevel,
-        publisherMetrics,
+        publisherMetrics
       });
     }
   };
@@ -141,14 +135,14 @@ const AddUser = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           mb: 2,
-          px: 1,
+          px: 1
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           onClick={handleBack}
         >
@@ -158,11 +152,7 @@ const AddUser = () => {
           </Typography>
         </Box>
 
-        <Tabs 
-          value={tabValue} 
-          onChange={handleTabChange} 
-          aria-label="user type tabs"
-        >
+        <Tabs value={tabValue} onChange={handleTabChange} aria-label="user type tabs">
           <Tab label="Client User" {...a11yProps(0)} />
           <Tab label="Publisher User" {...a11yProps(1)} />
         </Tabs>
@@ -280,12 +270,7 @@ const AddUser = () => {
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth size="small">
                   <InputLabel id="campaigns-label">Campaigns</InputLabel>
-                  <Select
-                    labelId="campaigns-label"
-                    value={campaigns}
-                    label="Campaigns"
-                    onChange={(e) => setCampaigns(e.target.value)}
-                  >
+                  <Select labelId="campaigns-label" value={campaigns} label="Campaigns" onChange={(e) => setCampaigns(e.target.value)}>
                     <MenuItem value="Campaign A">Campaign A</MenuItem>
                     <MenuItem value="Campaign B">Campaign B</MenuItem>
                     <MenuItem value="Campaign C">Campaign C</MenuItem>
@@ -295,12 +280,7 @@ const AddUser = () => {
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth size="small">
                   <InputLabel id="job-groups-label">Job Groups</InputLabel>
-                  <Select
-                    labelId="job-groups-label"
-                    value={jobGroups}
-                    label="Job Groups"
-                    onChange={(e) => setJobGroups(e.target.value)}
-                  >
+                  <Select labelId="job-groups-label" value={jobGroups} label="Job Groups" onChange={(e) => setJobGroups(e.target.value)}>
                     <MenuItem value="Group A">Group A</MenuItem>
                     <MenuItem value="Group B">Group B</MenuItem>
                     <MenuItem value="Group C">Group C</MenuItem>
@@ -430,8 +410,8 @@ const AddUser = () => {
               color: '#ff4d4f',
               '&:hover': {
                 backgroundColor: '#fff5f5',
-                borderColor: '#ff4d4f',
-              },
+                borderColor: '#ff4d4f'
+              }
             }}
             onClick={handleCancel}
           >
@@ -445,8 +425,8 @@ const AddUser = () => {
               backgroundColor: '#000000',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#222222',
-              },
+                backgroundColor: '#222222'
+              }
             }}
           >
             {tabValue === 0 ? 'Add Client User' : 'Add Publisher User'}

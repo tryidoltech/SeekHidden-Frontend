@@ -16,14 +16,10 @@ const ApplyFilters = () => {
   const placeholderStyle = { color: '#9e9e9e' }; // grey[500]
 
   return (
-    <MainCard sx={{ overflow: 'visible' }}> {/* <-- Fix here */}
-      <Stack
-        direction="row"
-        spacing={2}
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="space-between"
-      >
+    <MainCard sx={{ overflow: 'visible' }}>
+      {' '}
+      {/* <-- Fix here */}
+      <Stack direction="row" spacing={2} flexWrap="wrap" alignItems="center" justifyContent="space-between">
         <Box sx={{ minWidth: 160, flexGrow: 1, maxWidth: 220 }}>
           <InputLabel id="currency-label">Currency</InputLabel>
           <Select
@@ -31,9 +27,7 @@ const ApplyFilters = () => {
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
             displayEmpty
-            renderValue={(selected) =>
-              selected ? selected : <span style={placeholderStyle}>Select Currency</span>
-            }
+            renderValue={(selected) => (selected ? selected : <span style={placeholderStyle}>Select Currency</span>)}
             fullWidth
           >
             <MenuItem value="" disabled>
@@ -52,9 +46,7 @@ const ApplyFilters = () => {
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             displayEmpty
-            renderValue={(selected) =>
-              selected ? selected : <span style={placeholderStyle}>Select Country</span>
-            }
+            renderValue={(selected) => (selected ? selected : <span style={placeholderStyle}>Select Country</span>)}
             fullWidth
           >
             <MenuItem value="" disabled>
@@ -73,9 +65,7 @@ const ApplyFilters = () => {
             value={clientType}
             onChange={(e) => setClientType(e.target.value)}
             displayEmpty
-            renderValue={(selected) =>
-              selected ? selected : <span style={placeholderStyle}>Select Client Type</span>
-            }
+            renderValue={(selected) => (selected ? selected : <span style={placeholderStyle}>Select Client Type</span>)}
             fullWidth
           >
             <MenuItem value="" disabled>
@@ -94,9 +84,7 @@ const ApplyFilters = () => {
             value={clientName}
             onChange={(e) => setClientName(e.target.value)}
             displayEmpty
-            renderValue={(selected) =>
-              selected ? selected : <span style={placeholderStyle}>Select Client Name</span>
-            }
+            renderValue={(selected) => (selected ? selected : <span style={placeholderStyle}>Select Client Name</span>)}
             fullWidth
           >
             <MenuItem value="" disabled>
@@ -108,22 +96,21 @@ const ApplyFilters = () => {
           </Select>
         </Box>
       </Stack>
-
       {/* Button Row */}
-    <Stack
-  direction="row"
-  spacing={2}
-  justifyContent="flex-end"
-  alignItems="center"  // use this instead of alignContent
-  sx={{ mt: 3 }}
->
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="flex-end"
+        alignItems="center" // use this instead of alignContent
+        sx={{ mt: 3 }}
+      >
         <CustomDatePicker />
         <Button
           variant="contained"
           sx={{
             backgroundColor: 'black',
             color: 'white',
-            '&:hover': { backgroundColor: '#333' },
+            '&:hover': { backgroundColor: '#333' }
           }}
         >
           Apply Filters

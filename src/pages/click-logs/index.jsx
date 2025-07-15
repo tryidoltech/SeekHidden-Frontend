@@ -1,10 +1,8 @@
-import React from 'react'
-import ClickLogs from '../../components/dashboard/clients/campaigns/job-group/publishers/click-logs'
+import React from 'react';
+import ClickLogs from '../../components/dashboard/clients/campaigns/job-group/publishers/click-logs';
 
 function ClickLogsPage() {
-    return (
-        <ClickLogs />
-    )
+  return <ClickLogs />;
 }
 
-export default ClickLogsPage
+export default ClickLogsPage;

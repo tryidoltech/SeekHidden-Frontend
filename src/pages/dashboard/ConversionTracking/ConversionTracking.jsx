@@ -13,14 +13,13 @@
 // // const handleCopy = (text) => {
 // //     alert(text)
 // //   };
- 
 
-// //   const placeholderStyle = { color: '#9e9e9e' }; 
+// //   const placeholderStyle = { color: '#9e9e9e' };
 
 // //   return (
-    
+
 // //     <Stack spacing={2}>
-// //     <MainCard sx={{ overflow: 'visible' }}> 
+// //     <MainCard sx={{ overflow: 'visible' }}>
 // //       <Stack
 // //         direction="row"
 // //         spacing={2}
@@ -54,8 +53,8 @@
 // //   direction="row"
 // //   spacing={2}
 // //   justifyContent="flex-end"
-// //   alignItems="center"  
-  
+// //   alignItems="center"
+
 // // >  <Box >
 // //     <Button
 // //       variant="contained"
@@ -73,8 +72,6 @@
 
 // //       </Stack>
 
-      
- 
 // //     </MainCard>
 // // <MainCard sx={{ overflow: 'visible' }}>
 // //   <Grid container spacing={2.5} width="100%">
@@ -82,7 +79,7 @@
 // //       <Box display="flex" alignItems="center" width="100%">
 // //         <InputLabel
 // //           htmlFor="ViewJSPixel"
-// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 // //         >
 // //           View JS Pixel
 // //         </InputLabel>
@@ -108,7 +105,7 @@
 // //       <Box display="flex" alignItems="center" width="100%">
 // //         <InputLabel
 // //           htmlFor="ApplyStartJSPixel"
-// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 // //         >
 // //           Apply Start JS Pixel
 // //         </InputLabel>
@@ -134,7 +131,7 @@
 // //       <Box display="flex" alignItems="center" width="100%">
 // //         <InputLabel
 // //           htmlFor="ApplyEndJSPixel"
-// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 // //         >
 // //           Apply End JS Pixel
 // //         </InputLabel>
@@ -163,12 +160,12 @@
 // //       <Box display="flex" alignItems="center" width="100%">
 // //         <InputLabel
 // //           htmlFor="ViewImagePixel"
-// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 // //         >
 // //      View Image Pixel
 // //         </InputLabel>
 // //         <TextField fullWidth id="ViewImagePixel" placeholder="URL" autoFocus />
-        
+
 // //       </Box>
 // //     </Grid>
 
@@ -176,7 +173,7 @@
 // //       <Box display="flex" alignItems="center" width="100%">
 // //         <InputLabel
 // //           htmlFor="ApplyStartImagePixel"
-// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 // //         >
 // //           Apply Start Image Pixel
 // //         </InputLabel>
@@ -188,7 +185,7 @@
 // //       <Box display="flex" alignItems="center" width="100%">
 // //         <InputLabel
 // //           htmlFor="ApplyEndImagePixel"
-// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+// //           sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 // //         >
 // //           Apply End Image Pixel
 // //         </InputLabel>
@@ -250,7 +247,7 @@
 
 //   return (
 //     <Stack spacing={2}>
-//       <MainCard sx={{ overflow: 'visible' }}> 
+//       <MainCard sx={{ overflow: 'visible' }}>
 //         <Stack
 //           direction="row"
 //           spacing={2}
@@ -279,7 +276,7 @@
 //             </Select>
 //           </Box>
 
-//           <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">  
+//           <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">
 //             <Box>
 //               <Button
 //                 variant="contained"
@@ -299,9 +296,9 @@
 
 //       <MainCard sx={{ overflow: 'visible' }}>
 //         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-//           <Tabs 
-//             value={tabValue} 
-//             onChange={handleTabChange} 
+//           <Tabs
+//             value={tabValue}
+//             onChange={handleTabChange}
 //             aria-label="conversion tracking tabs"
 //           >
 //             <Tab label="JS Pixel" {...a11yProps(0)} />
@@ -318,7 +315,7 @@
 //               <Box display="flex" alignItems="center" width="100%">
 //                 <InputLabel
 //                   htmlFor="ViewJSPixel"
-//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 //                 >
 //                   View JS Pixel
 //                 </InputLabel>
@@ -344,7 +341,7 @@
 //               <Box display="flex" alignItems="center" width="100%">
 //                 <InputLabel
 //                   htmlFor="ApplyStartJSPixel"
-//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 //                 >
 //                   Apply Start JS Pixel
 //                 </InputLabel>
@@ -370,7 +367,7 @@
 //               <Box display="flex" alignItems="center" width="100%">
 //                 <InputLabel
 //                   htmlFor="ApplyEndJSPixel"
-//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 //                 >
 //                   Apply End JS Pixel
 //                 </InputLabel>
@@ -399,14 +396,14 @@
 //               <Box display="flex" alignItems="center" width="100%">
 //                 <InputLabel
 //                   htmlFor="ViewImagePixel"
-//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 //                 >
 //                   View Image Pixel
 //                 </InputLabel>
-//                 <TextField 
-//                   fullWidth 
-//                   id="ViewImagePixel" 
-//                   placeholder="URL" 
+//                 <TextField
+//                   fullWidth
+//                   id="ViewImagePixel"
+//                   placeholder="URL"
 //                   InputProps={{
 //                     endAdornment: (
 //                       <InputAdornment position="end">
@@ -424,13 +421,13 @@
 //               <Box display="flex" alignItems="center" width="100%">
 //                 <InputLabel
 //                   htmlFor="ApplyStartImagePixel"
-//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 //                 >
 //                   Apply Start Image Pixel
 //                 </InputLabel>
-//                 <TextField 
-//                   fullWidth 
-//                   id="ApplyStartImagePixel" 
+//                 <TextField
+//                   fullWidth
+//                   id="ApplyStartImagePixel"
 //                   placeholder="URL"
 //                   InputProps={{
 //                     endAdornment: (
@@ -449,13 +446,13 @@
 //               <Box display="flex" alignItems="center" width="100%">
 //                 <InputLabel
 //                   htmlFor="ApplyEndImagePixel"
-//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
+//                   sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}
 //                 >
 //                   Apply End Image Pixel
 //                 </InputLabel>
-//                 <TextField 
-//                   fullWidth 
-//                   id="ApplyEndImagePixel" 
+//                 <TextField
+//                   fullWidth
+//                   id="ApplyEndImagePixel"
 //                   placeholder="URL"
 //                   InputProps={{
 //                     endAdornment: (
@@ -517,7 +514,7 @@ function TabPanel({ children, value, index, ...other }) {
 function a11yProps(index) {
   return {
     id: `conversion-tab-${index}`,
-    "aria-controls": `conversion-tabpanel-${index}`,
+    'aria-controls': `conversion-tabpanel-${index}`
   };
 }
 
@@ -536,14 +533,8 @@ const ConversionTracking = () => {
 
   return (
     <Stack spacing={2}>
-      <MainCard sx={{ overflow: 'visible' }}> 
-        <Stack
-          direction="row"
-          spacing={2}
-          flexWrap="wrap"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+      <MainCard sx={{ overflow: 'visible' }}>
+        <Stack direction="row" spacing={2} flexWrap="wrap" alignItems="center" justifyContent="space-between">
           <Box sx={{ minWidth: 160, flexGrow: 1 }} spacing={2}>
             <InputLabel id="selectClient-label">Select Client</InputLabel>
             <Select
@@ -551,9 +542,7 @@ const ConversionTracking = () => {
               value={client}
               onChange={(e) => setClient(e.target.value)}
               displayEmpty
-              renderValue={(selected) =>
-                selected ? selected : <span style={placeholderStyle}>Select an option</span>
-              }
+              renderValue={(selected) => (selected ? selected : <span style={placeholderStyle}>Select an option</span>)}
               fullWidth
             >
               <MenuItem value="" disabled>
@@ -565,7 +554,7 @@ const ConversionTracking = () => {
             </Select>
           </Box>
 
-          <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">  
+          <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">
             <Box>
               <Button
                 variant="contained"
@@ -573,7 +562,7 @@ const ConversionTracking = () => {
                   backgroundColor: 'black',
                   mt: 2,
                   color: 'white',
-                  '&:hover': { backgroundColor: '#333' },
+                  '&:hover': { backgroundColor: '#333' }
                 }}
               >
                 Show Codes
@@ -585,11 +574,7 @@ const ConversionTracking = () => {
 
       <MainCard sx={{ overflow: 'visible' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs 
-            value={tabValue} 
-            onChange={handleTabChange} 
-            aria-label="conversion tracking tabs"
-          >
+          <Tabs value={tabValue} onChange={handleTabChange} aria-label="conversion tracking tabs">
             <Tab label="JS Pixel" {...a11yProps(0)} />
             <Tab label="S2S" {...a11yProps(1)} />
             <Tab label="Client Tracking Status" {...a11yProps(2)} />
@@ -603,10 +588,7 @@ const ConversionTracking = () => {
             <Grid container spacing={2.5} width="100%">
               <Grid item xs={12} sm={6} width="100%">
                 <Box display="flex" alignItems="center" width="100%">
-                  <InputLabel
-                    htmlFor="ViewJSPixel"
-                    sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
-                  >
+                  <InputLabel htmlFor="ViewJSPixel" sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}>
                     View JS Pixel
                   </InputLabel>
                   <TextField
@@ -621,7 +603,7 @@ const ConversionTracking = () => {
                             <Copy size="20" color="#FF8A65" />
                           </Box>
                         </InputAdornment>
-                      ),
+                      )
                     }}
                   />
                 </Box>
@@ -629,10 +611,7 @@ const ConversionTracking = () => {
 
               <Grid item xs={12} sm={6} width="100%">
                 <Box display="flex" alignItems="center" width="100%">
-                  <InputLabel
-                    htmlFor="ApplyStartJSPixel"
-                    sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
-                  >
+                  <InputLabel htmlFor="ApplyStartJSPixel" sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}>
                     Apply Start JS Pixel
                   </InputLabel>
                   <TextField
@@ -647,7 +626,7 @@ const ConversionTracking = () => {
                             <Copy size="20" color="#FF8A65" />
                           </Box>
                         </InputAdornment>
-                      ),
+                      )
                     }}
                   />
                 </Box>
@@ -655,10 +634,7 @@ const ConversionTracking = () => {
 
               <Grid item xs={12} sm={6} width="100%">
                 <Box display="flex" alignItems="center" width="100%">
-                  <InputLabel
-                    htmlFor="ApplyEndJSPixel"
-                    sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
-                  >
+                  <InputLabel htmlFor="ApplyEndJSPixel" sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}>
                     Apply End JS Pixel
                   </InputLabel>
                   <TextField
@@ -673,7 +649,7 @@ const ConversionTracking = () => {
                             <Copy size="20" color="#FF8A65" />
                           </Box>
                         </InputAdornment>
-                      ),
+                      )
                     }}
                   />
                 </Box>
@@ -686,16 +662,13 @@ const ConversionTracking = () => {
             <Grid container spacing={2.5} width="100%">
               <Grid item xs={12} sm={6} width="100%">
                 <Box display="flex" alignItems="center" width="100%">
-                  <InputLabel
-                    htmlFor="ViewImagePixel"
-                    sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
-                  >
+                  <InputLabel htmlFor="ViewImagePixel" sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}>
                     View Image Pixel
                   </InputLabel>
-                  <TextField 
-                    fullWidth 
-                    id="ViewImagePixel" 
-                    placeholder="URL" 
+                  <TextField
+                    fullWidth
+                    id="ViewImagePixel"
+                    placeholder="URL"
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -703,7 +676,7 @@ const ConversionTracking = () => {
                             <Copy size="20" color="#FF8A65" />
                           </Box>
                         </InputAdornment>
-                      ),
+                      )
                     }}
                   />
                 </Box>
@@ -711,15 +684,12 @@ const ConversionTracking = () => {
 
               <Grid item xs={12} sm={6} width="100%">
                 <Box display="flex" alignItems="center" width="100%">
-                  <InputLabel
-                    htmlFor="ApplyStartImagePixel"
-                    sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
-                  >
+                  <InputLabel htmlFor="ApplyStartImagePixel" sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}>
                     Apply Start Image Pixel
                   </InputLabel>
-                  <TextField 
-                    fullWidth 
-                    id="ApplyStartImagePixel" 
+                  <TextField
+                    fullWidth
+                    id="ApplyStartImagePixel"
                     placeholder="URL"
                     InputProps={{
                       endAdornment: (
@@ -728,7 +698,7 @@ const ConversionTracking = () => {
                             <Copy size="20" color="#FF8A65" />
                           </Box>
                         </InputAdornment>
-                      ),
+                      )
                     }}
                   />
                 </Box>
@@ -736,15 +706,12 @@ const ConversionTracking = () => {
 
               <Grid item xs={12} sm={6} width="100%">
                 <Box display="flex" alignItems="center" width="100%">
-                  <InputLabel
-                    htmlFor="ApplyEndImagePixel"
-                    sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }} 
-                  >
+                  <InputLabel htmlFor="ApplyEndImagePixel" sx={{ minWidth: '180px', whiteSpace: 'nowrap', mr: 5 }}>
                     Apply End Image Pixel
                   </InputLabel>
-                  <TextField 
-                    fullWidth 
-                    id="ApplyEndImagePixel" 
+                  <TextField
+                    fullWidth
+                    id="ApplyEndImagePixel"
                     placeholder="URL"
                     InputProps={{
                       endAdornment: (
@@ -753,7 +720,7 @@ const ConversionTracking = () => {
                             <Copy size="20" color="#FF8A65" />
                           </Box>
                         </InputAdornment>
-                      ),
+                      )
                     }}
                   />
                 </Box>

@@ -1,12 +1,12 @@
-import React from 'react'
-import UserManagementTable from './UserlistTable'
+import React from 'react';
+import UserManagementTable from './UserlistTable';
 
 function Clients() {
-    return (
-        <>
-            <UserManagementTable />
-        </>
-    )
+  return (
+    <>
+      <UserManagementTable />
+    </>
+  );
 }
 
-export default Clients
+export default Clients;

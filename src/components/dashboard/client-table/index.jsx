@@ -21,7 +21,7 @@ import {
   Checkbox,
   ListItemText,
   InputAdornment,
-  IconButton  // ← add this
+  IconButton // ← add this
 } from '@mui/material';
 
 const ClientTable = () => {
@@ -29,16 +29,7 @@ const ClientTable = () => {
   const [selected, setSelected] = useState([]);
 
   // Define default columns that should always be visible
-  const defaultColumns = [
-    'clientName',
-    'status',
-    'clientType',
-    'budgetCap',
-    'spend',
-    'clicks',
-    'applies',
-    'country'
-  ];
+  const defaultColumns = ['clientName', 'status', 'clientType', 'budgetCap', 'spend', 'clicks', 'applies', 'country'];
 
   // Add state for visible columns - initialize with default columns
   const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
@@ -83,11 +74,11 @@ const ClientTable = () => {
       clientName: 'Acme Corp',
       clientType: 'CPA',
       status: 'active',
-      budgetCap: 10000.00,
+      budgetCap: 10000.0,
       advertiserName: 'Global Ads Inc.',
-      spend: 4500.00,
-      reconSpend: 4300.00,
-      reconNetSpend: 4200.00,
+      spend: 4500.0,
+      reconSpend: 4300.0,
+      reconNetSpend: 4200.0,
       clicks: 1500,
       validClicks: 1450,
       invalidClicks: 50,
@@ -104,7 +95,7 @@ const ClientTable = () => {
       reconForeignClicks: 12,
       applies: 1200,
       cp: 3.75,
-      cpc: 3.00,
+      cpc: 3.0,
       ctaPercent: 25.5,
       startDate: '2023-01-15',
       frequency: 'daily',
@@ -119,11 +110,11 @@ const ClientTable = () => {
       clientName: 'Tech Solutions',
       clientType: 'CPC',
       status: 'inactive',
-      budgetCap: 20000.00,
+      budgetCap: 20000.0,
       advertiserName: 'Digital Marketing Co.',
-      spend: 0.00,
-      reconSpend: 0.00,
-      reconNetSpend: 0.00,
+      spend: 0.0,
+      reconSpend: 0.0,
+      reconNetSpend: 0.0,
       clicks: 0,
       validClicks: 0,
       invalidClicks: 0,
@@ -145,7 +136,7 @@ const ClientTable = () => {
       startDate: '2023-03-10',
       frequency: 'weekly',
       country: 'UK',
-      markUpPercent: 0.50,
+      markUpPercent: 0.5,
       markUpPercentMode: 'value',
       markDownPercent: 3.0,
       markDownPercentMode: 'percentage'
@@ -155,11 +146,11 @@ const ClientTable = () => {
       clientName: 'Marketing Plus',
       clientType: 'CPA',
       status: 'active',
-      budgetCap: 15000.00,
+      budgetCap: 15000.0,
       advertiserName: 'Ad Network Partners',
-      spend: 8000.00,
-      reconSpend: 7900.00,
-      reconNetSpend: 7800.00,
+      spend: 8000.0,
+      reconSpend: 7900.0,
+      reconNetSpend: 7800.0,
       clicks: 2000,
       validClicks: 1950,
       invalidClicks: 50,
@@ -175,8 +166,8 @@ const ClientTable = () => {
       reconDuplicateClicks: 13,
       reconForeignClicks: 9,
       applies: 1600,
-      cp: 4.00,
-      cpc: 3.20,
+      cp: 4.0,
+      cpc: 3.2,
       ctaPercent: 28.0,
       startDate: '2023-02-20',
       frequency: 'daily',
@@ -191,11 +182,11 @@ const ClientTable = () => {
       clientName: 'Digital Agency',
       clientType: 'CPC',
       status: 'paused',
-      budgetCap: 50000.00,
+      budgetCap: 50000.0,
       advertiserName: 'Performance Marketing Ltd',
-      spend: 25000.00,
-      reconSpend: 24800.00,
-      reconNetSpend: 24500.00,
+      spend: 25000.0,
+      reconSpend: 24800.0,
+      reconNetSpend: 24500.0,
       clicks: 5000,
       validClicks: 4850,
       invalidClicks: 150,
@@ -211,8 +202,8 @@ const ClientTable = () => {
       reconDuplicateClicks: 33,
       reconForeignClicks: 42,
       applies: 4000,
-      cp: 5.00,
-      cpc: 4.00,
+      cp: 5.0,
+      cpc: 4.0,
       ctaPercent: 30.5,
       startDate: '2023-01-05',
       frequency: 'monthly',
@@ -227,11 +218,11 @@ const ClientTable = () => {
       clientName: 'Global Advisors',
       clientType: 'CPA',
       status: 'active',
-      budgetCap: 30000.00,
+      budgetCap: 30000.0,
       advertiserName: 'Worldwide Advertisers',
-      spend: 12000.00,
-      reconSpend: 11800.00,
-      reconNetSpend: 11500.00,
+      spend: 12000.0,
+      reconSpend: 11800.0,
+      reconNetSpend: 11500.0,
       clicks: 3000,
       validClicks: 2900,
       invalidClicks: 100,
@@ -247,8 +238,8 @@ const ClientTable = () => {
       reconDuplicateClicks: 18,
       reconForeignClicks: 32,
       applies: 2500,
-      cp: 4.20,
-      cpc: 3.50,
+      cp: 4.2,
+      cpc: 3.5,
       ctaPercent: 27.3,
       startDate: '2023-04-15',
       frequency: 'weekly',
@@ -263,9 +254,7 @@ const ClientTable = () => {
   // Handle field updates - updates the actual data
   const handleFieldUpdate = (id, field, value) => {
     // Update local state
-    setClientData(prev => prev.map(item =>
-      item.id === id ? { ...item, [field]: value } : item
-    ));
+    setClientData((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
 
     // Here you would typically make an API call to update the data
     console.log(`Updating ${field} for ID ${id} to ${value}`);
@@ -285,15 +274,17 @@ const ClientTable = () => {
     }
 
     // Update selected clients with new budget settings
-    const updatedData = clientData.map(item =>
-      selected.includes(item.id) ? {
-        ...item,
-        budgetCap: parseFloat(budgetSettings.budgetTarget),
-        frequency: budgetSettings.frequency,
-        // Add pacing and threshold to the data model if needed
-        pacing: budgetSettings.pacing,
-        threshold: parseFloat(budgetSettings.threshold)
-      } : item
+    const updatedData = clientData.map((item) =>
+      selected.includes(item.id)
+        ? {
+            ...item,
+            budgetCap: parseFloat(budgetSettings.budgetTarget),
+            frequency: budgetSettings.frequency,
+            // Add pacing and threshold to the data model if needed
+            pacing: budgetSettings.pacing,
+            threshold: parseFloat(budgetSettings.threshold)
+          }
+        : item
     );
 
     setClientData(updatedData);
@@ -313,7 +304,7 @@ const ClientTable = () => {
   // Update margin action handler
   const handleMarginAction = (selectedMarginType) => {
     if (!selectedMarginType) return;
-    
+
     if (selected.length === 0) {
       toast.error('Please select clients to update margin settings');
       return;
@@ -322,7 +313,7 @@ const ClientTable = () => {
     // Set the margin type and pre-fill the popup
     setMarginType(selectedMarginType);
     setMarginMode('percentage'); // Default to percentage
-    
+
     if (selectedMarginType === 'markup') {
       setMarginSettings({
         markUpPercent: '',
@@ -340,7 +331,7 @@ const ClientTable = () => {
         applyToAll: false
       });
     }
-    
+
     setMarginPopupOpen(true);
   };
 
@@ -375,10 +366,10 @@ const ClientTable = () => {
     }
 
     // Update selected clients with new margin settings
-    const updatedData = clientData.map(item => {
+    const updatedData = clientData.map((item) => {
       if (selected.includes(item.id)) {
         const updates = {};
-        
+
         if (marginType === 'markup') {
           if (marginMode === 'percentage' && marginSettings.markUpPercent) {
             updates.markUpPercent = parseFloat(marginSettings.markUpPercent);
@@ -388,7 +379,7 @@ const ClientTable = () => {
             updates.markUpPercent = 0; // Clear the other field
           }
         }
-        
+
         if (marginType === 'markdown') {
           if (marginMode === 'percentage' && marginSettings.markDownPercent) {
             updates.markDownPercent = parseFloat(marginSettings.markDownPercent);
@@ -398,7 +389,7 @@ const ClientTable = () => {
             updates.markDownPercent = 0; // Clear the other field
           }
         }
-        
+
         return { ...item, ...updates };
       }
       return item;
@@ -425,11 +416,11 @@ const ClientTable = () => {
 
   // Handle margin field updates with mode
   const handleMarginFieldUpdate = (id, fieldName, value, mode) => {
-    setClientData(prevData =>
-      prevData.map(item =>
+    setClientData((prevData) =>
+      prevData.map((item) =>
         item.id === id
-          ? { 
-              ...item, 
+          ? {
+              ...item,
               [fieldName]: parseFloat(value) || 0,
               [`${fieldName}Mode`]: mode
             }
@@ -457,10 +448,14 @@ const ClientTable = () => {
       onUpdate: (id, value) => handleFieldUpdate(id, 'status', value),
       getStatusColor: (status) => {
         switch (status) {
-          case 'active': return '#4caf50';
-          case 'inactive': return '#f44336';
-          case 'paused': return '#ff9800';
-          default: return '#9e9e9e';
+          case 'active':
+            return '#4caf50';
+          case 'inactive':
+            return '#f44336';
+          case 'paused':
+            return '#ff9800';
+          default:
+            return '#9e9e9e';
         }
       },
       render: (value, row) => (
@@ -471,10 +466,14 @@ const ClientTable = () => {
             borderRadius: '50%',
             backgroundColor: (() => {
               switch (value) {
-                case 'active': return '#4caf50';
-                case 'inactive': return '#f44336';
-                case 'paused': return '#ff9800';
-                default: return '#9e9e9e';
+                case 'active':
+                  return '#4caf50';
+                case 'inactive':
+                  return '#f44336';
+                case 'paused':
+                  return '#ff9800';
+                default:
+                  return '#9e9e9e';
               }
             })(),
             display: 'inline-block'
@@ -684,8 +683,8 @@ const ClientTable = () => {
 
   // Generate column options for the dropdown (exclude default columns from options)
   const columnOptions = columns
-    .filter(column => !defaultColumns.includes(column.id))
-    .map(column => ({
+    .filter((column) => !defaultColumns.includes(column.id))
+    .map((column) => ({
       value: column.id,
       label: column.label || 'Status'
     }));
@@ -728,7 +727,7 @@ const ClientTable = () => {
     switch (action) {
       case 'edit':
         if (selected.length === 1) {
-          const selectedItem = clientData.find(item => item.id === selected[0]);
+          const selectedItem = clientData.find((item) => item.id === selected[0]);
           navigate(`/clients/add-client`, {
             state: { client: selectedItem, mode: 'edit' }
           });
@@ -743,9 +742,7 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to enable');
         } else {
-          const updatedData = clientData.map(item =>
-            selected.includes(item.id) ? { ...item, status: 'active' } : item
-          );
+          const updatedData = clientData.map((item) => (selected.includes(item.id) ? { ...item, status: 'active' } : item));
           setClientData(updatedData);
           toast.success(`${selected.length} client(s) enabled successfully`);
           // Don't clear selection for status changes
@@ -756,9 +753,7 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to pause');
         } else {
-          const updatedData = clientData.map(item =>
-            selected.includes(item.id) ? { ...item, status: 'paused' } : item
-          );
+          const updatedData = clientData.map((item) => (selected.includes(item.id) ? { ...item, status: 'paused' } : item));
           setClientData(updatedData);
           toast.success(`${selected.length} client(s) paused successfully`);
           // Don't clear selection for status changes
@@ -769,9 +764,7 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to deactivate');
         } else {
-          const updatedData = clientData.map(item =>
-            selected.includes(item.id) ? { ...item, status: 'inactive' } : item
-          );
+          const updatedData = clientData.map((item) => (selected.includes(item.id) ? { ...item, status: 'inactive' } : item));
           setClientData(updatedData);
           toast.success(`${selected.length} client(s) deactivated successfully`);
           // Don't clear selection for status changes
@@ -782,17 +775,17 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to clone');
         } else {
-          const itemsToClone = clientData.filter(item => selected.includes(item.id));
-          const maxId = Math.max(...clientData.map(d => d.id));
-          
+          const itemsToClone = clientData.filter((item) => selected.includes(item.id));
+          const maxId = Math.max(...clientData.map((d) => d.id));
+
           const clonedItems = itemsToClone.map((item, index) => ({
             ...item,
             id: maxId + index + 1, // Generate unique IDs
             clientName: `${item.clientName} (Clone)`,
             status: 'inactive' // Set cloned items to inactive by default
           }));
-          
-          setClientData(prev => [...prev, ...clonedItems]);
+
+          setClientData((prev) => [...prev, ...clonedItems]);
           toast.success(`${selected.length} client(s) cloned successfully`);
           // Keep the original selection intact for further actions
         }
@@ -821,17 +814,17 @@ const ClientTable = () => {
         if (selected.length === 0) {
           toast.error('Please select clients to duplicate');
         } else {
-          const itemsToDuplicate = clientData.filter(item => selected.includes(item.id));
-          const maxId = Math.max(...clientData.map(d => d.id));
-          
+          const itemsToDuplicate = clientData.filter((item) => selected.includes(item.id));
+          const maxId = Math.max(...clientData.map((d) => d.id));
+
           const duplicatedItems = itemsToDuplicate.map((item, index) => ({
             ...item,
             id: maxId + index + 1, // Generate unique IDs
             clientName: `${item.clientName} (Copy)`,
             status: 'inactive' // Set duplicated items to inactive by default
           }));
-          
-          setClientData(prev => [...prev, ...duplicatedItems]);
+
+          setClientData((prev) => [...prev, ...duplicatedItems]);
           toast.success(`${selected.length} client(s) duplicated successfully`);
           // Keep the original selection intact for further actions
         }
@@ -885,7 +878,7 @@ const ClientTable = () => {
               setBudgetPopupOpen(true);
             }
           }
-        },
+        }
       ],
       rightFilters: [
         {
@@ -924,7 +917,7 @@ const ClientTable = () => {
           minWidth: 160, // Increased width slightly
           options: columnOptions,
           onChange: handleColumnSelectionChange,
-          selectedValues: visibleColumns.filter(col => !defaultColumns.includes(col))
+          selectedValues: visibleColumns.filter((col) => !defaultColumns.includes(col))
         },
         {
           type: 'select',
@@ -965,7 +958,7 @@ const ClientTable = () => {
   ];
 
   // Filter columns based on visible columns selection
-  const displayColumns = columns.filter(column => visibleColumns.includes(column.id));
+  const displayColumns = columns.filter((column) => visibleColumns.includes(column.id));
 
   // Update customFilter to remove budget range logic
   const customFilter = (row, filters) => {
@@ -999,7 +992,7 @@ const ClientTable = () => {
   const handleRowClick = (event, rowId, row) => {
     // Check if the click is on an interactive element
     if (
-      event.target.type === 'checkbox' || 
+      event.target.type === 'checkbox' ||
       event.target.closest('button') ||
       event.target.closest('span[style*="cursor: pointer"]') || // Add this line
       event.target.closest('[role="button"]')
@@ -1013,7 +1006,7 @@ const ClientTable = () => {
   };
 
   // add this above your columns array
-  const handleClientNameEdit = row => {
+  const handleClientNameEdit = (row) => {
     const newName = prompt('Edit Client Name:', row.clientName);
     if (newName != null && newName !== row.clientName) {
       handleFieldUpdate(row.id, 'clientName', newName);
@@ -1038,12 +1031,7 @@ const ClientTable = () => {
       />
 
       {/* Budget Settings Popup */}
-      <Dialog
-        open={budgetPopupOpen}
-        onClose={() => setBudgetPopupOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
+      <Dialog open={budgetPopupOpen} onClose={() => setBudgetPopupOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
           Update Budget Settings
           <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
@@ -1058,7 +1046,7 @@ const ClientTable = () => {
               <Select
                 value={budgetSettings.pacing}
                 label="Pacing"
-                onChange={(e) => setBudgetSettings(prev => ({ ...prev, pacing: e.target.value }))}
+                onChange={(e) => setBudgetSettings((prev) => ({ ...prev, pacing: e.target.value }))}
               >
                 <MenuItem value="even">Even</MenuItem>
                 <MenuItem value="aggressive">Aggressive</MenuItem>
@@ -1073,7 +1061,7 @@ const ClientTable = () => {
               label="Threshold (%)"
               type="number"
               value={budgetSettings.threshold}
-              onChange={(e) => setBudgetSettings(prev => ({ ...prev, threshold: e.target.value }))}
+              onChange={(e) => setBudgetSettings((prev) => ({ ...prev, threshold: e.target.value }))}
               helperText="Budget threshold percentage for alerts"
               inputProps={{ min: 0, max: 100, step: 0.1 }}
             />
@@ -1083,7 +1071,7 @@ const ClientTable = () => {
               label="Budget Target ($)"
               type="number"
               value={budgetSettings.budgetTarget}
-              onChange={(e) => setBudgetSettings(prev => ({ ...prev, budgetTarget: e.target.value }))}
+              onChange={(e) => setBudgetSettings((prev) => ({ ...prev, budgetTarget: e.target.value }))}
               helperText="Total budget allocation for the client"
               inputProps={{ min: 0, step: 0.01 }}
             />
@@ -1093,7 +1081,7 @@ const ClientTable = () => {
               <Select
                 value={budgetSettings.frequency}
                 label="Frequency"
-                onChange={(e) => setBudgetSettings(prev => ({ ...prev, frequency: e.target.value }))}
+                onChange={(e) => setBudgetSettings((prev) => ({ ...prev, frequency: e.target.value }))}
               >
                 <MenuItem value="daily">Daily</MenuItem>
                 <MenuItem value="weekly">Weekly</MenuItem>
@@ -1106,17 +1094,10 @@ const ClientTable = () => {
         </DialogContent>
 
         <DialogActions sx={{ p: 3 }}>
-          <Button
-            onClick={() => setBudgetPopupOpen(false)}
-            variant="outlined"
-          >
+          <Button onClick={() => setBudgetPopupOpen(false)} variant="outlined">
             Cancel
           </Button>
-          <Button
-            onClick={handleBudgetUpdate}
-            variant="contained"
-            color="primary"
-          >
+          <Button onClick={handleBudgetUpdate} variant="contained" color="primary">
             Update Budget Settings
           </Button>
         </DialogActions>
@@ -1145,11 +1126,7 @@ const ClientTable = () => {
             {/* Mode Selection */}
             <FormControl fullWidth>
               <InputLabel>Margin Mode</InputLabel>
-              <Select
-                value={marginMode}
-                label="Margin Mode"
-                onChange={(e) => setMarginMode(e.target.value)}
-              >
+              <Select value={marginMode} label="Margin Mode" onChange={(e) => setMarginMode(e.target.value)}>
                 <MenuItem value="percentage">Percentage (%)</MenuItem>
                 <MenuItem value="value">Value ($)</MenuItem>
               </Select>
@@ -1164,23 +1141,23 @@ const ClientTable = () => {
                     label="Mark Up Percentage (%)"
                     type="number"
                     value={marginSettings.markUpPercent}
-                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpPercent: e.target.value }))}
+                    onChange={(e) => setMarginSettings((prev) => ({ ...prev, markUpPercent: e.target.value }))}
                     helperText="Percentage to mark up from base cost"
                     inputProps={{ min: 0, max: 100, step: 0.1 }}
                     autoFocus
                   />
                 )}
-                
+
                 {marginMode === 'value' && (
                   <TextField
                     fullWidth
                     label="Mark Up Value ($)"
                     type="number"
                     value={marginSettings.markUpValue}
-                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markUpValue: e.target.value }))}
+                    onChange={(e) => setMarginSettings((prev) => ({ ...prev, markUpValue: e.target.value }))}
                     helperText="Fixed dollar amount to mark up from base cost"
                     InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>
                     }}
                     inputProps={{ min: 0, step: 0.01 }}
                     autoFocus
@@ -1198,23 +1175,23 @@ const ClientTable = () => {
                     label="Mark Down Percentage (%)"
                     type="number"
                     value={marginSettings.markDownPercent}
-                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownPercent: e.target.value }))}
+                    onChange={(e) => setMarginSettings((prev) => ({ ...prev, markDownPercent: e.target.value }))}
                     helperText="Percentage to mark down from base cost"
                     inputProps={{ min: 0, max: 100, step: 0.1 }}
                     autoFocus
                   />
                 )}
-                
+
                 {marginMode === 'value' && (
                   <TextField
                     fullWidth
                     label="Mark Down Value ($)"
                     type="number"
                     value={marginSettings.markDownValue}
-                    onChange={(e) => setMarginSettings(prev => ({ ...prev, markDownValue: e.target.value }))}
+                    onChange={(e) => setMarginSettings((prev) => ({ ...prev, markDownValue: e.target.value }))}
                     helperText="Fixed dollar amount to mark down from base cost"
                     InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>
                     }}
                     inputProps={{ min: 0, step: 0.01 }}
                     autoFocus
@@ -1236,11 +1213,7 @@ const ClientTable = () => {
           >
             Cancel
           </Button>
-          <Button
-            onClick={handleMarginUpdate}
-            variant="contained"
-            color="primary"
-          >
+          <Button onClick={handleMarginUpdate} variant="contained" color="primary">
             Update {marginType === 'markup' ? 'Mark Up' : 'Mark Down'} {marginMode === 'percentage' ? 'Percentage' : 'Value'}
           </Button>
         </DialogActions>
@@ -1255,22 +1228,13 @@ const ClientTable = () => {
       >
         <DialogTitle>{confirmDialog.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {confirmDialog.message}
-          </DialogContentText>
+          <DialogContentText>{confirmDialog.message}</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
-          <Button
-            onClick={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })}
-            variant="outlined"
-          >
+          <Button onClick={() => setConfirmDialog({ open: false, title: '', message: '', onConfirm: null })} variant="outlined">
             Cancel
           </Button>
-          <Button
-            onClick={confirmDialog.onConfirm}
-            variant="contained"
-            color="error"
-          >
+          <Button onClick={confirmDialog.onConfirm} variant="contained" color="error">
             Delete
           </Button>
         </DialogActions>

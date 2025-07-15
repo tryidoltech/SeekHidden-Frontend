@@ -1,17 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import MainCard from 'components/MainCard';
-import { Stack } from "@mui/system";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography
-} from "@mui/material";
-import CareerFeeds from "../../../components/inspectfeed/CareerFields";
-import BarChart from "../../../components/shareComponents/BarChartComponent";
-import FilterBy from "../../../components/inspectfeed/FilterBy";
+import { Stack } from '@mui/system';
+import { Box, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import CareerFeeds from '../../../components/inspectfeed/CareerFields';
+import BarChart from '../../../components/shareComponents/BarChartComponent';
+import FilterBy from '../../../components/inspectfeed/FilterBy';
 
 const InspectFeed = () => {
   const [filterBy, setFilterBy] = useState('');
@@ -25,27 +18,27 @@ const InspectFeed = () => {
 
   return (
     <Stack spacing={2}>
-        <FilterBy />
-   <Stack
- direction={{ sm: 'column', md: 'row' }}
-  spacing={4}
-  width="100"
-  flexWrap="wrap" 
-  alignItems="center"
-  justifyContent="space-between"
->
-  {/* Left side - CareerFeeds */}
-  <Box sx={{ flex: 1 }} width="100%">
-    <CareerFeeds />
-  </Box>
+      <FilterBy />
+      <Stack
+        direction={{ sm: 'column', md: 'row' }}
+        spacing={4}
+        width="100"
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        {/* Left side - CareerFeeds */}
+        <Box sx={{ flex: 1 }} width="100%">
+          <CareerFeeds />
+        </Box>
 
-  {/* Right side - Bar Chart in MainCard */}
-  <Box sx={{ flex: 1 }} width="100%">
-    <MainCard>
-      <BarChart />
-    </MainCard>
-  </Box>
-</Stack>
+        {/* Right side - Bar Chart in MainCard */}
+        <Box sx={{ flex: 1 }} width="100%">
+          <MainCard>
+            <BarChart />
+          </MainCard>
+        </Box>
+      </Stack>
     </Stack>
   );
 };

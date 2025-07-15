@@ -196,81 +196,77 @@
 //     </div>
 //   )
 // }
-"use client"
+'use client';
 
-import { useState } from "react"
-import Button from "@mui/material/Button"
-import Stack from "@mui/material/Stack"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import TextField from "@mui/material/TextField"
-import Select from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
-import InputLabel from "@mui/material/InputLabel"
-import Checkbox from "@mui/material/Checkbox"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import Chip from "@mui/material/Chip"
+import { useState } from 'react';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
 
 export function TagManagement() {
-  const [selectedClient, setSelectedClient] = useState("")
-  const [selectedCampaign, setSelectedCampaign] = useState("")
-  const [selectedJobs, setSelectedJobs] = useState("")
-  const [tagInput, setTagInput] = useState("")
+  const [selectedClient, setSelectedClient] = useState('');
+  const [selectedCampaign, setSelectedCampaign] = useState('');
+  const [selectedJobs, setSelectedJobs] = useState('');
+  const [tagInput, setTagInput] = useState('');
   const [placements, setPlacements] = useState([
-    { id: 1, name: "careerdays.io", checked: false, tags: [] },
-    { id: 2, name: "adzuna.com", checked: false, tags: [] },
-    { id: 3, name: "adzuna.com", checked: false, tags: [] },
-    { id: 4, name: "adzuna.com", checked: false, tags: [] },
-    { id: 5, name: "adzuna.com", checked: false, tags: [] },
-    { id: 6, name: "Google Awards", checked: false, tags: [] },
-    { id: 7, name: "adzuna.com", checked: false, tags: [] },
-    { id: 8, name: "adzuna.com", checked: false, tags: [] },
-  ])
+    { id: 1, name: 'careerdays.io', checked: false, tags: [] },
+    { id: 2, name: 'adzuna.com', checked: false, tags: [] },
+    { id: 3, name: 'adzuna.com', checked: false, tags: [] },
+    { id: 4, name: 'adzuna.com', checked: false, tags: [] },
+    { id: 5, name: 'adzuna.com', checked: false, tags: [] },
+    { id: 6, name: 'Google Awards', checked: false, tags: [] },
+    { id: 7, name: 'adzuna.com', checked: false, tags: [] },
+    { id: 8, name: 'adzuna.com', checked: false, tags: [] }
+  ]);
 
   const handlePlacementToggle = (id) => {
-    setPlacements((prev) =>
-      prev.map((placement) => (placement.id === id ? { ...placement, checked: !placement.checked } : placement)),
-    )
-  }
+    setPlacements((prev) => prev.map((placement) => (placement.id === id ? { ...placement, checked: !placement.checked } : placement)));
+  };
 
   const handleSubmit = () => {
     if (selectedClient && selectedCampaign && selectedJobs) {
-      console.log("Submitting:", { selectedClient, selectedCampaign, selectedJobs })
-      alert("Configuration submitted successfully!")
+      console.log('Submitting:', { selectedClient, selectedCampaign, selectedJobs });
+      alert('Configuration submitted successfully!');
     } else {
-      alert("Please select all required fields")
+      alert('Please select all required fields');
     }
-  }
+  };
 
   const handleApplyTag = () => {
     if (tagInput.trim()) {
-      const selectedPlacements = placements.filter((p) => p.checked)
+      const selectedPlacements = placements.filter((p) => p.checked);
       if (selectedPlacements.length === 0) {
-        alert("Please select at least one placement")
-        return
+        alert('Please select at least one placement');
+        return;
       }
 
       setPlacements((prev) =>
         prev.map((placement) =>
-          placement.checked ? { ...placement, tags: [...placement.tags, tagInput.trim()], checked: false } : placement,
-        ),
-      )
-      setTagInput("")
-      alert(`Tag "${tagInput.trim()}" applied to ${selectedPlacements.length} placements`)
+          placement.checked ? { ...placement, tags: [...placement.tags, tagInput.trim()], checked: false } : placement
+        )
+      );
+      setTagInput('');
+      alert(`Tag "${tagInput.trim()}" applied to ${selectedPlacements.length} placements`);
     }
-  }
+  };
 
   const handleRemoveTag = (placementId, tagIndex) => {
     setPlacements((prev) =>
       prev.map((placement) =>
-        placement.id === placementId
-          ? { ...placement, tags: placement.tags.filter((_, index) => index !== tagIndex) }
-          : placement,
-      ),
-    )
-  }
+        placement.id === placementId ? { ...placement, tags: placement.tags.filter((_, index) => index !== tagIndex) } : placement
+      )
+    );
+  };
 
   return (
     <Box sx={{ p: 2 }}>
@@ -280,9 +276,9 @@ export function TagManagement() {
         spacing={2}
         sx={{
           mb: 3,
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%'
         }}
       >
         <Stack direction="row" spacing={2} alignItems="center">
@@ -296,11 +292,7 @@ export function TagManagement() {
 
           <FormControl size="small" sx={{ minWidth: 200 }}>
             <InputLabel>Select Campaign</InputLabel>
-            <Select
-              label="Select Campaign"
-              value={selectedCampaign}
-              onChange={(e) => setSelectedCampaign(e.target.value)}
-            >
+            <Select label="Select Campaign" value={selectedCampaign} onChange={(e) => setSelectedCampaign(e.target.value)}>
               <MenuItem value="campaign1">Campaign 1</MenuItem>
               <MenuItem value="campaign2">Campaign 2</MenuItem>
             </Select>
@@ -321,20 +313,20 @@ export function TagManagement() {
       </Stack>
 
       {/* Tab Navigation */}
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Stack direction="row" spacing={4}>
           <Button
             sx={{
-              textTransform: "none",
-              borderBottom: "2px solid #1976d2",
-              color: "#1976d2",
+              textTransform: 'none',
+              borderBottom: '2px solid #1976d2',
+              color: '#1976d2',
               borderRadius: 0,
-              pb: 1,
+              pb: 1
             }}
           >
             Manage Tags
           </Button>
-          <Button sx={{ textTransform: "none", color: "text.secondary", pb: 1 }}>Activity Log</Button>
+          <Button sx={{ textTransform: 'none', color: 'text.secondary', pb: 1 }}>Activity Log</Button>
         </Stack>
       </Box>
 
@@ -363,24 +355,24 @@ export function TagManagement() {
       </Card>
 
       {/* Placement and Tags Table */}
-      <Box sx={{ border: "1px solid #e0e0e0", borderRadius: 1, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ backgroundColor: "#f5f5f5" }}>
-              <th style={{ padding: "16px", textAlign: "left", fontWeight: 600 }}>Placement</th>
-              <th style={{ padding: "16px", textAlign: "left", fontWeight: 600 }}>Tags</th>
+            <tr style={{ backgroundColor: '#f5f5f5' }}>
+              <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600 }}>Placement</th>
+              <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600 }}>Tags</th>
             </tr>
           </thead>
           <tbody>
             {placements.map((placement) => (
-              <tr key={placement.id} style={{ borderTop: "1px solid #e0e0e0" }}>
-                <td style={{ padding: "16px" }}>
+              <tr key={placement.id} style={{ borderTop: '1px solid #e0e0e0' }}>
+                <td style={{ padding: '16px' }}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Checkbox checked={placement.checked} onChange={() => handlePlacementToggle(placement.id)} />
                     <Typography variant="body2">{placement.name}</Typography>
                   </Stack>
                 </td>
-                <td style={{ padding: "16px" }}>
+                <td style={{ padding: '16px' }}>
                   {placement.tags.length > 0 ? (
                     <Stack direction="row" spacing={1} flexWrap="wrap">
                       {placement.tags.map((tag, index) => (
@@ -389,7 +381,7 @@ export function TagManagement() {
                           label={tag}
                           size="small"
                           onDelete={() => handleRemoveTag(placement.id, index)}
-                          sx={{ backgroundColor: "#e3f2fd", color: "#1976d2" }}
+                          sx={{ backgroundColor: '#e3f2fd', color: '#1976d2' }}
                         />
                       ))}
                     </Stack>
@@ -405,5 +397,5 @@ export function TagManagement() {
         </table>
       </Box>
     </Box>
-  )
+  );
 }

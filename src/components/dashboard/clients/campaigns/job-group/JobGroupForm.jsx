@@ -19,7 +19,7 @@ import {
   IconButton,
   InputAdornment,
   Divider,
-  Alert,
+  Alert
 } from '@mui/material';
 import { ArrowLeft2, AddSquare, Calendar, Edit, Trash, Add } from 'iconsax-react';
 import { useNavigate } from 'react-router';
@@ -42,9 +42,7 @@ const JobTable = ({ data, onSelectionChange }) => {
   };
 
   const handleSelectRow = (index) => {
-    const newSelected = selected.includes(index) 
-      ? selected.filter(id => id !== index)
-      : [...selected, index];
+    const newSelected = selected.includes(index) ? selected.filter((id) => id !== index) : [...selected, index];
     setSelected(newSelected);
     onSelectionChange(newSelected);
   };
@@ -89,8 +87,12 @@ const JobTable = ({ data, onSelectionChange }) => {
           sx={{ width: '100px' }}
           type={type}
           InputProps={{
-            endAdornment: type === 'percentage' ? <InputAdornment position="end">%</InputAdornment> : 
-                         type === 'currency' ? <InputAdornment position="end">USD</InputAdornment> : null
+            endAdornment:
+              type === 'percentage' ? (
+                <InputAdornment position="end">%</InputAdornment>
+              ) : type === 'currency' ? (
+                <InputAdornment position="end">USD</InputAdornment>
+              ) : null
           }}
         />
       );
@@ -112,9 +114,7 @@ const JobTable = ({ data, onSelectionChange }) => {
         }}
       >
         <Typography variant="body2">
-          {type === 'currency' ? `$${value}` : 
-           type === 'percentage' ? `${value}%` : 
-           value || placeholder}
+          {type === 'currency' ? `$${value}` : type === 'percentage' ? `${value}%` : value || placeholder}
         </Typography>
         <Edit size="14" color="#666" />
       </Box>
@@ -147,10 +147,7 @@ const JobTable = ({ data, onSelectionChange }) => {
             {tableData.map((row, index) => (
               <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '12px 16px' }}>
-                  <Checkbox
-                    checked={selected.includes(index)}
-                    onChange={() => handleSelectRow(index)}
-                  />
+                  <Checkbox checked={selected.includes(index)} onChange={() => handleSelectRow(index)} />
                 </td>
                 <td style={{ padding: '12px 16px' }}>{row.publisherName}</td>
                 <td style={{ padding: '12px 16px' }}>
@@ -242,14 +239,102 @@ const JobGroupForm = () => {
 
   // Sample table data - this would come from API
   const [allJobs] = useState([
-    { id: 1, publisherName: 'ELJ-SAmericaca-USD-CPC', type: 'CPA', budget: '100.00', bid: '2.50', markUp: '15.0', markDown: '5.0', minimumBid: '1.00 USD', country: 'US', category: 'Finance' },
-    { id: 2, publisherName: 'ELJ-Europe-EUR-CPC', type: 'CPC', budget: '200.00', bid: '3.00', markUp: '20.0', markDown: '3.0', minimumBid: '1.50 USD', country: 'DE', category: 'Tech' },
-    { id: 3, publisherName: 'ELJ-Asia-USD-CPA', type: 'CPA', budget: '150.00', bid: '2.75', markUp: '12.5', markDown: '4.0', minimumBid: '1.25 USD', country: 'JP', category: 'Finance' },
-    { id: 4, publisherName: 'ELJ-UK-GBP-CPC', type: 'CPC', budget: '300.00', bid: '4.00', markUp: '25.0', markDown: '7.0', minimumBid: '2.00 USD', country: 'UK', category: 'Healthcare' },
-    { id: 5, publisherName: 'ELJ-Canada-CAD-CPA', type: 'CPA', budget: '175.00', bid: '2.25', markUp: '18.0', markDown: '6.0', minimumBid: '1.10 USD', country: 'CA', category: 'Education' },
-    { id: 6, publisherName: 'ELJ-Australia-AUD-CPC', type: 'CPC', budget: '250.00', bid: '3.50', markUp: '22.0', markDown: '4.5', minimumBid: '1.75 USD', country: 'AU', category: 'Tech' },
-    { id: 7, publisherName: 'ELJ-Brazil-BRL-CPA', type: 'CPA', budget: '120.00', bid: '2.00', markUp: '10.0', markDown: '2.5', minimumBid: '0.90 USD', country: 'BR', category: 'Finance' },
-    { id: 8, publisherName: 'ELJ-India-INR-CPC', type: 'CPC', budget: '400.00', bid: '5.00', markUp: '30.0', markDown: '8.0', minimumBid: '2.50 USD', country: 'IN', category: 'Education' }
+    {
+      id: 1,
+      publisherName: 'ELJ-SAmericaca-USD-CPC',
+      type: 'CPA',
+      budget: '100.00',
+      bid: '2.50',
+      markUp: '15.0',
+      markDown: '5.0',
+      minimumBid: '1.00 USD',
+      country: 'US',
+      category: 'Finance'
+    },
+    {
+      id: 2,
+      publisherName: 'ELJ-Europe-EUR-CPC',
+      type: 'CPC',
+      budget: '200.00',
+      bid: '3.00',
+      markUp: '20.0',
+      markDown: '3.0',
+      minimumBid: '1.50 USD',
+      country: 'DE',
+      category: 'Tech'
+    },
+    {
+      id: 3,
+      publisherName: 'ELJ-Asia-USD-CPA',
+      type: 'CPA',
+      budget: '150.00',
+      bid: '2.75',
+      markUp: '12.5',
+      markDown: '4.0',
+      minimumBid: '1.25 USD',
+      country: 'JP',
+      category: 'Finance'
+    },
+    {
+      id: 4,
+      publisherName: 'ELJ-UK-GBP-CPC',
+      type: 'CPC',
+      budget: '300.00',
+      bid: '4.00',
+      markUp: '25.0',
+      markDown: '7.0',
+      minimumBid: '2.00 USD',
+      country: 'UK',
+      category: 'Healthcare'
+    },
+    {
+      id: 5,
+      publisherName: 'ELJ-Canada-CAD-CPA',
+      type: 'CPA',
+      budget: '175.00',
+      bid: '2.25',
+      markUp: '18.0',
+      markDown: '6.0',
+      minimumBid: '1.10 USD',
+      country: 'CA',
+      category: 'Education'
+    },
+    {
+      id: 6,
+      publisherName: 'ELJ-Australia-AUD-CPC',
+      type: 'CPC',
+      budget: '250.00',
+      bid: '3.50',
+      markUp: '22.0',
+      markDown: '4.5',
+      minimumBid: '1.75 USD',
+      country: 'AU',
+      category: 'Tech'
+    },
+    {
+      id: 7,
+      publisherName: 'ELJ-Brazil-BRL-CPA',
+      type: 'CPA',
+      budget: '120.00',
+      bid: '2.00',
+      markUp: '10.0',
+      markDown: '2.5',
+      minimumBid: '0.90 USD',
+      country: 'BR',
+      category: 'Finance'
+    },
+    {
+      id: 8,
+      publisherName: 'ELJ-India-INR-CPC',
+      type: 'CPC',
+      budget: '400.00',
+      bid: '5.00',
+      markUp: '30.0',
+      markDown: '8.0',
+      minimumBid: '2.50 USD',
+      country: 'IN',
+      category: 'Education'
+    }
   ]);
 
   // Build options for dropdown
@@ -306,7 +391,7 @@ const JobGroupForm = () => {
       case 'notBeginsWith':
         return !jobValue?.toString().toLowerCase().startsWith(ruleValue.toLowerCase());
       case 'between':
-        const [min, max] = ruleValue.split(',').map(v => parseFloat(v.trim()));
+        const [min, max] = ruleValue.split(',').map((v) => parseFloat(v.trim()));
         const numValue = parseFloat(jobValue);
         return numValue >= min && numValue <= max;
       default:
@@ -316,13 +401,13 @@ const JobGroupForm = () => {
 
   // Function to apply all filter rules
   const applyFilterRules = () => {
-    if (filterRules.length === 0 || filterRules.every(rule => !rule.build)) {
+    if (filterRules.length === 0 || filterRules.every((rule) => !rule.build)) {
       setFilteredJobs(allJobs);
       setTotalJobCount(allJobs.length);
       return;
     }
 
-    const filtered = allJobs.filter(job => {
+    const filtered = allJobs.filter((job) => {
       let result = true;
       let currentResult = true;
 
@@ -381,14 +466,14 @@ const JobGroupForm = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: value
     }));
   };
 
   const handleRuleOptionChange = (option, checked) => {
-    setRuleOptions(prev => ({
+    setRuleOptions((prev) => ({
       ...prev,
       [option]: checked
     }));
@@ -410,13 +495,15 @@ const JobGroupForm = () => {
       startDate: '',
       endDate: ''
     });
-    setFilterRules([{
-      id: 1,
-      build: '',
-      operator: '',
-      value: '',
-      logicalOperator: 'AND'
-    }]);
+    setFilterRules([
+      {
+        id: 1,
+        build: '',
+        operator: '',
+        value: '',
+        logicalOperator: 'AND'
+      }
+    ]);
     setRuleOptions({
       convertToCPC: false,
       expansionEnable: false,
@@ -430,12 +517,12 @@ const JobGroupForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', { 
-      formData, 
-      filterRules, 
-      ruleOptions, 
+    console.log('Form submitted:', {
+      formData,
+      filterRules,
+      ruleOptions,
       selectedRows,
-      filteredJobs: filteredJobs.length 
+      filteredJobs: filteredJobs.length
     });
     navigate(-1);
   };
@@ -444,10 +531,7 @@ const JobGroupForm = () => {
     <Box sx={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <Box
-          sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-          onClick={handleBack}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleBack}>
           <ArrowLeft2 size="20" color="#000" />
           <Typography variant="h6" sx={{ ml: 1, fontWeight: 600 }}>
             Add Job Group
@@ -461,7 +545,7 @@ const JobGroupForm = () => {
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
             Job Filters
           </Typography>
-          
+
           {filterRules.map((rule, index) => (
             <Box key={rule.id}>
               {index > 0 && (
@@ -479,18 +563,14 @@ const JobGroupForm = () => {
                   <Divider sx={{ flexGrow: 1, mx: 2 }} />
                 </Box>
               )}
-              
+
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} sm={3}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Build</InputLabel>
-                    <Select
-                      value={rule.build}
-                      onChange={(e) => handleFilterRuleChange(index, 'build', e.target.value)}
-                      label="Build"
-                    >
+                    <Select value={rule.build} onChange={(e) => handleFilterRuleChange(index, 'build', e.target.value)} label="Build">
                       <MenuItem value="">Select field</MenuItem>
-                      {buildOptions.map(option => (
+                      {buildOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
@@ -498,7 +578,7 @@ const JobGroupForm = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={3}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Operator</InputLabel>
@@ -508,7 +588,7 @@ const JobGroupForm = () => {
                       label="Operator"
                     >
                       <MenuItem value="">Select operator</MenuItem>
-                      {operatorOptions.map(option => (
+                      {operatorOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
@@ -516,7 +596,7 @@ const JobGroupForm = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
@@ -527,14 +607,10 @@ const JobGroupForm = () => {
                     onChange={(e) => handleFilterRuleChange(index, 'value', e.target.value)}
                   />
                 </Grid>
-                
+
                 <Grid item xs={12} sm={2}>
                   {filterRules.length > 1 && (
-                    <IconButton 
-                      onClick={() => handleRemoveRule(index)}
-                      color="error"
-                      size="small"
-                    >
+                    <IconButton onClick={() => handleRemoveRule(index)} color="error" size="small">
                       <Trash size="20" />
                     </IconButton>
                   )}
@@ -549,27 +625,18 @@ const JobGroupForm = () => {
                 Total Job Count: {totalJobCount}
               </Typography>
               {filteredJobs.length > 0 && filteredJobs.length < allJobs.length && (
-                <Chip 
-                  label={`${filteredJobs.length} of ${allJobs.length} jobs match`} 
-                  size="small" 
-                  color="primary" 
-                />
+                <Chip label={`${filteredJobs.length} of ${allJobs.length} jobs match`} size="small" color="primary" />
               )}
             </Box>
             <Box>
-              <Button
-                variant="outlined"
-                startIcon={<Add size="20" />}
-                onClick={handleAddRule}
-                sx={{ mr: 2, textTransform: 'none' }}
-              >
+              <Button variant="outlined" startIcon={<Add size="20" />} onClick={handleAddRule} sx={{ mr: 2, textTransform: 'none' }}>
                 Add Rule
               </Button>
               <Button
                 variant="contained"
                 onClick={handleApplyFilters}
-                sx={{ 
-                  backgroundColor: '#000', 
+                sx={{
+                  backgroundColor: '#000',
                   textTransform: 'none',
                   '&:hover': { backgroundColor: '#333' }
                 }}
@@ -580,20 +647,19 @@ const JobGroupForm = () => {
           </Box>
 
           {/* Filter Summary */}
-          {filterRules.some(rule => rule.build) && (
+          {filterRules.some((rule) => rule.build) && (
             <Alert severity="info" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                <strong>Active Filters:</strong> {
-                  filterRules
-                    .filter(rule => rule.build)
-                    .map((rule, index) => {
-                      const buildLabel = buildOptions.find(opt => opt.value === rule.build)?.label || rule.build;
-                      const operatorLabel = operatorOptions.find(opt => opt.value === rule.operator)?.label || rule.operator;
-                      const prefix = index > 0 ? ` ${filterRules[index - 1].logicalOperator} ` : '';
-                      return `${prefix}${buildLabel} ${operatorLabel} "${rule.value}"`;
-                    })
-                    .join('')
-                }
+                <strong>Active Filters:</strong>{' '}
+                {filterRules
+                  .filter((rule) => rule.build)
+                  .map((rule, index) => {
+                    const buildLabel = buildOptions.find((opt) => opt.value === rule.build)?.label || rule.build;
+                    const operatorLabel = operatorOptions.find((opt) => opt.value === rule.operator)?.label || rule.operator;
+                    const prefix = index > 0 ? ` ${filterRules[index - 1].logicalOperator} ` : '';
+                    return `${prefix}${buildLabel} ${operatorLabel} "${rule.value}"`;
+                  })
+                  .join('')}
               </Typography>
             </Alert>
           )}
@@ -615,30 +681,28 @@ const JobGroupForm = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Typography variant="body2" color="text.secondary">USD</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        USD
+                      </Typography>
                     </InputAdornment>
                   )
                 }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                 Job Group Type
               </Typography>
               <FormControl fullWidth size="small">
-                <Select
-                  value={formData.jobGroupType}
-                  onChange={(e) => handleInputChange('jobGroupType', e.target.value)}
-                  displayEmpty
-                >
+                <Select value={formData.jobGroupType} onChange={(e) => handleInputChange('jobGroupType', e.target.value)} displayEmpty>
                   <MenuItem value="">eg. 00.00</MenuItem>
                   <MenuItem value="type1">Type 1</MenuItem>
                   <MenuItem value="type2">Type 2</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                 Start Date
@@ -652,7 +716,7 @@ const JobGroupForm = () => {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                 End Date
@@ -695,10 +759,7 @@ const JobGroupForm = () => {
                 />
                 <FormControlLabel
                   control={
-                    <Checkbox
-                      checked={ruleOptions.appliesCap}
-                      onChange={(e) => handleRuleOptionChange('appliesCap', e.target.checked)}
-                    />
+                    <Checkbox checked={ruleOptions.appliesCap} onChange={(e) => handleRuleOptionChange('appliesCap', e.target.checked)} />
                   }
                   label="Applies Cap at Job Level"
                 />
@@ -727,10 +788,7 @@ const JobGroupForm = () => {
             <Grid item xs={12} md={6}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <FormControl component="fieldset">
-                  <RadioGroup
-                    value={budgetType}
-                    onChange={(e) => setBudgetType(e.target.value)}
-                  >
+                  <RadioGroup value={budgetType} onChange={(e) => setBudgetType(e.target.value)}>
                     <FormControlLabel value="budgetCap" control={<Radio />} label="Budget Cap" />
                     <FormControlLabel value="clickCap" control={<Radio />} label="Click Cap" />
                     <FormControlLabel value="appliedCap" control={<Radio />} label="Applied Cap" />
@@ -740,22 +798,12 @@ const JobGroupForm = () => {
                 <Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="body2">Frequency</Typography>
-                    <Switch
-                      checked={frequencyEnabled}
-                      onChange={(e) => setFrequencyEnabled(e.target.checked)}
-                      size="small"
-                    />
+                    <Switch checked={frequencyEnabled} onChange={(e) => setFrequencyEnabled(e.target.checked)} size="small" />
                   </Box>
-                  
+
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        placeholder="Target"
-                        value={target}
-                        onChange={(e) => setTarget(e.target.value)}
-                      />
+                      <TextField fullWidth size="small" placeholder="Target" value={target} onChange={(e) => setTarget(e.target.value)} />
                     </Grid>
                     <Grid item xs={6}>
                       <TextField
@@ -777,17 +825,14 @@ const JobGroupForm = () => {
         </Paper>
 
         {/* Job Table - now uses filtered data */}
-        <JobTable 
-          data={filteredJobs.length > 0 ? filteredJobs : allJobs} 
-          onSelectionChange={setSelectedRows}
-        />
+        <JobTable data={filteredJobs.length > 0 ? filteredJobs : allJobs} onSelectionChange={setSelectedRows} />
 
         {/* Action Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
           <Button
             variant="outlined"
             onClick={handleCancel}
-            sx={{ 
+            sx={{
               textTransform: 'none',
               borderColor: '#ff4757',
               color: '#ff4757',

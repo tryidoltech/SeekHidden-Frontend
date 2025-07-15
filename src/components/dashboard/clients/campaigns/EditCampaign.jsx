@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Grid,
-  Divider,
-} from '@mui/material';
+import { Box, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid, Divider } from '@mui/material';
 import { AddSquare } from 'iconsax-react';
 import { useNavigate } from 'react-router';
 
@@ -26,7 +15,7 @@ const EditCampaign = () => {
   const [rules, setRules] = useState([]);
 
   const handleAddRule = () => {
-    setRules(prev => [...prev, {}]);
+    setRules((prev) => [...prev, {}]);
   };
 
   const handleApplyFilters = () => {
@@ -53,11 +42,7 @@ const EditCampaign = () => {
       </Typography>
 
       {/* Form Container */}
-      <Box
-        component="form"
-        onSubmit={handleUpdate}
-        sx={{ maxWidth: 1200 }}
-      >
+      <Box component="form" onSubmit={handleUpdate} sx={{ maxWidth: 1200 }}>
         <Grid container spacing={2} alignItems="flex-end">
           {/* Name Field */}
           <Grid item xs={12} sm={3}>
@@ -92,7 +77,7 @@ const EditCampaign = () => {
                 onChange={(e) => setCurrency(e.target.value)}
                 sx={{
                   backgroundColor: '#eeeeee',
-                  borderRadius: 1,
+                  borderRadius: 1
                 }}
               >
                 <MenuItem value="USD">USD ▼</MenuItem>
@@ -116,14 +101,7 @@ const EditCampaign = () => {
 
           {/* End Date Field */}
           <Grid item xs={12} sm={3}>
-            <TextField
-              fullWidth
-              type="date"
-              variant="outlined"
-              size="small"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+            <TextField fullWidth type="date" variant="outlined" size="small" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </Grid>
         </Grid>
 
@@ -131,9 +109,7 @@ const EditCampaign = () => {
 
         {/* Job Count and Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="body1">
-            Total Job Count: {totalJobCount}
-          </Typography>
+          <Typography variant="body1">Total Job Count: {totalJobCount}</Typography>
 
           <Box>
             <Button
@@ -143,7 +119,7 @@ const EditCampaign = () => {
                 textTransform: 'none',
                 mr: 2,
                 borderColor: '#000',
-                color: '#000',
+                color: '#000'
               }}
               onClick={handleAddRule}
             >
@@ -153,7 +129,7 @@ const EditCampaign = () => {
               variant="contained"
               sx={{
                 backgroundColor: '#000000',
-                textTransform: 'none',
+                textTransform: 'none'
               }}
               onClick={handleApplyFilters}
             >
@@ -167,7 +143,7 @@ const EditCampaign = () => {
           <Button
             variant="outlined"
             sx={{
-              textTransform: 'none',
+              textTransform: 'none'
             }}
             onClick={handleCancel}
           >
@@ -179,7 +155,7 @@ const EditCampaign = () => {
             variant="contained"
             sx={{
               backgroundColor: '#000000',
-              textTransform: 'none',
+              textTransform: 'none'
             }}
           >
             Update

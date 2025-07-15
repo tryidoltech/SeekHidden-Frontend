@@ -1,56 +1,56 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import TextField from "@mui/material/TextField"
-import Select from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
-import InputLabel from "@mui/material/InputLabel"
-import Switch from "@mui/material/Switch"
-import Grid from "@mui/material/Grid"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import Divider from "@mui/material/Divider"
-import Stack from "@mui/material/Stack"
-import Chip from "@mui/material/Chip"
-import { ArrowLeft } from "iconsax-react"
+import { useState } from 'react';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Switch from '@mui/material/Switch';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+import Chip from '@mui/material/Chip';
+import { ArrowLeft } from 'iconsax-react';
 
 export function AddPublisher({ onBack }) {
   const [formData, setFormData] = useState({
-    publisherName: "",
-    currency: "",
-    bidType: "",
-    minBid: "",
-    url: "",
-    country: "",
-    industry: "",
-    publisherFeedExtraTags: "",
-    contactName: "",
-    mobileNumber: "",
-    email: "",
-    billing: "",
-    ftpHost: "",
-    ftpUsername: "",
-    ftpPort: "",
-    ftpPassword: "",
-    alertRecipients: "",
+    publisherName: '',
+    currency: '',
+    bidType: '',
+    minBid: '',
+    url: '',
+    country: '',
+    industry: '',
+    publisherFeedExtraTags: '',
+    contactName: '',
+    mobileNumber: '',
+    email: '',
+    billing: '',
+    ftpHost: '',
+    ftpUsername: '',
+    ftpPort: '',
+    ftpPassword: '',
+    alertRecipients: '',
     enablePerClientPlacements: false,
     showClientsOnDashboard: false,
-    loginFullName: "",
-    loginEmail: "",
-    loginPassword: "",
-    facebookEmail: "",
-    facebookPassword: "",
-  })
+    loginFullName: '',
+    loginEmail: '',
+    loginPassword: '',
+    facebookEmail: '',
+    facebookPassword: ''
+  });
 
-  const [contacts, setContacts] = useState([])
+  const [contacts, setContacts] = useState([]);
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleAddContact = () => {
     if (formData.contactName && formData.mobileNumber && formData.email) {
@@ -60,79 +60,74 @@ export function AddPublisher({ onBack }) {
           name: formData.contactName,
           mobile: formData.mobileNumber,
           email: formData.email,
-          billing: formData.billing,
-        },
-      ])
+          billing: formData.billing
+        }
+      ]);
 
       // Clear contact fields
       setFormData((prev) => ({
         ...prev,
-        contactName: "",
-        mobileNumber: "",
-        email: "",
-        billing: "",
-      }))
+        contactName: '',
+        mobileNumber: '',
+        email: '',
+        billing: ''
+      }));
 
-      alert("Contact added successfully!")
+      alert('Contact added successfully!');
     } else {
-      alert("Please fill in all required contact fields")
+      alert('Please fill in all required contact fields');
     }
-  }
+  };
 
   const handleSubmit = () => {
     // Basic validation
     if (!formData.publisherName || !formData.currency || !formData.bidType) {
-      alert("Please fill in all required fields")
-      return
+      alert('Please fill in all required fields');
+      return;
     }
 
-    console.log("Submitting publisher data:", { ...formData, contacts })
-    alert("Publisher added successfully!")
+    console.log('Submitting publisher data:', { ...formData, contacts });
+    alert('Publisher added successfully!');
 
     // Reset form after successful submission
-    handleCancel()
-  }
+    handleCancel();
+  };
 
   const handleCancel = () => {
     setFormData({
-      publisherName: "",
-      currency: "",
-      bidType: "",
-      minBid: "",
-      url: "",
-      country: "",
-      industry: "",
-      publisherFeedExtraTags: "",
-      contactName: "",
-      mobileNumber: "",
-      email: "",
-      billing: "",
-      ftpHost: "",
-      ftpUsername: "",
-      ftpPort: "",
-      ftpPassword: "",
-      alertRecipients: "",
+      publisherName: '',
+      currency: '',
+      bidType: '',
+      minBid: '',
+      url: '',
+      country: '',
+      industry: '',
+      publisherFeedExtraTags: '',
+      contactName: '',
+      mobileNumber: '',
+      email: '',
+      billing: '',
+      ftpHost: '',
+      ftpUsername: '',
+      ftpPort: '',
+      ftpPassword: '',
+      alertRecipients: '',
       enablePerClientPlacements: false,
       showClientsOnDashboard: false,
-      loginFullName: "",
-      loginEmail: "",
-      loginPassword: "",
-      facebookEmail: "",
-      facebookPassword: "",
-    })
-    setContacts([])
-  }
+      loginFullName: '',
+      loginEmail: '',
+      loginPassword: '',
+      facebookEmail: '',
+      facebookPassword: ''
+    });
+    setContacts([]);
+  };
 
   return (
     <Box sx={{ p: 3, maxWidth: 1200 }}>
       {/* Back button */}
       <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
-        <Button
-          startIcon={<ArrowLeft size="16" />}
-          onClick={onBack}
-          variant="outlined"
-          size="small"
-        >
+        <Button startIcon={<ArrowLeft size="16" />} onClick={onBack} variant="outlined" size="small">
           Back
         </Button>
         <Typography variant="h5">Add New Publisher</Typography>
@@ -149,17 +144,13 @@ export function AddPublisher({ onBack }) {
                 placeholder="eg. Marco Faloppa"
                 size="small"
                 value={formData.publisherName}
-                onChange={(e) => handleInputChange("publisherName", e.target.value)}
+                onChange={(e) => handleInputChange('publisherName', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth size="small">
                 <InputLabel>Currency</InputLabel>
-                <Select
-                  label="Currency"
-                  value={formData.currency}
-                  onChange={(e) => handleInputChange("currency", e.target.value)}
-                >
+                <Select label="Currency" value={formData.currency} onChange={(e) => handleInputChange('currency', e.target.value)}>
                   <MenuItem value="USD">USD</MenuItem>
                   <MenuItem value="EUR">EUR</MenuItem>
                   <MenuItem value="GBP">GBP</MenuItem>
@@ -169,11 +160,7 @@ export function AddPublisher({ onBack }) {
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth size="small">
                 <InputLabel>Bid Type</InputLabel>
-                <Select
-                  label="Bid Type"
-                  value={formData.bidType}
-                  onChange={(e) => handleInputChange("bidType", e.target.value)}
-                >
+                <Select label="Bid Type" value={formData.bidType} onChange={(e) => handleInputChange('bidType', e.target.value)}>
                   <MenuItem value="CPA">CPA</MenuItem>
                   <MenuItem value="CPC">CPC</MenuItem>
                   <MenuItem value="CPM">CPM</MenuItem>
@@ -187,7 +174,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="0.25"
                 size="small"
                 value={formData.minBid}
-                onChange={(e) => handleInputChange("minBid", e.target.value)}
+                onChange={(e) => handleInputChange('minBid', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -197,17 +184,13 @@ export function AddPublisher({ onBack }) {
                 placeholder="https://example.com"
                 size="small"
                 value={formData.url}
-                onChange={(e) => handleInputChange("url", e.target.value)}
+                onChange={(e) => handleInputChange('url', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <FormControl fullWidth size="small">
                 <InputLabel>Country</InputLabel>
-                <Select
-                  label="Country"
-                  value={formData.country}
-                  onChange={(e) => handleInputChange("country", e.target.value)}
-                >
+                <Select label="Country" value={formData.country} onChange={(e) => handleInputChange('country', e.target.value)}>
                   <MenuItem value="US">United States</MenuItem>
                   <MenuItem value="UK">United Kingdom</MenuItem>
                   <MenuItem value="DE">Germany</MenuItem>
@@ -218,11 +201,7 @@ export function AddPublisher({ onBack }) {
             <Grid item xs={12} sm={6} md={4}>
               <FormControl fullWidth size="small">
                 <InputLabel>Industry</InputLabel>
-                <Select
-                  label="Industry"
-                  value={formData.industry}
-                  onChange={(e) => handleInputChange("industry", e.target.value)}
-                >
+                <Select label="Industry" value={formData.industry} onChange={(e) => handleInputChange('industry', e.target.value)}>
                   <MenuItem value="Technology">Technology</MenuItem>
                   <MenuItem value="Finance">Finance</MenuItem>
                   <MenuItem value="Healthcare">Healthcare</MenuItem>
@@ -236,7 +215,7 @@ export function AddPublisher({ onBack }) {
                 <Select
                   label="Publisher Feed Extra Tags"
                   value={formData.publisherFeedExtraTags}
-                  onChange={(e) => handleInputChange("publisherFeedExtraTags", e.target.value)}
+                  onChange={(e) => handleInputChange('publisherFeedExtraTags', e.target.value)}
                 >
                   <MenuItem value="tag1">Tag 1</MenuItem>
                   <MenuItem value="tag2">Tag 2</MenuItem>
@@ -261,7 +240,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="eg. Marco Faloppa"
                 size="small"
                 value={formData.contactName}
-                onChange={(e) => handleInputChange("contactName", e.target.value)}
+                onChange={(e) => handleInputChange('contactName', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -271,7 +250,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="+1234567890"
                 size="small"
                 value={formData.mobileNumber}
-                onChange={(e) => handleInputChange("mobileNumber", e.target.value)}
+                onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -282,7 +261,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="email@example.com"
                 size="small"
                 value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
+                onChange={(e) => handleInputChange('email', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -292,11 +271,11 @@ export function AddPublisher({ onBack }) {
                 placeholder="Billing info"
                 size="small"
                 value={formData.billing}
-                onChange={(e) => handleInputChange("billing", e.target.value)}
+                onChange={(e) => handleInputChange('billing', e.target.value)}
               />
             </Grid>
           </Grid>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button variant="contained" onClick={handleAddContact}>
               Add
             </Button>
@@ -314,7 +293,7 @@ export function AddPublisher({ onBack }) {
                     key={index}
                     label={`${contact.name} - ${contact.mobile} - ${contact.email} - ${contact.billing}`}
                     variant="outlined"
-                    sx={{ justifyContent: "flex-start" }}
+                    sx={{ justifyContent: 'flex-start' }}
                   />
                 ))}
               </Stack>
@@ -337,7 +316,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="ftp.example.com"
                 size="small"
                 value={formData.ftpHost}
-                onChange={(e) => handleInputChange("ftpHost", e.target.value)}
+                onChange={(e) => handleInputChange('ftpHost', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -347,7 +326,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="username"
                 size="small"
                 value={formData.ftpUsername}
-                onChange={(e) => handleInputChange("ftpUsername", e.target.value)}
+                onChange={(e) => handleInputChange('ftpUsername', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -357,7 +336,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="21"
                 size="small"
                 value={formData.ftpPort}
-                onChange={(e) => handleInputChange("ftpPort", e.target.value)}
+                onChange={(e) => handleInputChange('ftpPort', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -367,7 +346,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="email1@example.com, email2@example.com"
                 size="small"
                 value={formData.alertRecipients}
-                onChange={(e) => handleInputChange("alertRecipients", e.target.value)}
+                onChange={(e) => handleInputChange('alertRecipients', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -378,7 +357,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="Password"
                 size="small"
                 value={formData.ftpPassword}
-                onChange={(e) => handleInputChange("ftpPassword", e.target.value)}
+                onChange={(e) => handleInputChange('ftpPassword', e.target.value)}
               />
             </Grid>
           </Grid>
@@ -399,7 +378,7 @@ export function AddPublisher({ onBack }) {
                 </Box>
                 <Switch
                   checked={formData.enablePerClientPlacements}
-                  onChange={(e) => handleInputChange("enablePerClientPlacements", e.target.checked)}
+                  onChange={(e) => handleInputChange('enablePerClientPlacements', e.target.checked)}
                 />
               </Stack>
             </Box>
@@ -414,7 +393,7 @@ export function AddPublisher({ onBack }) {
                 </Box>
                 <Switch
                   checked={formData.showClientsOnDashboard}
-                  onChange={(e) => handleInputChange("showClientsOnDashboard", e.target.checked)}
+                  onChange={(e) => handleInputChange('showClientsOnDashboard', e.target.checked)}
                 />
               </Stack>
             </Box>
@@ -436,7 +415,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="eg. Marco Faloppa"
                 size="small"
                 value={formData.loginFullName}
-                onChange={(e) => handleInputChange("loginFullName", e.target.value)}
+                onChange={(e) => handleInputChange('loginFullName', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -447,7 +426,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="email@example.com"
                 size="small"
                 value={formData.loginEmail}
-                onChange={(e) => handleInputChange("loginEmail", e.target.value)}
+                onChange={(e) => handleInputChange('loginEmail', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -458,7 +437,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="Password"
                 size="small"
                 value={formData.loginPassword}
-                onChange={(e) => handleInputChange("loginPassword", e.target.value)}
+                onChange={(e) => handleInputChange('loginPassword', e.target.value)}
               />
             </Grid>
           </Grid>
@@ -479,7 +458,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="email@example.com"
                 size="small"
                 value={formData.facebookEmail}
-                onChange={(e) => handleInputChange("facebookEmail", e.target.value)}
+                onChange={(e) => handleInputChange('facebookEmail', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -490,7 +469,7 @@ export function AddPublisher({ onBack }) {
                 placeholder="Password"
                 size="small"
                 value={formData.facebookPassword}
-                onChange={(e) => handleInputChange("facebookPassword", e.target.value)}
+                onChange={(e) => handleInputChange('facebookPassword', e.target.value)}
               />
             </Grid>
           </Grid>
@@ -507,5 +486,5 @@ export function AddPublisher({ onBack }) {
         </Button>
       </Stack>
     </Box>
-  )
+  );
 }

@@ -17,7 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
+  Chip
 } from '@mui/material';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -38,10 +38,26 @@ const InspectFeedClient = () => {
         url: 'https://example.com/feed1.xml',
         totalJobs: 1247,
         nodes: [
-          'job_id', 'title', 'description', 'company', 'location',
-          'salary', 'job_type', 'posted_date', 'expiry_date', 'apply_url',
-          'category', 'requirements', 'benefits', 'experience_level',
-          'city', 'state', 'country', 'zip_code', 'source', 'modified_date'
+          'job_id',
+          'title',
+          'description',
+          'company',
+          'location',
+          'salary',
+          'job_type',
+          'posted_date',
+          'expiry_date',
+          'apply_url',
+          'category',
+          'requirements',
+          'benefits',
+          'experience_level',
+          'city',
+          'state',
+          'country',
+          'zip_code',
+          'source',
+          'modified_date'
         ]
       },
       {
@@ -50,10 +66,25 @@ const InspectFeedClient = () => {
         url: 'https://example.com/feed2.xml',
         totalJobs: 890,
         nodes: [
-          'job_reference', 'job_title', 'job_description', 'employer', 'job_location',
-          'compensation', 'employment_type', 'publication_date', 'deadline', 'application_url',
-          'job_category', 'qualifications', 'perks', 'seniority_level',
-          'city_name', 'state_code', 'country_code', 'postal_code', 'feed_source'
+          'job_reference',
+          'job_title',
+          'job_description',
+          'employer',
+          'job_location',
+          'compensation',
+          'employment_type',
+          'publication_date',
+          'deadline',
+          'application_url',
+          'job_category',
+          'qualifications',
+          'perks',
+          'seniority_level',
+          'city_name',
+          'state_code',
+          'country_code',
+          'postal_code',
+          'feed_source'
         ]
       }
     ];
@@ -66,7 +97,7 @@ const InspectFeedClient = () => {
 
   const handleFeedChange = (feedId) => {
     setSelectedFeedId(feedId);
-    const feed = availableFeeds.find(f => f.id === feedId);
+    const feed = availableFeeds.find((f) => f.id === feedId);
     setCurrentFeed(feed);
   };
 
@@ -78,14 +109,14 @@ const InspectFeedClient = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 3,
+          mb: 3
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           onClick={handleBack}
         >
@@ -153,21 +184,23 @@ const InspectFeedClient = () => {
         sx={{
           p: 3,
           backgroundColor: '#ffffff',
-          borderRadius: 2,
+          borderRadius: 2
         }}
       >
         <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
           Feed Inspection Details
         </Typography>
-        
+
         {!currentFeed ? (
-          <Box sx={{ 
-            textAlign: 'center', 
-            py: 8, 
-            backgroundColor: '#f8f9fa',
-            borderRadius: 2,
-            border: '2px dashed #dee2e6'
-          }}>
+          <Box
+            sx={{
+              textAlign: 'center',
+              py: 8,
+              backgroundColor: '#f8f9fa',
+              borderRadius: 2,
+              border: '2px dashed #dee2e6'
+            }}
+          >
             <Typography variant="h6" color="textSecondary" sx={{ mb: 2 }}>
               No Feed Selected
             </Typography>
@@ -180,7 +213,7 @@ const InspectFeedClient = () => {
             <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
               Comprehensive feed analysis showing statistics, node details, and processing information.
             </Typography>
-            
+
             {/* Feed Summary Statistics */}
             <Box sx={{ mb: 4 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
@@ -188,17 +221,19 @@ const InspectFeedClient = () => {
               </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ 
-                    p: 3, 
-                    textAlign: 'center', 
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #e9ecef',
-                    borderRadius: 2,
-                    '&:hover': {
-                      backgroundColor: '#e9ecef',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                    }
-                  }}>
+                  <Paper
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      backgroundColor: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      borderRadius: 2,
+                      '&:hover': {
+                        backgroundColor: '#e9ecef',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                      }
+                    }}
+                  >
                     <Typography variant="h3" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1 }}>
                       {currentFeed.totalJobs?.toLocaleString() || 0}
                     </Typography>
@@ -208,17 +243,19 @@ const InspectFeedClient = () => {
                   </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ 
-                    p: 3, 
-                    textAlign: 'center', 
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #e9ecef',
-                    borderRadius: 2,
-                    '&:hover': {
-                      backgroundColor: '#e9ecef',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                    }
-                  }}>
+                  <Paper
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      backgroundColor: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      borderRadius: 2,
+                      '&:hover': {
+                        backgroundColor: '#e9ecef',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                      }
+                    }}
+                  >
                     <Typography variant="h3" sx={{ fontWeight: 700, color: '#1976d2', mb: 1 }}>
                       {currentFeed.nodes?.length || 0}
                     </Typography>
@@ -228,17 +265,19 @@ const InspectFeedClient = () => {
                   </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ 
-                    p: 3, 
-                    textAlign: 'center', 
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #e9ecef',
-                    borderRadius: 2,
-                    '&:hover': {
-                      backgroundColor: '#e9ecef',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                    }
-                  }}>
+                  <Paper
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      backgroundColor: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      borderRadius: 2,
+                      '&:hover': {
+                        backgroundColor: '#e9ecef',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                      }
+                    }}
+                  >
                     <Typography variant="h3" sx={{ fontWeight: 700, color: '#ed6c02', mb: 1 }}>
                       {Math.floor(currentFeed.nodes?.length * 0.7) || 0}
                     </Typography>
@@ -248,17 +287,19 @@ const InspectFeedClient = () => {
                   </Paper>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                  <Paper sx={{ 
-                    p: 3, 
-                    textAlign: 'center', 
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #e9ecef',
-                    borderRadius: 2,
-                    '&:hover': {
-                      backgroundColor: '#e9ecef',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                    }
-                  }}>
+                  <Paper
+                    sx={{
+                      p: 3,
+                      textAlign: 'center',
+                      backgroundColor: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      borderRadius: 2,
+                      '&:hover': {
+                        backgroundColor: '#e9ecef',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                      }
+                    }}
+                  >
                     <Typography variant="h3" sx={{ fontWeight: 700, color: '#d32f2f', mb: 1 }}>
                       {Math.floor(currentFeed.nodes?.length * 0.3) || 0}
                     </Typography>
@@ -275,14 +316,17 @@ const InspectFeedClient = () => {
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                 Node Analysis
               </Typography>
-              <TableContainer component={Paper} sx={{ 
-                maxHeight: 500, 
-                borderRadius: 2,
-                border: '1px solid #e0e0e0',
-                '& .MuiTableHead-root': {
-                  backgroundColor: '#f5f5f5'
-                }
-              }}>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  maxHeight: 500,
+                  borderRadius: 2,
+                  border: '1px solid #e0e0e0',
+                  '& .MuiTableHead-root': {
+                    backgroundColor: '#f5f5f5'
+                  }
+                }}
+              >
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -298,18 +342,32 @@ const InspectFeedClient = () => {
                     {currentFeed.nodes?.map((node, index) => {
                       const isActive = Math.random() > 0.3;
                       const sampleValues = [
-                        'Software Engineer', 'Marketing Manager', 'Data Analyst', 'Product Designer',
-                        'Sales Representative', 'Full Time', 'Part Time', 'Contract', 'Remote',
-                        'New York, NY', 'San Francisco, CA', 'Austin, TX', 'Singapore', 'London, UK',
-                        '2024-12-15', '$75,000 - $95,000', 'https://apply.company.com', 'Technology'
+                        'Software Engineer',
+                        'Marketing Manager',
+                        'Data Analyst',
+                        'Product Designer',
+                        'Sales Representative',
+                        'Full Time',
+                        'Part Time',
+                        'Contract',
+                        'Remote',
+                        'New York, NY',
+                        'San Francisco, CA',
+                        'Austin, TX',
+                        'Singapore',
+                        'London, UK',
+                        '2024-12-15',
+                        '$75,000 - $95,000',
+                        'https://apply.company.com',
+                        'Technology'
                       ];
                       const dataTypes = ['String', 'Number', 'Date', 'URL', 'Text', 'Currency'];
                       const recordCount = Math.floor(Math.random() * 1000) + 100;
 
                       return (
-                        <TableRow 
-                          key={node} 
-                          sx={{ 
+                        <TableRow
+                          key={node}
+                          sx={{
                             '&:hover': { backgroundColor: '#f8f9fa' },
                             '&:nth-of-type(odd)': { backgroundColor: '#fafafa' }
                           }}
@@ -324,7 +382,7 @@ const InspectFeedClient = () => {
                               label={dataTypes[index % dataTypes.length]}
                               size="small"
                               variant="outlined"
-                              sx={{ 
+                              sx={{
                                 fontSize: '0.75rem',
                                 fontWeight: 500,
                                 backgroundColor: '#fff'
@@ -337,9 +395,7 @@ const InspectFeedClient = () => {
                             </Typography>
                           </TableCell>
                           <TableCell sx={{ fontWeight: 500, py: 2 }}>
-                            <Typography variant="body2">
-                              {recordCount.toLocaleString()}
-                            </Typography>
+                            <Typography variant="body2">{recordCount.toLocaleString()}</Typography>
                           </TableCell>
                           <TableCell sx={{ py: 2 }}>
                             <Chip
@@ -403,7 +459,7 @@ const InspectFeedClient = () => {
                       value={currentFeed.url}
                       disabled
                       size="small"
-                      sx={{ 
+                      sx={{
                         mb: 2,
                         '& .MuiInputBase-input': {
                           fontFamily: 'monospace',
@@ -413,40 +469,16 @@ const InspectFeedClient = () => {
                     />
                   </Grid>
                   <Grid item xs={12} md={3}>
-                    <TextField
-                      fullWidth
-                      label="Feed Type"
-                      value="XML"
-                      disabled
-                      size="small"
-                    />
+                    <TextField fullWidth label="Feed Type" value="XML" disabled size="small" />
                   </Grid>
                   <Grid item xs={12} md={3}>
-                    <TextField
-                      fullWidth
-                      label="Encoding"
-                      value="UTF-8"
-                      disabled
-                      size="small"
-                    />
+                    <TextField fullWidth label="Encoding" value="UTF-8" disabled size="small" />
                   </Grid>
                   <Grid item xs={12} md={3}>
-                    <TextField
-                      fullWidth
-                      label="File Size"
-                      value="2.4 MB"
-                      disabled
-                      size="small"
-                    />
+                    <TextField fullWidth label="File Size" value="2.4 MB" disabled size="small" />
                   </Grid>
                   <Grid item xs={12} md={3}>
-                    <TextField
-                      fullWidth
-                      label="Last Updated"
-                      value={new Date().toLocaleString()}
-                      disabled
-                      size="small"
-                    />
+                    <TextField fullWidth label="Last Updated" value={new Date().toLocaleString()} disabled size="small" />
                   </Grid>
                 </Grid>
               </Paper>
@@ -457,23 +489,27 @@ const InspectFeedClient = () => {
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                 Processing Log
               </Typography>
-              <Paper sx={{ 
-                p: 3, 
-                borderRadius: 2, 
-                border: '1px solid #e0e0e0',
-                backgroundColor: '#fafafa' 
-              }}>
-                <Box sx={{
-                  backgroundColor: '#fff',
-                  p: 2,
-                  borderRadius: 1,
-                  maxHeight: 250,
-                  overflowY: 'auto',
-                  fontFamily: 'monospace',
-                  fontSize: '0.875rem',
-                  lineHeight: 1.6,
-                  border: '1px solid #e0e0e0'
-                }}>
+              <Paper
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  border: '1px solid #e0e0e0',
+                  backgroundColor: '#fafafa'
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: '#fff',
+                    p: 2,
+                    borderRadius: 1,
+                    maxHeight: 250,
+                    overflowY: 'auto',
+                    fontFamily: 'monospace',
+                    fontSize: '0.875rem',
+                    lineHeight: 1.6,
+                    border: '1px solid #e0e0e0'
+                  }}
+                >
                   <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5, fontWeight: 500 }}>
                     ✓ Feed URL validated successfully
                   </Typography>

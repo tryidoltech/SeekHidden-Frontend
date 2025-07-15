@@ -103,7 +103,7 @@ export default function ClickChart() {
     {
       name: 'Invalid Clicks',
       data: [50, 30, 35, 10, 20, 10, 50, 35, 65, 20, 30, 15]
-    },
+    }
   ]);
 
   return <ReactApexChart options={options} series={series} type="area" height={284} />;

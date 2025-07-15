@@ -1,12 +1,12 @@
-import React from 'react'
-import CampaignsTable from './CampaignsTable'
+import React from 'react';
+import CampaignsTable from './CampaignsTable';
 
 function Campaigns() {
-    return (
-        <>
-            <CampaignsTable />
-        </>
-    )
+  return (
+    <>
+      <CampaignsTable />
+    </>
+  );
 }
 
-export default Campaigns
+export default Campaigns;

@@ -26,8 +26,6 @@ const ContactUS = Loadable(lazy(() => import('pages/contact-us')));
 
 const ClientsPage = Loadable(lazy(() => import('pages/clients')));
 
-
-
 // ==============================|| MAIN ROUTES ||============================== //
 
 const MainRoutes = {
@@ -43,7 +41,7 @@ const MainRoutes = {
         },
         {
           path: 'clients',
-          element: <ClientsPage />,
+          element: <ClientsPage />
         },
         {
           path: 'clients/add-client',

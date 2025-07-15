@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Grid,
-} from '@mui/material';
+import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid } from '@mui/material';
 import { ArrowLeft2, AddSquare } from 'iconsax-react';
 import { useNavigate } from 'react-router';
 
@@ -35,7 +24,7 @@ const AddCampaign = () => {
 
   const handleAddRule = () => {
     // Stub: simply push an empty object into rules array
-    setRules(prev => [...prev, {}]);
+    setRules((prev) => [...prev, {}]);
   };
 
   const handleApplyFilters = () => {
@@ -71,14 +60,14 @@ const AddCampaign = () => {
           display: 'flex',
           alignItems: 'center',
           mb: 2,
-          px: 1,
+          px: 1
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           onClick={handleBack}
         >
@@ -90,18 +79,14 @@ const AddCampaign = () => {
       </Box>
 
       {/* Main Form Container */}
-      <Box
-        component="form"
-        onSubmit={handleAddCampaign}
-        sx={{ maxWidth: 1200, mx: 'auto' }}
-      >
+      <Box component="form" onSubmit={handleAddCampaign} sx={{ maxWidth: 1200, mx: 'auto' }}>
         <Paper
           elevation={0}
           sx={{
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Grid container spacing={2} alignItems="flex-end">
@@ -138,7 +123,7 @@ const AddCampaign = () => {
                   onChange={(e) => setCurrency(e.target.value)}
                   sx={{
                     backgroundColor: '#eeeeee',
-                    borderRadius: 1,
+                    borderRadius: 1
                   }}
                 >
                   <MenuItem value="USD">USD</MenuItem>
@@ -178,9 +163,7 @@ const AddCampaign = () => {
             {/* Add Rule & Apply Filters Buttons */}
             <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="body1">
-                  Total Job Count: {totalJobCount}
-                </Typography>
+                <Typography variant="body1">Total Job Count: {totalJobCount}</Typography>
                 <Box>
                   <Button
                     variant="outlined"
@@ -192,8 +175,8 @@ const AddCampaign = () => {
                       color: '#000',
                       '&:hover': {
                         backgroundColor: '#f0f0f0',
-                        borderColor: '#000',
-                      },
+                        borderColor: '#000'
+                      }
                     }}
                     onClick={handleAddRule}
                   >
@@ -205,8 +188,8 @@ const AddCampaign = () => {
                       backgroundColor: '#000000',
                       textTransform: 'none',
                       '&:hover': {
-                        backgroundColor: '#222222',
-                      },
+                        backgroundColor: '#222222'
+                      }
                     }}
                     onClick={handleApplyFilters}
                   >
@@ -223,7 +206,7 @@ const AddCampaign = () => {
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
-            gap: 2,
+            gap: 2
           }}
         >
           <Button
@@ -234,8 +217,8 @@ const AddCampaign = () => {
               color: '#ff4d4f',
               '&:hover': {
                 backgroundColor: '#fff5f5',
-                borderColor: '#ff4d4f',
-              },
+                borderColor: '#ff4d4f'
+              }
             }}
             onClick={handleCancel}
           >
@@ -249,8 +232,8 @@ const AddCampaign = () => {
               backgroundColor: '#000000',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#222222',
-              },
+                backgroundColor: '#222222'
+              }
             }}
           >
             Add Campaign

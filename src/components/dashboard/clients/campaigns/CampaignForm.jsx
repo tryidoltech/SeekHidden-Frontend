@@ -19,7 +19,7 @@ import {
   IconButton,
   Divider,
   Alert,
-  Chip,
+  Chip
 } from '@mui/material';
 import { ArrowLeft2, AddSquare, Calendar, Add, Trash } from 'iconsax-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -111,21 +111,21 @@ const CampaignForm = () => {
       budget: '1000.00',
       currency: 'USD',
       startDate: '2024-01-15',
-      endDate: '2024-06-15',
+      endDate: '2024-06-15'
     },
     2: {
       name: 'Tech Product Launch',
       budget: '2000.00',
       currency: 'USD',
       startDate: '2024-02-01',
-      endDate: '2024-08-01',
+      endDate: '2024-08-01'
     },
     3: {
       name: 'Holiday Marketing Blitz',
       budget: '1500.00',
       currency: 'USD',
       startDate: '2024-01-20',
-      endDate: '2024-07-20',
+      endDate: '2024-07-20'
     }
   };
 
@@ -158,7 +158,7 @@ const CampaignForm = () => {
       case 'notBeginsWith':
         return !jobValue?.toString().toLowerCase().startsWith(ruleValue.toLowerCase());
       case 'between':
-        const [min, max] = ruleValue.split(',').map(v => parseFloat(v.trim()));
+        const [min, max] = ruleValue.split(',').map((v) => parseFloat(v.trim()));
         const numValue = parseFloat(jobValue);
         return numValue >= min && numValue <= max;
       default:
@@ -168,13 +168,13 @@ const CampaignForm = () => {
 
   // Function to apply all filter rules
   const applyFilterRules = () => {
-    if (filterRules.length === 0 || filterRules.every(rule => !rule.build)) {
+    if (filterRules.length === 0 || filterRules.every((rule) => !rule.build)) {
       setFilteredJobs(allJobs);
       setTotalJobCount(allJobs.length);
       return;
     }
 
-    const filtered = allJobs.filter(job => {
+    const filtered = allJobs.filter((job) => {
       let result = true;
 
       for (let i = 0; i < filterRules.length; i++) {
@@ -249,7 +249,7 @@ const CampaignForm = () => {
   };
 
   const handleRuleOptionChange = (option, checked) => {
-    setRuleOptions(prev => ({
+    setRuleOptions((prev) => ({
       ...prev,
       [option]: checked
     }));
@@ -270,13 +270,15 @@ const CampaignForm = () => {
       setCurrency('USD');
       setStartDate('');
       setEndDate('');
-      setFilterRules([{
-        id: 1,
-        build: '',
-        operator: '',
-        value: '',
-        logicalOperator: 'AND'
-      }]);
+      setFilterRules([
+        {
+          id: 1,
+          build: '',
+          operator: '',
+          value: '',
+          logicalOperator: 'AND'
+        }
+      ]);
       setRuleOptions({
         convertToCPC: false,
         expansionEnable: false,
@@ -291,7 +293,7 @@ const CampaignForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const campaignData = {
       name,
       budget: parseFloat(budget) || 0,
@@ -314,7 +316,7 @@ const CampaignForm = () => {
       console.log('Creating campaign:', campaignData);
       toast.success('Campaign created successfully!');
     }
-    
+
     navigate('/campaigns');
   };
 
@@ -326,14 +328,14 @@ const CampaignForm = () => {
           display: 'flex',
           alignItems: 'center',
           mb: 2,
-          px: 1,
+          px: 1
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           onClick={handleBack}
         >
@@ -345,11 +347,7 @@ const CampaignForm = () => {
       </Box>
 
       {/* Main Form Container */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ maxWidth: 1200, mx: 'auto' }}
-      >
+      <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 1200, mx: 'auto' }}>
         {/* Job Filters Section - Enhanced */}
         <Paper
           elevation={0}
@@ -357,13 +355,13 @@ const CampaignForm = () => {
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
             Job Filters
           </Typography>
-          
+
           {filterRules.map((rule, index) => (
             <Box key={rule.id}>
               {index > 0 && (
@@ -381,18 +379,14 @@ const CampaignForm = () => {
                   <Divider sx={{ flexGrow: 1, mx: 2 }} />
                 </Box>
               )}
-              
+
               <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} sm={3}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Build</InputLabel>
-                    <Select
-                      value={rule.build}
-                      onChange={(e) => handleFilterRuleChange(index, 'build', e.target.value)}
-                      label="Build"
-                    >
+                    <Select value={rule.build} onChange={(e) => handleFilterRuleChange(index, 'build', e.target.value)} label="Build">
                       <MenuItem value="">Select field</MenuItem>
-                      {buildOptions.map(option => (
+                      {buildOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
@@ -400,7 +394,7 @@ const CampaignForm = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={3}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Operator</InputLabel>
@@ -410,7 +404,7 @@ const CampaignForm = () => {
                       label="Operator"
                     >
                       <MenuItem value="">Select operator</MenuItem>
-                      {operatorOptions.map(option => (
+                      {operatorOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
@@ -418,7 +412,7 @@ const CampaignForm = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
@@ -429,14 +423,10 @@ const CampaignForm = () => {
                     onChange={(e) => handleFilterRuleChange(index, 'value', e.target.value)}
                   />
                 </Grid>
-                
+
                 <Grid item xs={12} sm={2}>
                   {filterRules.length > 1 && (
-                    <IconButton 
-                      onClick={() => handleRemoveRule(index)}
-                      color="error"
-                      size="small"
-                    >
+                    <IconButton onClick={() => handleRemoveRule(index)} color="error" size="small">
                       <Trash size="20" />
                     </IconButton>
                   )}
@@ -451,11 +441,7 @@ const CampaignForm = () => {
                 Total Job Count: {totalJobCount || allJobs.length}
               </Typography>
               {filteredJobs.length > 0 && filteredJobs.length < allJobs.length && (
-                <Chip 
-                  label={`${filteredJobs.length} of ${allJobs.length} jobs match`} 
-                  size="small" 
-                  color="primary" 
-                />
+                <Chip label={`${filteredJobs.length} of ${allJobs.length} jobs match`} size="small" color="primary" />
               )}
             </Box>
             <Box>
@@ -470,8 +456,8 @@ const CampaignForm = () => {
                   color: '#000',
                   '&:hover': {
                     backgroundColor: '#f0f0f0',
-                    borderColor: '#000',
-                  },
+                    borderColor: '#000'
+                  }
                 }}
               >
                 Add Rule
@@ -482,8 +468,8 @@ const CampaignForm = () => {
                   backgroundColor: '#000000',
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#222222',
-                  },
+                    backgroundColor: '#222222'
+                  }
                 }}
                 onClick={handleApplyFilters}
               >
@@ -493,20 +479,19 @@ const CampaignForm = () => {
           </Box>
 
           {/* Filter Summary */}
-          {filterRules.some(rule => rule.build) && (
+          {filterRules.some((rule) => rule.build) && (
             <Alert severity="info" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                <strong>Active Filters:</strong> {
-                  filterRules
-                    .filter(rule => rule.build)
-                    .map((rule, index) => {
-                      const buildLabel = buildOptions.find(opt => opt.value === rule.build)?.label || rule.build;
-                      const operatorLabel = operatorOptions.find(opt => opt.value === rule.operator)?.label || rule.operator;
-                      const prefix = index > 0 ? ` ${filterRules[index - 1].logicalOperator} ` : '';
-                      return `${prefix}${buildLabel} ${operatorLabel} "${rule.value}"`;
-                    })
-                    .join('')
-                }
+                <strong>Active Filters:</strong>{' '}
+                {filterRules
+                  .filter((rule) => rule.build)
+                  .map((rule, index) => {
+                    const buildLabel = buildOptions.find((opt) => opt.value === rule.build)?.label || rule.build;
+                    const operatorLabel = operatorOptions.find((opt) => opt.value === rule.operator)?.label || rule.operator;
+                    const prefix = index > 0 ? ` ${filterRules[index - 1].logicalOperator} ` : '';
+                    return `${prefix}${buildLabel} ${operatorLabel} "${rule.value}"`;
+                  })
+                  .join('')}
               </Typography>
             </Alert>
           )}
@@ -519,13 +504,13 @@ const CampaignForm = () => {
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
             Campaign Details
           </Typography>
-          
+
           <Grid container spacing={2}>
             {/* Campaign Name */}
             <Grid item xs={12} sm={8}>
@@ -552,7 +537,7 @@ const CampaignForm = () => {
                 size="small"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                inputProps={{ step: "0.01", min: "0" }}
+                inputProps={{ step: '0.01', min: '0' }}
                 required
               />
             </Grid>
@@ -565,7 +550,7 @@ const CampaignForm = () => {
                   onChange={(e) => setCurrency(e.target.value)}
                   sx={{
                     backgroundColor: '#eeeeee',
-                    borderRadius: 1,
+                    borderRadius: 1
                   }}
                 >
                   <MenuItem value="USD">USD</MenuItem>
@@ -608,7 +593,7 @@ const CampaignForm = () => {
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
-            gap: 2,
+            gap: 2
           }}
         >
           <Button
@@ -619,8 +604,8 @@ const CampaignForm = () => {
               color: '#ff4d4f',
               '&:hover': {
                 backgroundColor: '#fff5f5',
-                borderColor: '#ff4d4f',
-              },
+                borderColor: '#ff4d4f'
+              }
             }}
             onClick={handleCancel}
           >
@@ -634,8 +619,8 @@ const CampaignForm = () => {
               backgroundColor: '#000000',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#222222',
-              },
+                backgroundColor: '#222222'
+              }
             }}
           >
             {isEdit ? 'Update Campaign' : 'Add Campaign'}

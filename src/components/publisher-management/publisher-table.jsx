@@ -327,83 +327,83 @@
 //     </div>
 //   )
 // }
-"use client"
+'use client';
 
-import { useState, useMemo } from "react"
-import Button from "@mui/material/Button"
-import Stack from "@mui/material/Stack"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import TextField from "@mui/material/TextField"
-import Select from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
-import InputLabel from "@mui/material/InputLabel"
-import Checkbox from "@mui/material/Checkbox"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useMemo } from 'react';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const initialPublishers = [
   {
     id: 1,
-    name: "ATTB US CPA (A)",
-    status: "active",
-    currency: "USD",
-    country: "USA",
-    bidType: "CPA",
+    name: 'ATTB US CPA (A)',
+    status: 'active',
+    currency: 'USD',
+    country: 'USA',
+    bidType: 'CPA',
     minBid: 0.25,
-    industry: "Accounting",
-    creationDate: "01-01-2000",
+    industry: 'Accounting',
+    creationDate: '01-01-2000'
   },
   {
     id: 2,
-    name: "ATTB US CPA (B)",
-    status: "active",
-    currency: "USD",
-    country: "USA",
-    bidType: "CPA",
+    name: 'ATTB US CPA (B)',
+    status: 'active',
+    currency: 'USD',
+    country: 'USA',
+    bidType: 'CPA',
     minBid: 0.25,
-    industry: "Accounting",
-    creationDate: "01-01-2000",
+    industry: 'Accounting',
+    creationDate: '01-01-2000'
   },
   {
     id: 3,
-    name: "Global Leads EU",
-    status: "inactive",
-    currency: "EUR",
-    country: "Germany",
-    bidType: "CPC",
+    name: 'Global Leads EU',
+    status: 'inactive',
+    currency: 'EUR',
+    country: 'Germany',
+    bidType: 'CPC',
     minBid: 0.15,
-    industry: "Technology",
-    creationDate: "15-03-2001",
+    industry: 'Technology',
+    creationDate: '15-03-2001'
   },
   {
     id: 4,
-    name: "Asia Converters",
-    status: "active",
-    currency: "USD",
-    country: "Singapore",
-    bidType: "CPA",
+    name: 'Asia Converters',
+    status: 'active',
+    currency: 'USD',
+    country: 'Singapore',
+    bidType: 'CPA',
     minBid: 0.3,
-    industry: "Finance",
-    creationDate: "22-07-2002",
-  },
-]
+    industry: 'Finance',
+    creationDate: '22-07-2002'
+  }
+];
 
 export function PublishersTable() {
-  const [publishers, setPublishers] = useState(initialPublishers)
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("")
-  const [currencyFilter, setCurrencyFilter] = useState("")
-  const [action, setAction] = useState("")
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [selectedRows, setSelectedRows] = useState([])
-  
+  const [publishers, setPublishers] = useState(initialPublishers);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [currencyFilter, setCurrencyFilter] = useState('');
+  const [action, setAction] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
+
   // Add state for visible columns with default important columns
   const [visibleColumns, setVisibleColumns] = useState([
     'name',
@@ -414,7 +414,7 @@ export function PublishersTable() {
     'minBid',
     'industry',
     'creationDate'
-  ])
+  ]);
 
   // Define all available columns for the stats dropdown
   const allColumns = [
@@ -425,14 +425,14 @@ export function PublishersTable() {
     { id: 'bidType', label: 'Bid Type' },
     { id: 'minBid', label: 'Min Bid' },
     { id: 'industry', label: 'Industry' },
-    { id: 'creationDate', label: 'Creation Date' },
-  ]
+    { id: 'creationDate', label: 'Creation Date' }
+  ];
 
   // Generate column options for the dropdown
-  const columnOptions = allColumns.map(column => ({
+  const columnOptions = allColumns.map((column) => ({
     value: column.id,
     label: column.label
-  }))
+  }));
 
   // Working search and filter functionality
   const filteredPublishers = useMemo(() => {
@@ -440,96 +440,87 @@ export function PublishersTable() {
       const matchesSearch =
         publisher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         publisher.country.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        publisher.industry.toLowerCase().includes(searchTerm.toLowerCase())
+        publisher.industry.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus = !statusFilter || publisher.status === statusFilter
-      const matchesCurrency = !currencyFilter || publisher.currency === currencyFilter
+      const matchesStatus = !statusFilter || publisher.status === statusFilter;
+      const matchesCurrency = !currencyFilter || publisher.currency === currencyFilter;
 
-      return matchesSearch && matchesStatus && matchesCurrency
-    })
-  }, [publishers, searchTerm, statusFilter, currencyFilter])
+      return matchesSearch && matchesStatus && matchesCurrency;
+    });
+  }, [publishers, searchTerm, statusFilter, currencyFilter]);
 
-  const paginatedPublishers = filteredPublishers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-  const totalPages = Math.ceil(filteredPublishers.length / rowsPerPage)
+  const paginatedPublishers = filteredPublishers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const totalPages = Math.ceil(filteredPublishers.length / rowsPerPage);
 
   const handleSelectAll = (event) => {
     if (event.target.checked) {
-      setSelectedRows(paginatedPublishers.map((row) => row.id))
+      setSelectedRows(paginatedPublishers.map((row) => row.id));
     } else {
-      setSelectedRows([])
+      setSelectedRows([]);
     }
-  }
+  };
 
   const handleSelectRow = (id) => {
-    const selectedIndex = selectedRows.indexOf(id)
-    let newSelected = []
+    const selectedIndex = selectedRows.indexOf(id);
+    let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selectedRows, id)
+      newSelected = newSelected.concat(selectedRows, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selectedRows.slice(1))
+      newSelected = newSelected.concat(selectedRows.slice(1));
     } else if (selectedIndex === selectedRows.length - 1) {
-      newSelected = newSelected.concat(selectedRows.slice(0, -1))
+      newSelected = newSelected.concat(selectedRows.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1))
+      newSelected = newSelected.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
     }
 
-    setSelectedRows(newSelected)
-  }
+    setSelectedRows(newSelected);
+  };
 
-  const isSelected = (id) => selectedRows.indexOf(id) !== -1
+  const isSelected = (id) => selectedRows.indexOf(id) !== -1;
 
   const handleApplyAction = () => {
     if (action && selectedRows.length > 0) {
-      alert(`Applied ${action} to ${selectedRows.length} publishers`)
-      console.log("Action applied:", { action, selectedPublishers: selectedRows })
+      alert(`Applied ${action} to ${selectedRows.length} publishers`);
+      console.log('Action applied:', { action, selectedPublishers: selectedRows });
     }
-  }
+  };
 
   const applyFilters = () => {
-    setPage(0) // Reset to first page when applying filters
-    console.log("Filters applied:", { searchTerm, statusFilter, currencyFilter, startDate, endDate })
-  }
+    setPage(0); // Reset to first page when applying filters
+    console.log('Filters applied:', { searchTerm, statusFilter, currencyFilter, startDate, endDate });
+  };
 
   // Handle stats column selection
   const handleStatsChange = (value) => {
     if (value === 'all') {
-      setVisibleColumns(allColumns.map(col => col.id))
+      setVisibleColumns(allColumns.map((col) => col.id));
     } else if (value === '' || !value) {
       // Default columns
-      setVisibleColumns([
-        'name',
-        'status',
-        'currency',
-        'country',
-        'bidType',
-        'minBid',
-        'industry',
-        'creationDate'
-      ])
+      setVisibleColumns(['name', 'status', 'currency', 'country', 'bidType', 'minBid', 'industry', 'creationDate']);
     } else {
       // Single column selection
-      setVisibleColumns([value])
+      setVisibleColumns([value]);
     }
-  }
+  };
 
   // Filter columns based on visibility
   const getVisibleColumns = () => {
-    return allColumns.filter(column => visibleColumns.includes(column.id))
-  }
+    return allColumns.filter((column) => visibleColumns.includes(column.id));
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box>
         {/* Filters Row */}
-        <Stack direction="row" spacing={2} sx={{ p: 2, alignItems: "center", justifyContent: "space-between" }}>
+        <Stack direction="row" spacing={2} sx={{ p: 2, alignItems: 'center', justifyContent: 'space-between' }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <Select
-                value={action || ""}
+                value={action || ''}
                 onChange={(e) => setAction(e.target.value)}
                 displayEmpty
-                inputProps={{ "aria-label": "Actions" }}
+                inputProps={{ 'aria-label': 'Actions' }}
               >
                 <MenuItem value="" disabled>
                   Actions
@@ -569,16 +560,16 @@ export function PublishersTable() {
         </Stack>
 
         {/* Search and Filter Row */}
-        <Stack direction="row" spacing={2} sx={{ px: 2, pb: 2, alignItems: "center", justifyContent: "space-between" }}>
+        <Stack direction="row" spacing={2} sx={{ px: 2, pb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Box
               sx={{
-                backgroundColor: "grey.100",
+                backgroundColor: 'grey.100',
                 px: 1.5,
                 py: 1,
                 borderRadius: 1,
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center'
               }}
             >
               <Typography variant="body2" color="text.secondary">
@@ -593,17 +584,13 @@ export function PublishersTable() {
               onChange={(e) => setSearchTerm(e.target.value)}
               sx={{ minWidth: 200 }}
               InputProps={{
-                startAdornment: <Search size="16" style={{ marginRight: 8, color: "#666" }} />,
+                startAdornment: <Search size="16" style={{ marginRight: 8, color: '#666' }} />
               }}
             />
 
             <FormControl size="small" sx={{ minWidth: 140 }}>
               <InputLabel>Select Stats</InputLabel>
-              <Select 
-                value="" 
-                label="Select Stats" 
-                onChange={(e) => handleStatsChange(e.target.value)}
-              >
+              <Select value="" label="Select Stats" onChange={(e) => handleStatsChange(e.target.value)}>
                 <MenuItem value="">Default Stats</MenuItem>
                 <MenuItem value="all">All Stats</MenuItem>
                 {columnOptions.map((option) => (
@@ -650,11 +637,11 @@ export function PublishersTable() {
         </Stack>
 
         {/* Table */}
-        <Box sx={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <Box sx={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ backgroundColor: "#f5f5f5", borderBottom: "1px solid #e0e0e0" }}>
-                <th style={{ padding: "12px", textAlign: "left", width: "50px" }}>
+              <tr style={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
+                <th style={{ padding: '12px', textAlign: 'left', width: '50px' }}>
                   <Checkbox
                     checked={selectedRows.length === paginatedPublishers.length && paginatedPublishers.length > 0}
                     indeterminate={selectedRows.length > 0 && selectedRows.length < paginatedPublishers.length}
@@ -662,7 +649,7 @@ export function PublishersTable() {
                   />
                 </th>
                 {getVisibleColumns().map((column) => (
-                  <th key={column.id} style={{ padding: "12px", textAlign: "left", fontWeight: 600 }}>
+                  <th key={column.id} style={{ padding: '12px', textAlign: 'left', fontWeight: 600 }}>
                     {column.label}
                   </th>
                 ))}
@@ -670,28 +657,28 @@ export function PublishersTable() {
             </thead>
             <tbody>
               {paginatedPublishers.map((row) => (
-                <tr key={row.id} style={{ borderBottom: "1px solid #e0e0e0" }}>
-                  <td style={{ padding: "12px" }}>
+                <tr key={row.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                  <td style={{ padding: '12px' }}>
                     <Checkbox checked={isSelected(row.id)} onChange={() => handleSelectRow(row.id)} />
                   </td>
                   {getVisibleColumns().map((column) => (
-                    <td key={column.id} style={{ padding: "12px" }}>
+                    <td key={column.id} style={{ padding: '12px' }}>
                       {column.id === 'name' ? (
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                           {row[column.id]}
                         </Typography>
                       ) : column.id === 'status' ? (
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <Box
                             sx={{
                               width: 8,
                               height: 8,
-                              borderRadius: "50%",
-                              backgroundColor: row.status === "active" ? "success.main" : "error.main",
-                              mr: 1,
+                              borderRadius: '50%',
+                              backgroundColor: row.status === 'active' ? 'success.main' : 'error.main',
+                              mr: 1
                             }}
                           />
-                          <Typography variant="body2" sx={{ textTransform: "capitalize" }}>
+                          <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
                             {row.status}
                           </Typography>
                         </Box>
@@ -707,14 +694,14 @@ export function PublishersTable() {
         </Box>
 
         {/* Pagination */}
-        <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
           <Stack direction="row" spacing={1} alignItems="center">
             <Button
               variant="outlined"
               size="small"
               disabled={page === 0}
               onClick={() => setPage(page - 1)}
-              sx={{ minWidth: "32px", height: "32px" }}
+              sx={{ minWidth: '32px', height: '32px' }}
             >
               <ChevronLeft size={16} />
             </Button>
@@ -722,10 +709,10 @@ export function PublishersTable() {
             {[...Array(totalPages)].map((_, index) => (
               <Button
                 key={index}
-                variant={page === index ? "contained" : "text"}
+                variant={page === index ? 'contained' : 'text'}
                 size="small"
                 onClick={() => setPage(index)}
-                sx={{ minWidth: "32px", height: "32px" }}
+                sx={{ minWidth: '32px', height: '32px' }}
               >
                 {index + 1}
               </Button>
@@ -736,7 +723,7 @@ export function PublishersTable() {
               size="small"
               disabled={page >= totalPages - 1}
               onClick={() => setPage(page + 1)}
-              sx={{ minWidth: "32px", height: "32px" }}
+              sx={{ minWidth: '32px', height: '32px' }}
             >
               <ChevronRight size={16} />
             </Button>
@@ -744,5 +731,5 @@ export function PublishersTable() {
         </Box>
       </Box>
     </LocalizationProvider>
-  )
+  );
 }

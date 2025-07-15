@@ -21,27 +21,13 @@ import {
   Alert,
   CircularProgress,
   Divider,
-  Dialog,         // Add this
-  DialogTitle,    // Add this
-  DialogContent,  // Add this
-  DialogActions,  // Add this
+  Dialog, // Add this
+  DialogTitle, // Add this
+  DialogContent, // Add this
+  DialogActions, // Add this
   Link
 } from '@mui/material';
-import {
-  ArrowLeft,
-  Eye,
-  Download,
-  RotateCcw,
-  Link2,
-  Plus,
-  Save,
-  X,
-  Edit,
-  MapPin,
-  Trash2,
-  Search,
-  ExternalLink
-} from 'lucide-react';
+import { ArrowLeft, Eye, Download, RotateCcw, Link2, Plus, Save, X, Edit, MapPin, Trash2, Search, ExternalLink } from 'lucide-react';
 import { toast } from 'react-toastify'; // Add this import
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -56,7 +42,7 @@ const AddClient = () => {
   const [industry, setIndustry] = useState('');
   const [marginMode, setMarginMode] = useState('');
   const [markupType, setMarkupType] = useState('');
-  const [markdownType, setMarkdownType] = useState('')
+  const [markdownType, setMarkdownType] = useState('');
 
   // Settings section
   const [budget, setBudget] = useState('');
@@ -127,12 +113,26 @@ const AddClient = () => {
   const [newFeedMappings, setNewFeedMappings] = useState(() => {
     const defaultMappings = {};
     const fields = [
-      'Source', 'Jobs', 'Job', 'Company', 'Title', 'City', 'State',
-      'Country', 'Zip', 'Description', 'URL', 'Category',
-      'JobId/Ref Number', 'Published Date', 'Modified Date',
-      'JobType', 'CPC Bid', 'CPA Bid'
+      'Source',
+      'Jobs',
+      'Job',
+      'Company',
+      'Title',
+      'City',
+      'State',
+      'Country',
+      'Zip',
+      'Description',
+      'URL',
+      'Category',
+      'JobId/Ref Number',
+      'Published Date',
+      'Modified Date',
+      'JobType',
+      'CPC Bid',
+      'CPA Bid'
     ];
-    fields.forEach(field => {
+    fields.forEach((field) => {
       defaultMappings[field] = '';
     });
     return defaultMappings;
@@ -203,7 +203,7 @@ const AddClient = () => {
 
   // Ref for add feed input auto-focus
   const addFeedInputRef = useRef(null);
-  
+
   // Ref for custom frequency input auto-focus
   const customFrequencyInputRef = useRef(null);
 
@@ -255,7 +255,7 @@ const AddClient = () => {
     try {
       // Simulate API call to extract feed data
       // In real implementation, this would call your backend service
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Mock extracted data with realistic feed nodes
       const mockFeedData = {
@@ -264,11 +264,30 @@ const AddClient = () => {
         feedType: 'XML',
         encoding: 'UTF-8',
         nodes: [
-          'job_id', 'title', 'description', 'company', 'location',
-          'salary', 'job_type', 'posted_date', 'expiry_date', 'apply_url',
-          'category', 'requirements', 'benefits', 'experience_level',
-          'city', 'state', 'country', 'zip_code', 'source', 'modified_date',
-          'cpc_bid', 'cpa_bid', 'publisher', 'job_reference'
+          'job_id',
+          'title',
+          'description',
+          'company',
+          'location',
+          'salary',
+          'job_type',
+          'posted_date',
+          'expiry_date',
+          'apply_url',
+          'category',
+          'requirements',
+          'benefits',
+          'experience_level',
+          'city',
+          'state',
+          'country',
+          'zip_code',
+          'source',
+          'modified_date',
+          'cpc_bid',
+          'cpa_bid',
+          'publisher',
+          'job_reference'
         ]
       };
 
@@ -322,7 +341,6 @@ const AddClient = () => {
           }
         ]
       });
-
     } catch (error) {
       setFeedError('Failed to extract feed data. Please check the URL and try again.');
     } finally {
@@ -365,73 +383,73 @@ const AddClient = () => {
   };
 
   const handleMappingChange = (field, value) => {
-    setMappings(prev => ({
+    setMappings((prev) => ({
       ...prev,
       [field]: value
     }));
   };
 
-const handleSubmit = (event) => {
-  event.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
 
-  // Convert mappings (object) → feed_node_mapping (array)
-  const feed_node_mapping = Object.entries(mappings).reduce((acc, [internalField, clientNode]) => {
-    if (clientNode?.trim()) {
-      acc.push({
-        client_node: clientNode,
-        internal_field: internalField,
-        sample_value: "" // optionally fill or ignore if backend handles it
+    // Convert mappings (object) → feed_node_mapping (array)
+    const feed_node_mapping = Object.entries(mappings).reduce((acc, [internalField, clientNode]) => {
+      if (clientNode?.trim()) {
+        acc.push({
+          client_node: clientNode,
+          internal_field: internalField,
+          sample_value: '' // optionally fill or ignore if backend handles it
+        });
+      }
+      return acc;
+    }, []);
+
+    const payload = {
+      internal_name: clientName,
+      external_name: exportedName,
+      advertiser_name: advertiserName,
+      currency: currency,
+      budget: {
+        threshold: Number(budget)
+      },
+      start_date: startDate,
+      end_date: endDate,
+      timezone: timeZone,
+      feed_refresh_frequency: frequency,
+      bid_margin: {
+        markup: {
+          type: markupType === 'percentage' ? '%' : 'fixed',
+          value: Number(markup)
+        },
+        markdown: {
+          type: markdownType === '%' ? '%' : 'fixed', // or "$"
+          value: Number(markdown)
+        }
+      },
+      feed_source_url: feedUrl, // or defaultFeedUrl if that's the main one
+      feed_bid_type: clientType, // like "CPA"
+      industry: industry,
+      country: country,
+      show_dashboard: showDashboards === 'Yes',
+      feed_node_mapping: feed_node_mapping
+    };
+
+    axios
+      .post('https://seekhidden-backend.onrender.com/clients', payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((response) => {
+        console.log('Success:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error submitting data:', error?.response?.data || error.message);
       });
-    }
-    return acc;
-  }, []);
-
-  const payload = {
-    internal_name: clientName,
-    external_name: exportedName,
-    advertiser_name: advertiserName,
-    currency: currency,
-    budget: {
-      threshold: Number(budget),
-    },
-    start_date: startDate,
-    end_date: endDate,
-    timezone: timeZone,
-    feed_refresh_frequency: frequency,
-    bid_margin: {
-      markup: {
-        type: markupType === "percentage"?"%":"fixed",
-        value: Number(markup),
-      },
-      markdown: {
-        type: markdownType === "%" ? "%" : "fixed", // or "$"
-        value: Number(markdown),
-      },
-    },
-    feed_source_url: feedUrl, // or defaultFeedUrl if that's the main one
-    feed_bid_type: clientType, // like "CPA"
-    industry: industry,
-    country: country,
-    show_dashboard: showDashboards === "Yes",
-    feed_node_mapping: feed_node_mapping
   };
-
-  axios.post("https://seekhidden-backend.onrender.com/clients", payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then(response => {
-      console.log("Success:", response.data);
-    })
-    .catch(error => {
-      console.error("Error submitting data:", error?.response?.data || error.message);
-    });
-};
-
 
   // New functions for adding fields and mapping
   const handleAddField = () => {
@@ -442,7 +460,7 @@ const handleSubmit = (event) => {
   // New function to confirm adding field
   const handleConfirmAddField = () => {
     if (newFieldName.trim() && !mappings.hasOwnProperty(newFieldName.trim())) {
-      setMappings(prev => ({
+      setMappings((prev) => ({
         ...prev,
         [newFieldName.trim()]: ''
       }));
@@ -472,7 +490,7 @@ const handleSubmit = (event) => {
 
       // Create new mappings with updated field name
       const newMappings = {};
-      Object.keys(mappings).forEach(key => {
+      Object.keys(mappings).forEach((key) => {
         if (key === editingField) {
           newMappings[editingFieldName.trim()] = mappings[key];
         } else {
@@ -521,8 +539,7 @@ const handleSubmit = (event) => {
       }
 
       // Check if URL already exists in feeds array or main feedUrl
-      const urlExists = feeds.some(feed => feed.url === headerFeedUrl.trim()) ||
-        feedUrl.trim() === headerFeedUrl.trim();
+      const urlExists = feeds.some((feed) => feed.url === headerFeedUrl.trim()) || feedUrl.trim() === headerFeedUrl.trim();
 
       if (urlExists) {
         toast.error('This feed URL already exists');
@@ -533,7 +550,7 @@ const handleSubmit = (event) => {
 
       try {
         // Simulate API call to extract feed data
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Mock extracted data for new feed
         const mockNewFeedData = {
@@ -544,20 +561,39 @@ const handleSubmit = (event) => {
           feedType: 'XML',
           encoding: 'UTF-8',
           nodes: [
-            'job_id', 'title', 'description', 'company', 'location',
-            'salary', 'job_type', 'posted_date', 'expiry_date', 'apply_url',
-            'category', 'requirements', 'benefits', 'experience_level',
-            'city', 'state', 'country', 'zip_code', 'source', 'modified_date',
-            'cpc_bid', 'cpa_bid', 'publisher', 'job_reference', 'contact_email'
+            'job_id',
+            'title',
+            'description',
+            'company',
+            'location',
+            'salary',
+            'job_type',
+            'posted_date',
+            'expiry_date',
+            'apply_url',
+            'category',
+            'requirements',
+            'benefits',
+            'experience_level',
+            'city',
+            'state',
+            'country',
+            'zip_code',
+            'source',
+            'modified_date',
+            'cpc_bid',
+            'cpa_bid',
+            'publisher',
+            'job_reference',
+            'contact_email'
           ],
           mappings: createDefaultMappings()
         };
 
         // Add to feeds array
-        setFeeds(prev => [...prev, mockNewFeedData]);
+        setFeeds((prev) => [...prev, mockNewFeedData]);
         setHeaderFeedUrl(''); // Clear the input
         toast.success(`New feed added successfully! Found ${mockNewFeedData.totalJobs} jobs`);
-
       } catch (error) {
         toast.error('Failed to extract feed data. Please check the URL and try again.');
       }
@@ -566,68 +602,70 @@ const handleSubmit = (event) => {
 
   // Function to remove a feed
   const handleRemoveFeed = (feedId) => {
-    setFeeds(prev => prev.filter(feed => feed.id !== feedId));
+    setFeeds((prev) => prev.filter((feed) => feed.id !== feedId));
   };
 
   // Function to handle mapping changes for additional feeds
   const handleAdditionalFeedMappingChange = (feedId, field, value) => {
-    setFeeds(prev => prev.map(feed =>
-      feed.id === feedId
-        ? {
-          ...feed,
-          mappings: {
-            ...feed.mappings,
-            [field]: value
-          }
-        }
-        : feed
-    ));
+    setFeeds((prev) =>
+      prev.map((feed) =>
+        feed.id === feedId
+          ? {
+              ...feed,
+              mappings: {
+                ...feed.mappings,
+                [field]: value
+              }
+            }
+          : feed
+      )
+    );
   };
 
   // Function to add field to specific feed
   const handleAddFieldToFeed = (feedId, fieldName) => {
-    setFeeds(prev => prev.map(feed =>
-      feed.id === feedId
-        ? {
-          ...feed,
-          mappings: {
-            ...feed.mappings,
-            [fieldName]: ''
-          }
-        }
-        : feed
-    ));
+    setFeeds((prev) =>
+      prev.map((feed) =>
+        feed.id === feedId
+          ? {
+              ...feed,
+              mappings: {
+                ...feed.mappings,
+                [fieldName]: ''
+              }
+            }
+          : feed
+      )
+    );
   };
 
   const navigate = useNavigate();
 
   // --- add to your useState declarations ---
-  const [editingFeedId, setEditingFeedId] = useState(null)
-  const [editingFeedUrl, setEditingFeedUrl] = useState('')
+  const [editingFeedId, setEditingFeedId] = useState(null);
+  const [editingFeedUrl, setEditingFeedUrl] = useState('');
 
   // when “Edit Feed” is clicked
   const handleEditFeed = (feedId) => {
-    const toEdit = feeds.find(f => f.id === feedId)
-    if (!toEdit) return
+    const toEdit = feeds.find((f) => f.id === feedId);
+    if (!toEdit) return;
 
-    setEditingFeedId(feedId)
-    setEditingFeedUrl(toEdit.url)
-  }
+    setEditingFeedId(feedId);
+    setEditingFeedUrl(toEdit.url);
+  };
 
   // when “Save” is clicked
   const handleSaveFeedUrl = (feedId) => {
     // Check if URL already exists in other feeds or main feedUrl (excluding current feed being edited)
-    const urlExists = feeds.some(feed => feed.id !== feedId && feed.url === editingFeedUrl.trim()) ||
-      feedUrl.trim() === editingFeedUrl.trim();
+    const urlExists =
+      feeds.some((feed) => feed.id !== feedId && feed.url === editingFeedUrl.trim()) || feedUrl.trim() === editingFeedUrl.trim();
 
     if (urlExists) {
       toast.error('This feed URL already exists');
       return;
     }
 
-    setFeeds(feeds.map(f =>
-      f.id === feedId ? { ...f, url: editingFeedUrl } : f
-    ));
+    setFeeds(feeds.map((f) => (f.id === feedId ? { ...f, url: editingFeedUrl } : f)));
     setEditingFeedId(null);
     setEditingFeedUrl('');
     toast.success('Feed URL updated successfully');
@@ -635,17 +673,17 @@ const handleSubmit = (event) => {
 
   // Show the Feed Details modal for an existing feed
   const handleViewFeedNodes = (feedId) => {
-    const selected = feeds.find(f => f.id === feedId)
-    if (!selected) return
+    const selected = feeds.find((f) => f.id === feedId);
+    if (!selected) return;
 
     setFeedData({
-      url: selected.url,        // ← add this
+      url: selected.url, // ← add this
       totalJobs: selected.totalJobs,
       nodes: selected.nodes,
       lastUpdated: selected.lastUpdated,
       feedType: selected.feedType,
       encoding: selected.encoding
-    })
+    });
 
     // Create mock job data for the selected feed
     const mockJobsData = [
@@ -714,13 +752,13 @@ const handleSubmit = (event) => {
       }
     ];
 
-    setFeedDetails({ jobs: mockJobsData })
-    setShowFeedModal(true)
-  }
+    setFeedDetails({ jobs: mockJobsData });
+    setShowFeedModal(true);
+  };
 
   // Handle Inspect Feed modal
   const handleInspectFeed = (feedId) => {
-    const selected = feeds.find(f => f.id === feedId);
+    const selected = feeds.find((f) => f.id === feedId);
     if (!selected) return;
 
     // Set the selected feed data for inspection
@@ -742,7 +780,7 @@ const handleSubmit = (event) => {
 
   // replace your existing handleMapFeed
   const handleMapFeed = (feedId) => {
-    const selected = feeds.find(f => f.id === feedId);
+    const selected = feeds.find((f) => f.id === feedId);
     if (!selected) return;
 
     if (toggleMapSection) {
@@ -754,14 +792,12 @@ const handleSubmit = (event) => {
 
       // initialize the mapping selects with whatever the feed already has (or blanks)
       setMappings({ ...selected.mappings });
-
     } else {
       setMappingFeedId(null);
       setAvailableNodes([]);
       setMappings(createDefaultMappings());
-
     }
-    setToggleMapSection(!toggleMapSection)
+    setToggleMapSection(!toggleMapSection);
   };
 
   // Function to handle default feed URL input change
@@ -775,7 +811,7 @@ const handleSubmit = (event) => {
 
       try {
         // Simulate API call to extract feed data
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
         // Mock extracted data for default feed
         const mockDefaultFeedData = {
@@ -784,11 +820,31 @@ const handleSubmit = (event) => {
           feedType: 'XML',
           encoding: 'UTF-8',
           nodes: [
-            'job_id', 'title', 'description', 'company', 'location',
-            'salary', 'job_type', 'posted_date', 'expiry_date', 'apply_url',
-            'category', 'requirements', 'benefits', 'experience_level',
-            'city', 'state', 'country', 'zip_code', 'source', 'modified_date',
-            'cpc_bid', 'cpa_bid', 'publisher', 'job_reference', 'contact_email'
+            'job_id',
+            'title',
+            'description',
+            'company',
+            'location',
+            'salary',
+            'job_type',
+            'posted_date',
+            'expiry_date',
+            'apply_url',
+            'category',
+            'requirements',
+            'benefits',
+            'experience_level',
+            'city',
+            'state',
+            'country',
+            'zip_code',
+            'source',
+            'modified_date',
+            'cpc_bid',
+            'cpa_bid',
+            'publisher',
+            'job_reference',
+            'contact_email'
           ]
         };
 
@@ -823,8 +879,7 @@ const handleSubmit = (event) => {
       }
 
       // Check if URL already exists in feeds array or main feedUrl
-      const urlExists = feeds.some(feed => feed.url === addFeedUrl.trim()) ||
-        feedUrl.trim() === addFeedUrl.trim();
+      const urlExists = feeds.some((feed) => feed.url === addFeedUrl.trim()) || feedUrl.trim() === addFeedUrl.trim();
 
       if (urlExists) {
         toast.error('This feed URL already exists');
@@ -835,7 +890,7 @@ const handleSubmit = (event) => {
       toast.info('Loading feed data...');
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const mockNewFeedData = {
           id: Date.now(),
@@ -845,17 +900,36 @@ const handleSubmit = (event) => {
           feedType: 'XML',
           encoding: 'UTF-8',
           nodes: [
-            'job_id', 'title', 'description', 'company', 'location',
-            'salary', 'job_type', 'posted_date', 'expiry_date', 'apply_url',
-            'category', 'requirements', 'benefits', 'experience_level',
-            'city', 'state', 'country', 'zip_code', 'source', 'modified_date',
-            'cpc_bid', 'cpa_bid', 'publisher', 'job_reference'
+            'job_id',
+            'title',
+            'description',
+            'company',
+            'location',
+            'salary',
+            'job_type',
+            'posted_date',
+            'expiry_date',
+            'apply_url',
+            'category',
+            'requirements',
+            'benefits',
+            'experience_level',
+            'city',
+            'state',
+            'country',
+            'zip_code',
+            'source',
+            'modified_date',
+            'cpc_bid',
+            'cpa_bid',
+            'publisher',
+            'job_reference'
           ],
           mappings: { ...newFeedMappings }
         };
 
         // Automatically add the feed to the feeds list
-        setFeeds(prev => [...prev, mockNewFeedData]);
+        setFeeds((prev) => [...prev, mockNewFeedData]);
 
         // Reset the add feed section
         setShowAddFeedSection(false);
@@ -864,7 +938,6 @@ const handleSubmit = (event) => {
         setNewFeedMappings(createDefaultMappings());
 
         toast.success(`Feed added successfully! Found ${mockNewFeedData.totalJobs} jobs`);
-
       } catch (error) {
         toast.error('Failed to extract feed data. Please check the URL and try again.');
       } finally {
@@ -882,7 +955,7 @@ const handleSubmit = (event) => {
 
   // New feed mapping handler
   const handleNewFeedMappingChange = (field, value) => {
-    setNewFeedMappings(prev => ({ ...prev, [field]: value }));
+    setNewFeedMappings((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -893,14 +966,14 @@ const handleSubmit = (event) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 3,
+          mb: 3
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           onClick={handleBack}
         >
@@ -909,8 +982,6 @@ const handleSubmit = (event) => {
             Add/Update Client
           </Typography>
         </Box>
-
-
       </Box>
 
       <div style={{ marginBottom: '20px' }}>
@@ -924,7 +995,10 @@ const handleSubmit = (event) => {
               size="small"
               sx={{ flexGrow: 1 }}
               value={headerFeedUrl}
-              onChange={(e) => {setHeaderFeedUrl(e.target.value); console.log(headerFeedUrl)}}
+              onChange={(e) => {
+                setHeaderFeedUrl(e.target.value);
+                console.log(headerFeedUrl);
+              }}
               onKeyPress={handleHeaderFeedUrlKeyPress}
               placeholder="Enter feed URL and press Enter"
             />
@@ -939,7 +1013,6 @@ const handleSubmit = (event) => {
                   border: '1px solid #ddd',
                   height: '36px',
                   width: '100px'
-
                 }}
                 onClick={() => handleHeaderFeedUrlKeyPress({ key: 'Enter' })}
                 disabled={isLoadingFeed || !headerFeedUrl.trim()}
@@ -1162,8 +1235,7 @@ const handleSubmit = (event) => {
                     </Grid>
                     <Grid item xs={3}>
                       <Typography variant="body2" color="textSecondary">
-                        Last Updated:{' '}
-                        <strong>{new Date(feed.lastUpdated).toLocaleDateString()}</strong>
+                        Last Updated: <strong>{new Date(feed.lastUpdated).toLocaleDateString()}</strong>
                       </Typography>
                     </Grid>
                     <Grid item xs={3}>
@@ -1225,34 +1297,25 @@ const handleSubmit = (event) => {
                                   <IconButton
                                     size="small"
                                     onClick={handleConfirmEditField}
-                                    disabled={!editingFieldName.trim() || (editingFieldName.trim() !== editingField && mappings.hasOwnProperty(editingFieldName.trim()))}
+                                    disabled={
+                                      !editingFieldName.trim() ||
+                                      (editingFieldName.trim() !== editingField && mappings.hasOwnProperty(editingFieldName.trim()))
+                                    }
                                     sx={{ color: 'green' }}
                                   >
                                     ✓
                                   </IconButton>
-                                  <IconButton
-                                    size="small"
-                                    onClick={handleCancelEditField}
-                                    sx={{ color: 'red' }}
-                                  >
+                                  <IconButton size="small" onClick={handleCancelEditField} sx={{ color: 'red' }}>
                                     ✕
                                   </IconButton>
                                 </>
                               ) : (
                                 !isDefaultField && (
                                   <>
-                                    <IconButton
-                                      size="small"
-                                      onClick={() => handleEditField(field)}
-                                      sx={{ color: '#666' }}
-                                    >
+                                    <IconButton size="small" onClick={() => handleEditField(field)} sx={{ color: '#666' }}>
                                       ✏️
                                     </IconButton>
-                                    <IconButton
-                                      size="small"
-                                      onClick={() => handleDeleteField(field)}
-                                      sx={{ color: 'red' }}
-                                    >
+                                    <IconButton size="small" onClick={() => handleDeleteField(field)} sx={{ color: 'red' }}>
                                       🗑️
                                     </IconButton>
                                   </>
@@ -1290,11 +1353,7 @@ const handleSubmit = (event) => {
                             >
                               ✓
                             </IconButton>
-                            <IconButton
-                              size="small"
-                              onClick={handleCancelAddField}
-                              sx={{ color: 'red' }}
-                            >
+                            <IconButton size="small" onClick={handleCancelAddField} sx={{ color: 'red' }}>
                               ✕
                             </IconButton>
                           </Box>
@@ -1311,27 +1370,20 @@ const handleSubmit = (event) => {
                       {Object.keys(mappings).map((field) => (
                         <FormControl key={field} fullWidth size="small">
                           <InputLabel>Select Node</InputLabel>
-                          <Select
-                            value={mappings[field]}
-                            label="Select Node"
-                            onChange={(e) => handleMappingChange(field, e.target.value)}
-                          >
+                          <Select value={mappings[field]} label="Select Node" onChange={(e) => handleMappingChange(field, e.target.value)}>
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
                             {availableNodes.map((node) => {
-                              const takenByOther = Object.entries(mappings)
-                                .some(([otherField, val]) => val === node && otherField !== field);
+                              const takenByOther = Object.entries(mappings).some(
+                                ([otherField, val]) => val === node && otherField !== field
+                              );
 
                               return (
-                                <MenuItem
-                                  key={node}
-                                  value={node}
-                                  disabled={takenByOther}
-                                >
+                                <MenuItem key={node} value={node} disabled={takenByOther}>
                                   {node}
                                 </MenuItem>
-                              )
+                              );
                             })}
                           </Select>
                         </FormControl>
@@ -1340,11 +1392,7 @@ const handleSubmit = (event) => {
                       {isAddingField && (
                         <FormControl fullWidth size="small" disabled>
                           <InputLabel>Select Node</InputLabel>
-                          <Select
-                            value=""
-                            label="Select Node"
-                            sx={{ backgroundColor: '#f5f5f5' }}
-                          >
+                          <Select value="" label="Select Node" sx={{ backgroundColor: '#f5f5f5' }}>
                             <MenuItem value="">
                               <em>Add field first</em>
                             </MenuItem>
@@ -1399,23 +1447,19 @@ const handleSubmit = (event) => {
                     <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
                       Unmapped Feed Nodes
                     </Typography>
-                    <Box sx={{
-                      backgroundColor: '#f9f9f9',
-                      p: 2,
-                      borderRadius: 1,
-                      maxHeight: 300,
-                      overflowY: 'auto'
-                    }}>
+                    <Box
+                      sx={{
+                        backgroundColor: '#f9f9f9',
+                        p: 2,
+                        borderRadius: 1,
+                        maxHeight: 300,
+                        overflowY: 'auto'
+                      }}
+                    >
                       {availableNodes
-                        .filter(node => !Object.values(mappings).includes(node))
+                        .filter((node) => !Object.values(mappings).includes(node))
                         .map((node) => (
-                          <Chip
-                            key={node}
-                            label={node}
-                            size="small"
-                            sx={{ m: 0.5 }}
-                            variant="outlined"
-                          />
+                          <Chip key={node} label={node} size="small" sx={{ m: 0.5 }} variant="outlined" />
                         ))}
                     </Box>
                   </Grid>
@@ -1454,11 +1498,9 @@ const handleSubmit = (event) => {
                   border: '1px solid #ddd',
                   height: '36px',
                   width: '100px'
-
                 }}
                 onClick={() => handleAddFeedFromSection({ key: 'Enter' })}
                 disabled={isLoadingAddFeed}
-
               >
                 Submit
               </IconButton>
@@ -1558,7 +1600,7 @@ const handleSubmit = (event) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              zIndex: 1300,
+              zIndex: 1300
             }}
             onClick={() => setShowFeedModal(false)}
           >
@@ -1568,7 +1610,7 @@ const handleSubmit = (event) => {
                 maxWidth: 800,
                 maxHeight: '90%',
                 overflow: 'hidden',
-                borderRadius: 2,
+                borderRadius: 2
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1579,7 +1621,7 @@ const handleSubmit = (event) => {
 
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <Link
-                    href={"/clients/add-client/feed-details"}
+                    href={'/clients/add-client/feed-details'}
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
@@ -1589,8 +1631,8 @@ const handleSubmit = (event) => {
                       textDecoration: 'none',
                       color: '#1976d2',
                       '&:hover': {
-                        textDecoration: 'underline',
-                      },
+                        textDecoration: 'underline'
+                      }
                     }}
                   >
                     <ExternalLink size={18} />
@@ -1600,7 +1642,6 @@ const handleSubmit = (event) => {
                     <Box sx={{ fontSize: 18, color: '#999' }}>×</Box>
                   </IconButton>
                 </Box>
-
               </Box>
 
               <Box sx={{ p: 3 }}>
@@ -1661,9 +1702,7 @@ const handleSubmit = (event) => {
                                     {fieldIndex === 0 ? job.id : ''}
                                   </TableCell>
                                   <TableCell>{field}</TableCell>
-                                  <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>
-                                    {value}
-                                  </TableCell>
+                                  <TableCell sx={{ maxWidth: 300, wordBreak: 'break-word' }}>{value}</TableCell>
                                 </TableRow>
                               ))
                             )
@@ -1689,19 +1728,22 @@ const handleSubmit = (event) => {
                       <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                         Raw XML Feed
                       </Typography>
-                      <Box sx={{
-                        backgroundColor: '#f8f9fa',
-                        p: 2,
-                        borderRadius: 1,
-                        maxHeight: 500,
-                        overflowY: 'auto',
-                        border: '1px solid #e0e0e0',
-                        fontFamily: 'monospace',
-                        fontSize: '0.875rem',
-                        lineHeight: 1.6
-                      }}>
+                      <Box
+                        sx={{
+                          backgroundColor: '#f8f9fa',
+                          p: 2,
+                          borderRadius: 1,
+                          maxHeight: 500,
+                          overflowY: 'auto',
+                          border: '1px solid #e0e0e0',
+                          fontFamily: 'monospace',
+                          fontSize: '0.875rem',
+                          lineHeight: 1.6
+                        }}
+                      >
                         <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                          {feedDetails?.rawXml || `<?xml version="1.0" encoding="UTF-8"?>
+                          {feedDetails?.rawXml ||
+                            `<?xml version="1.0" encoding="UTF-8"?>
 <source>
   <publisher>Example Job Board</publisher>
   <publisherurl>https://example.com</publisherurl>
@@ -1764,7 +1806,7 @@ const handleSubmit = (event) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              zIndex: 1300,
+              zIndex: 1300
             }}
             onClick={() => setShowInspectFeedModal(false)}
           >
@@ -1774,7 +1816,7 @@ const handleSubmit = (event) => {
                 maxWidth: 1200,
                 maxHeight: '95%',
                 overflow: 'hidden',
-                borderRadius: 2,
+                borderRadius: 2
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1785,7 +1827,7 @@ const handleSubmit = (event) => {
 
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <Link
-                    href={"/clients/add-client/inspect-feed"}
+                    href={'/clients/add-client/inspect-feed'}
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
@@ -1795,8 +1837,8 @@ const handleSubmit = (event) => {
                       textDecoration: 'none',
                       color: '#1976d2',
                       '&:hover': {
-                        textDecoration: 'underline',
-                      },
+                        textDecoration: 'underline'
+                      }
                     }}
                   >
                     <ExternalLink size={18} />
@@ -1847,17 +1889,19 @@ const handleSubmit = (event) => {
                   </Typography>
                   <Grid container spacing={3}>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{
-                        p: 3,
-                        textAlign: 'center',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: 2,
-                        '&:hover': {
-                          backgroundColor: '#e9ecef',
-                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                        }
-                      }}>
+                      <Paper
+                        sx={{
+                          p: 3,
+                          textAlign: 'center',
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #e9ecef',
+                          borderRadius: 2,
+                          '&:hover': {
+                            backgroundColor: '#e9ecef',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                          }
+                        }}
+                      >
                         <Typography variant="h3" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1 }}>
                           {feedData.totalJobs?.toLocaleString() || 0}
                         </Typography>
@@ -1867,17 +1911,19 @@ const handleSubmit = (event) => {
                       </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{
-                        p: 3,
-                        textAlign: 'center',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: 2,
-                        '&:hover': {
-                          backgroundColor: '#e9ecef',
-                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                        }
-                      }}>
+                      <Paper
+                        sx={{
+                          p: 3,
+                          textAlign: 'center',
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #e9ecef',
+                          borderRadius: 2,
+                          '&:hover': {
+                            backgroundColor: '#e9ecef',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                          }
+                        }}
+                      >
                         <Typography variant="h3" sx={{ fontWeight: 700, color: '#1976d2', mb: 1 }}>
                           {feedData.nodes?.length || 0}
                         </Typography>
@@ -1887,17 +1933,19 @@ const handleSubmit = (event) => {
                       </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{
-                        p: 3,
-                        textAlign: 'center',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: 2,
-                        '&:hover': {
-                          backgroundColor: '#e9ecef',
-                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                        }
-                      }}>
+                      <Paper
+                        sx={{
+                          p: 3,
+                          textAlign: 'center',
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #e9ecef',
+                          borderRadius: 2,
+                          '&:hover': {
+                            backgroundColor: '#e9ecef',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                          }
+                        }}
+                      >
                         <Typography variant="h3" sx={{ fontWeight: 700, color: '#ed6c02', mb: 1 }}>
                           {Math.floor(feedData.nodes?.length * 0.7) || 0}
                         </Typography>
@@ -1907,17 +1955,19 @@ const handleSubmit = (event) => {
                       </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                      <Paper sx={{
-                        p: 3,
-                        textAlign: 'center',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: 2,
-                        '&:hover': {
-                          backgroundColor: '#e9ecef',
-                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                        }
-                      }}>
+                      <Paper
+                        sx={{
+                          p: 3,
+                          textAlign: 'center',
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #e9ecef',
+                          borderRadius: 2,
+                          '&:hover': {
+                            backgroundColor: '#e9ecef',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                          }
+                        }}
+                      >
                         <Typography variant="h3" sx={{ fontWeight: 700, color: '#d32f2f', mb: 1 }}>
                           {Math.floor(feedData.nodes?.length * 0.3) || 0}
                         </Typography>
@@ -1934,14 +1984,17 @@ const handleSubmit = (event) => {
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Node Analysis
                   </Typography>
-                  <TableContainer component={Paper} sx={{
-                    maxHeight: 500,
-                    borderRadius: 2,
-                    border: '1px solid #e0e0e0',
-                    '& .MuiTableHead-root': {
-                      backgroundColor: '#f5f5f5'
-                    }
-                  }}>
+                  <TableContainer
+                    component={Paper}
+                    sx={{
+                      maxHeight: 500,
+                      borderRadius: 2,
+                      border: '1px solid #e0e0e0',
+                      '& .MuiTableHead-root': {
+                        backgroundColor: '#f5f5f5'
+                      }
+                    }}
+                  >
                     <Table>
                       <TableHead>
                         <TableRow>
@@ -1957,10 +2010,24 @@ const handleSubmit = (event) => {
                         {feedData.nodes?.map((node, index) => {
                           const isActive = Math.random() > 0.3;
                           const sampleValues = [
-                            'Software Engineer', 'Marketing Manager', 'Data Analyst', 'Product Designer',
-                            'Sales Representative', 'Full Time', 'Part Time', 'Contract', 'Remote',
-                            'New York, NY', 'San Francisco, CA', 'Austin, TX', 'Singapore', 'London, UK',
-                            '2024-12-15', '$75,000 - $95,000', 'https://apply.company.com', 'Technology'
+                            'Software Engineer',
+                            'Marketing Manager',
+                            'Data Analyst',
+                            'Product Designer',
+                            'Sales Representative',
+                            'Full Time',
+                            'Part Time',
+                            'Contract',
+                            'Remote',
+                            'New York, NY',
+                            'San Francisco, CA',
+                            'Austin, TX',
+                            'Singapore',
+                            'London, UK',
+                            '2024-12-15',
+                            '$75,000 - $95,000',
+                            'https://apply.company.com',
+                            'Technology'
                           ];
                           const dataTypes = ['String', 'Number', 'Date', 'URL', 'Text', 'Currency'];
                           const recordCount = Math.floor(Math.random() * 1000) + 100;
@@ -1996,9 +2063,7 @@ const handleSubmit = (event) => {
                                 </Typography>
                               </TableCell>
                               <TableCell sx={{ fontWeight: 500, py: 2 }}>
-                                <Typography variant="body2">
-                                  {recordCount.toLocaleString()}
-                                </Typography>
+                                <Typography variant="body2">{recordCount.toLocaleString()}</Typography>
                               </TableCell>
                               <TableCell sx={{ py: 2 }}>
                                 <Chip
@@ -2070,31 +2135,13 @@ const handleSubmit = (event) => {
                         />
                       </Grid>
                       <Grid item xs={12} md={3}>
-                        <TextField
-                          fullWidth
-                          label="Feed Type"
-                          value={feedData.feedType || "XML"}
-                          disabled
-                          size="small"
-                        />
+                        <TextField fullWidth label="Feed Type" value={feedData.feedType || 'XML'} disabled size="small" />
                       </Grid>
                       <Grid item xs={12} md={3}>
-                        <TextField
-                          fullWidth
-                          label="Encoding"
-                          value={feedData.encoding || "UTF-8"}
-                          disabled
-                          size="small"
-                        />
+                        <TextField fullWidth label="Encoding" value={feedData.encoding || 'UTF-8'} disabled size="small" />
                       </Grid>
                       <Grid item xs={12} md={3}>
-                        <TextField
-                          fullWidth
-                          label="File Size"
-                          value="2.4 MB"
-                          disabled
-                          size="small"
-                        />
+                        <TextField fullWidth label="File Size" value="2.4 MB" disabled size="small" />
                       </Grid>
                       <Grid item xs={12} md={3}>
                         <TextField
@@ -2114,23 +2161,27 @@ const handleSubmit = (event) => {
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Processing Log
                   </Typography>
-                  <Paper sx={{
-                    p: 3,
-                    borderRadius: 2,
-                    border: '1px solid #e0e0e0',
-                    backgroundColor: '#fafafa'
-                  }}>
-                    <Box sx={{
-                      backgroundColor: '#fff',
-                      p: 2,
-                      borderRadius: 1,
-                      maxHeight: 250,
-                      overflowY: 'auto',
-                      fontFamily: 'monospace',
-                      fontSize: '0.875rem',
-                      lineHeight: 1.6,
-                      border: '1px solid #e0e0e0'
-                    }}>
+                  <Paper
+                    sx={{
+                      p: 3,
+                      borderRadius: 2,
+                      border: '1px solid #e0e0e0',
+                      backgroundColor: '#fafafa'
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        backgroundColor: '#fff',
+                        p: 2,
+                        borderRadius: 1,
+                        maxHeight: 250,
+                        overflowY: 'auto',
+                        fontFamily: 'monospace',
+                        fontSize: '0.875rem',
+                        lineHeight: 1.6,
+                        border: '1px solid #e0e0e0'
+                      }}
+                    >
                       <Typography variant="body2" sx={{ color: '#28a745', mb: 0.5, fontWeight: 500 }}>
                         ✓ Feed URL validated successfully
                       </Typography>
@@ -2504,7 +2555,7 @@ const handleSubmit = (event) => {
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
@@ -2513,13 +2564,7 @@ const handleSubmit = (event) => {
 
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Client Name"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                size="small"
-              />
+              <TextField fullWidth label="Client Name" value={clientName} onChange={(e) => setClientName(e.target.value)} size="small" />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
@@ -2542,11 +2587,7 @@ const handleSubmit = (event) => {
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Currency</InputLabel>
-                <Select
-                  value={currency}
-                  label="Currency"
-                  onChange={(e) => setCurrency(e.target.value)}
-                >
+                <Select value={currency} label="Currency" onChange={(e) => setCurrency(e.target.value)}>
                   <MenuItem value="USD">USD</MenuItem>
                   <MenuItem value="EUR">EUR</MenuItem>
                   <MenuItem value="GBP">GBP</MenuItem>
@@ -2557,11 +2598,7 @@ const handleSubmit = (event) => {
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Country</InputLabel>
-                <Select
-                  value={country}
-                  label="Country"
-                  onChange={(e) => setCountry(e.target.value)}
-                >
+                <Select value={country} label="Country" onChange={(e) => setCountry(e.target.value)}>
                   <MenuItem value="US">United States</MenuItem>
                   <MenuItem value="UK">United Kingdom</MenuItem>
                   <MenuItem value="SG">Singapore</MenuItem>
@@ -2572,11 +2609,7 @@ const handleSubmit = (event) => {
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Industry</InputLabel>
-                <Select
-                  value={industry}
-                  label="Industry"
-                  onChange={(e) => setIndustry(e.target.value)}
-                >
+                <Select value={industry} label="Industry" onChange={(e) => setIndustry(e.target.value)}>
                   <MenuItem value="Technology">Technology</MenuItem>
                   <MenuItem value="Healthcare">Healthcare</MenuItem>
                   <MenuItem value="Finance">Finance</MenuItem>
@@ -2594,7 +2627,7 @@ const handleSubmit = (event) => {
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
@@ -2603,24 +2636,10 @@ const handleSubmit = (event) => {
 
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Budget"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                size="small"
-                type="number"
-              />
+              <TextField fullWidth label="Budget" value={budget} onChange={(e) => setBudget(e.target.value)} size="small" type="number" />
             </Grid>
             <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <TextField
-                fullWidth
-                label="Markup"
-                value={markup}
-                onChange={(e) => setMarkup(e.target.value)}
-                size="small"
-                type="number"
-              />
+              <TextField fullWidth label="Markup" value={markup} onChange={(e) => setMarkup(e.target.value)} size="small" type="number" />
 
               <Select
                 size="small"
@@ -2641,8 +2660,12 @@ const handleSubmit = (event) => {
                 }}
                 placeholder="Mode"
               >
-                <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }} selected >%</MenuItem>
-                <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
+                <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }} selected>
+                  %
+                </MenuItem>
+                <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>
+                  $
+                </MenuItem>
               </Select>
             </Grid>
             <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -2674,8 +2697,12 @@ const handleSubmit = (event) => {
                 }}
                 placeholder="Mode"
               >
-                <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }} selected >%</MenuItem>
-                <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>$</MenuItem>
+                <MenuItem value="percentage" sx={{ fontSize: '0.75rem' }} selected>
+                  %
+                </MenuItem>
+                <MenuItem value="value" sx={{ fontSize: '0.75rem' }}>
+                  $
+                </MenuItem>
               </Select>
             </Grid>
             {frequency === 'custom' ? (
@@ -2696,11 +2723,7 @@ const handleSubmit = (event) => {
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Frequency</InputLabel>
-                  <Select
-                    value={frequency}
-                    label="Frequency"
-                    onChange={(e) => setFrequency(e.target.value)}
-                  >
+                  <Select value={frequency} label="Frequency" onChange={(e) => setFrequency(e.target.value)}>
                     <MenuItem value="one">1</MenuItem>
                     <MenuItem value="two">2</MenuItem>
                     <MenuItem value="three">3</MenuItem>
@@ -2715,11 +2738,7 @@ const handleSubmit = (event) => {
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Time Zone</InputLabel>
-                <Select
-                  value={timeZone}
-                  label="Time Zone"
-                  onChange={(e) => setTimeZone(e.target.value)}
-                >
+                <Select value={timeZone} label="Time Zone" onChange={(e) => setTimeZone(e.target.value)}>
                   <MenuItem value="UTC">UTC</MenuItem>
                   <MenuItem value="EST">EST</MenuItem>
                   <MenuItem value="PST">PST</MenuItem>
@@ -2730,11 +2749,7 @@ const handleSubmit = (event) => {
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Client Type</InputLabel>
-                <Select
-                  value={clientType}
-                  label="Client Type"
-                  onChange={(e) => setClientType(e.target.value)}
-                >
+                <Select value={clientType} label="Client Type" onChange={(e) => setClientType(e.target.value)}>
                   <MenuItem value="CPA">CPA</MenuItem>
                   <MenuItem value="CPC">CPC</MenuItem>
                 </Select>
@@ -2743,11 +2758,7 @@ const handleSubmit = (event) => {
             <Grid item xs={12} md={6}>
               <FormControl fullWidth size="small">
                 <InputLabel>Show Dashboards</InputLabel>
-                <Select
-                  value={showDashboards}
-                  label="Show Dashboards"
-                  onChange={(e) => setShowDashboards(e.target.value)}
-                >
+                <Select value={showDashboards} label="Show Dashboards" onChange={(e) => setShowDashboards(e.target.value)}>
                   <MenuItem value="Yes">Yes</MenuItem>
                   <MenuItem value="No">No</MenuItem>
                 </Select>

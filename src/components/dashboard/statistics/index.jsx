@@ -6,12 +6,7 @@ import HoverSocialCard from 'components/cards/statistics/HoverSocialCard';
 import { GRID_COMMON_SPACING, ThemeMode } from 'config';
 
 // assets
-import {
-  Apple,
-  Dribbble,
-  Facebook,
-  Youtube
-} from 'iconsax-react';
+import { Apple, Dribbble, Facebook, Youtube } from 'iconsax-react';
 
 // ===========================|| WIDGET - STATISTICS ||=========================== //
 
@@ -21,7 +16,7 @@ export default function Statistics() {
   return (
     <Grid container spacing={GRID_COMMON_SPACING}>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
-        <HoverSocialCard primary="Jobs" secondary="1165 +"/>
+        <HoverSocialCard primary="Jobs" secondary="1165 +" />
       </Grid>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
         <HoverSocialCard primary="Spend" secondary="00.00USD" color="error.main" />
@@ -37,7 +32,7 @@ export default function Statistics() {
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
-        <HoverSocialCard primary="CPA" secondary="00.00USD"/>
+        <HoverSocialCard primary="CPA" secondary="00.00USD" />
       </Grid>
       <Grid size={{ xs: 12, md: 4, lg: 2, sm: 6 }}>
         <HoverSocialCard primary="CPC" secondary="00.00USD" color="info.main" />

@@ -143,33 +143,27 @@ const support = {
       icon: icons.roadmap,
       external: true,
       target: true
-    }
-    ,
+    },
     {
       id: 'job stats',
       title: 'Job Stats',
       type: 'item',
       url: 'job-status',
-      icon: icons.roadmap,
-
-    }
-    ,
+      icon: icons.roadmap
+    },
     {
       id: 'conversion tracking',
       title: 'Conversion Tracking',
       type: 'item',
       url: 'conversion-tracking',
-      icon: icons.roadmap,
-  
-    }
-    ,
+      icon: icons.roadmap
+    },
     {
       id: 'publisher management',
       title: 'Publisher Management',
       type: 'item',
       url: 'publisher-management',
-      icon: icons.roadmap,
-    
+      icon: icons.roadmap
     }
   ]
 };

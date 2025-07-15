@@ -1,12 +1,12 @@
-import React from 'react'
-import ClickLogsTable from './ClickLogsTable'
+import React from 'react';
+import ClickLogsTable from './ClickLogsTable';
 
 function ClickLogs() {
-    return (
-        <>
-            <ClickLogsTable />
-        </>
-    )
+  return (
+    <>
+      <ClickLogsTable />
+    </>
+  );
 }
 
-export default ClickLogs
+export default ClickLogs;

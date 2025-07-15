@@ -11,7 +11,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Grid,
+  Grid
 } from '@mui/material';
 import { ArrowLeft2, AddSquare } from 'iconsax-react';
 import { useNavigate } from 'react-router';
@@ -50,7 +50,7 @@ const AddClientUser = () => {
       name,
       email,
       password,
-      showDashboard,
+      showDashboard
     });
   };
 
@@ -68,10 +68,10 @@ const AddClientUser = () => {
       filterCampaignJob,
       metricsAvailable,
       campaigns,
-      jobGroups,
+      jobGroups
     });
 
-    navigate('/clients')
+    navigate('/clients');
   };
 
   // Handler for cancel (stub)
@@ -92,7 +92,7 @@ const AddClientUser = () => {
   const handleBack = () => {
     // Navigate back to the previous page
     navigate(-1);
-  }
+  };
 
   return (
     <Box sx={{ p: 2, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
@@ -103,14 +103,14 @@ const AddClientUser = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           mb: 2,
-          px: 1,
+          px: 1
         }}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           onClick={
             /* Replace with navigation logic (e.g., history.back()) */
@@ -132,7 +132,7 @@ const AddClientUser = () => {
             onChange={handleClientChange}
             sx={{
               backgroundColor: '#eeeeee',
-              borderRadius: 1,
+              borderRadius: 1
             }}
           >
             <MenuItem value="ATTB AU, ATTB - BR">ATTB AU, ATTB - BR</MenuItem>
@@ -151,14 +151,14 @@ const AddClientUser = () => {
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Box
             sx={{
               display: 'flex',
               flexWrap: 'wrap',
-              alignItems: 'flex-end',
+              alignItems: 'flex-end'
             }}
           >
             {/* Name Field */}
@@ -204,9 +204,7 @@ const AddClientUser = () => {
             {/* Show Dashboards Selector */}
             <Box sx={{ flex: '1 1 240px', mr: 2, mb: 2 }}>
               <FormControl fullWidth size="small">
-                <InputLabel id="show-dashboard-label">
-                  Show Dashboards
-                </InputLabel>
+                <InputLabel id="show-dashboard-label">Show Dashboards</InputLabel>
                 <Select
                   labelId="show-dashboard-label"
                   value={showDashboard}
@@ -229,8 +227,8 @@ const AddClientUser = () => {
                   backgroundColor: '#000000',
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#222222',
-                  },
+                    backgroundColor: '#222222'
+                  }
                 }}
                 onClick={handleAddClientUser}
               >
@@ -247,7 +245,7 @@ const AddClientUser = () => {
             p: 3,
             backgroundColor: '#ffffff',
             borderRadius: 2,
-            mb: 3,
+            mb: 3
           }}
         >
           <Typography variant="h6" sx={{ mb: 2 }}>
@@ -260,43 +258,21 @@ const AddClientUser = () => {
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'center',
-              mb: 2,
+              mb: 2
             }}
           >
             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isAdmin}
-                  onChange={(e) => setIsAdmin(e.target.checked)}
-                  size="small"
-                />
-              }
+              control={<Checkbox checked={isAdmin} onChange={(e) => setIsAdmin(e.target.checked)} size="small" />}
               label="Admin"
               sx={{ mr: 3 }}
             />
             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={hasPublisherAccess}
-                  onChange={(e) =>
-                    setHasPublisherAccess(e.target.checked)
-                  }
-                  size="small"
-                />
-              }
+              control={<Checkbox checked={hasPublisherAccess} onChange={(e) => setHasPublisherAccess(e.target.checked)} size="small" />}
               label="Publisher Access"
               sx={{ mr: 3 }}
             />
             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={filterCampaignJob}
-                  onChange={(e) =>
-                    setFilterCampaignJob(e.target.checked)
-                  }
-                  size="small"
-                />
-              }
+              control={<Checkbox checked={filterCampaignJob} onChange={(e) => setFilterCampaignJob(e.target.checked)} size="small" />}
               label="Filter Campaign and Job Groups"
             />
           </Box>
@@ -305,16 +281,12 @@ const AddClientUser = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth size="small">
-                <InputLabel id="metrics-available-label">
-                  Metrics Available
-                </InputLabel>
+                <InputLabel id="metrics-available-label">Metrics Available</InputLabel>
                 <Select
                   labelId="metrics-available-label"
                   value={metricsAvailable}
                   label="Metrics Available"
-                  onChange={(e) =>
-                    setMetricsAvailable(e.target.value)
-                  }
+                  onChange={(e) => setMetricsAvailable(e.target.value)}
                 >
                   <MenuItem value="Metric A">Metric A</MenuItem>
                   <MenuItem value="Metric B">Metric B</MenuItem>
@@ -326,12 +298,7 @@ const AddClientUser = () => {
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth size="small">
                 <InputLabel id="campaigns-label">Campaigns</InputLabel>
-                <Select
-                  labelId="campaigns-label"
-                  value={campaigns}
-                  label="Campaigns"
-                  onChange={(e) => setCampaigns(e.target.value)}
-                >
+                <Select labelId="campaigns-label" value={campaigns} label="Campaigns" onChange={(e) => setCampaigns(e.target.value)}>
                   <MenuItem value="Campaign A">Campaign A</MenuItem>
                   <MenuItem value="Campaign B">Campaign B</MenuItem>
                   <MenuItem value="Campaign C">Campaign C</MenuItem>
@@ -342,12 +309,7 @@ const AddClientUser = () => {
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth size="small">
                 <InputLabel id="job-groups-label">Job Groups</InputLabel>
-                <Select
-                  labelId="job-groups-label"
-                  value={jobGroups}
-                  label="Job Groups"
-                  onChange={(e) => setJobGroups(e.target.value)}
-                >
+                <Select labelId="job-groups-label" value={jobGroups} label="Job Groups" onChange={(e) => setJobGroups(e.target.value)}>
                   <MenuItem value="Group A">Group A</MenuItem>
                   <MenuItem value="Group B">Group B</MenuItem>
                   <MenuItem value="Group C">Group C</MenuItem>
@@ -362,7 +324,7 @@ const AddClientUser = () => {
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
-            gap: 2,
+            gap: 2
           }}
         >
           <Button
@@ -373,8 +335,8 @@ const AddClientUser = () => {
               color: '#ff4d4f',
               '&:hover': {
                 backgroundColor: '#fff5f5',
-                borderColor: '#ff4d4f',
-              },
+                borderColor: '#ff4d4f'
+              }
             }}
             onClick={handleCancel}
           >
@@ -387,8 +349,8 @@ const AddClientUser = () => {
               backgroundColor: '#000000',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#222222',
-              },
+                backgroundColor: '#222222'
+              }
             }}
           >
             Submit
