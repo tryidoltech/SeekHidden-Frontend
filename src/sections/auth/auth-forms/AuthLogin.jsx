@@ -69,7 +69,11 @@ export default function AuthLogin({ forgot }) {
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
-              preload('api/menu/dashboard', fetcher); // load menu on login success
+              try {
+                preload('api/menu/dashboard', fetcher); // add to try catch for now
+              } catch (error) {
+                console.warn('Sidebar preload failed:', error.message);
+              }
             }
           } catch (err) {
             console.error(err);

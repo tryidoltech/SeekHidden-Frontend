@@ -55,10 +55,10 @@ export const JWTProvider = ({ children }) => {
       try {
         let accessToken = window.localStorage.getItem('accessToken');
 
-        // If token doesn't exist or is expired, try refresh
+        // If token doesn't exist or is expired, trying to refresh the token
         if (!verifyToken(accessToken)) {
           const refreshResponse = await axios.get('/auth/refresh');
-          accessToken = refreshResponse.data.accessToken;
+          accessToken = refreshResponse.data.newAccessToken;
 
           if (accessToken) {
             setSession(accessToken);
