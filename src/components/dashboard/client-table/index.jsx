@@ -176,29 +176,51 @@ const ClientTable = () => {
       return;
     }
 
-    if (!budgetSettings.pacing || !budgetSettings.threshold || !budgetSettings.budgetTarget || !budgetSettings.frequency) {
+    const { pacing, threshold, budgetTarget, frequency } = budgetSettings;
+
+    if (!pacing || !threshold || !budgetTarget || !frequency) {
       toast.error('Please fill in all budget fields');
       return;
     }
 
-    // Update selected clients with new budget settings
+    // update ui
     const updatedData = clientData.map((item) =>
       selected.includes(item.id)
         ? {
             ...item,
-            budgetCap: parseFloat(budgetSettings.budgetTarget),
-            frequency: budgetSettings.frequency,
-            // Add pacing and threshold to the data model if needed
-            pacing: budgetSettings.pacing,
-            threshold: parseFloat(budgetSettings.threshold)
+            pacing,
+            threshold: parseFloat(threshold),
+            budgetCap: parseFloat(budgetTarget),
+            frequency
           }
         : item
     );
 
     setClientData(updatedData);
+
+    // loop on selected clients to update db
+    selected.forEach((id) => {
+      const payload = {
+        budget: {
+          pacing,
+          threshold: parseFloat(threshold),
+          target: parseFloat(budgetTarget),
+          frequency
+        }
+      };
+
+      axiosServices
+        .put(`${import.meta.env.VITE_APP_API_URL}/clients/${id}`, payload)
+        .then(() => {})
+        .catch((err) => {
+          console.error(`Failed to update budget for client ${id}`, err);
+          toast.error('Failed to update budget for one or more clients');
+        });
+    });
+
     toast.success(`Budget settings updated for ${selected.length} client(s)`);
 
-    // Reset and close popup but keep selection
+    // reset form and close dialog
     setBudgetSettings({
       pacing: '',
       threshold: '',
@@ -206,7 +228,6 @@ const ClientTable = () => {
       frequency: ''
     });
     setBudgetPopupOpen(false);
-    // Don't clear selection: setSelected([]);
   };
 
   // Update margin action handler
