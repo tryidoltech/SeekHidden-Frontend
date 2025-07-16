@@ -27,6 +27,15 @@ import axios from 'axios';
 import axiosServices from '../../../utils/axios';
 
 const ClientTable = () => {
+  // custome date format
+  const formatDate = (isoDate) => {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
   const [clientData, setClientData] = useState([]);
 
   useEffect(() => {
@@ -68,7 +77,7 @@ const ClientTable = () => {
             // cp: '',
             cpc: '',
             // ctaPercent: '',
-            startDate: item.start_date || '',
+            startDate: formatDate(item.start_date) || '',
             frequency: item.frequency || '',
             country: item.country || '',
             markUpPercent: item?.markup?.value || '',
