@@ -41,8 +41,8 @@ const AddClient = () => {
   const [country, setCountry] = useState('');
   const [industry, setIndustry] = useState('');
   const [marginMode, setMarginMode] = useState('');
-  const [markupType, setMarkupType] = useState('');
-  const [markdownType, setMarkdownType] = useState('');
+  const [markupType, setMarkupType] = useState('percentage');
+  const [markdownType, setMarkdownType] = useState('percentage');
 
   // Settings section
   const [budget, setBudget] = useState('');
@@ -420,11 +420,11 @@ const AddClient = () => {
       feed_refresh_frequency: frequency,
       bid_margin: {
         markup: {
-          type: markupType === 'percentage' ? '%' : 'fixed',
+          type: markupType === 'percentage' ? '%' : '$',
           value: Number(markup)
         },
         markdown: {
-          type: markdownType === '%' ? '%' : 'fixed', // or "$"
+          type: markdownType === 'percentage' ? '%' : '$', // or "$"
           value: Number(markdown)
         }
       },

@@ -81,7 +81,9 @@ const ClientTable = () => {
             frequency: item.frequency || '',
             country: item.country || '',
             markUpPercent: item?.markup?.value || '',
-            markDownPercent: item?.markdown?.value || ''
+            markDownPercent: item?.markdown?.value || '',
+            markUpMode: item?.markup?.type || '%',
+            markDownMode: item?.markdown?.type || '%'
           }));
 
           setClientData(transformedData);
@@ -354,6 +356,8 @@ const ClientTable = () => {
 
   // Handle margin field updates with mode
   const handleMarginFieldUpdate = (id, fieldName, value, mode) => {
+    const fieldPath = fieldName === 'markUpPercent' ? 'markup' : 'markdown';
+
     setClientData((prevData) =>
       prevData.map((item) =>
         item.id === id
@@ -365,7 +369,25 @@ const ClientTable = () => {
           : item
       )
     );
-    toast.success('Margin setting updated successfully');
+
+    const payload = {
+      bid_margin: {
+        [fieldPath]: {
+          value: parseFloat(value),
+          type: marginMode === 'percentage' ? '%' : '$'
+        }
+      }
+    };
+
+    axiosServices
+      .put(`${import.meta.env.VITE_APP_API_URL}/clients/${id}`, payload)
+      .then(() => {
+        toast.success(`${fieldPath} updated as ${mode}`);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(`Failed to update ${fieldPath}`);
+      });
   };
 
   const columns = [
