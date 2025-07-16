@@ -437,7 +437,7 @@ const AddClient = () => {
     };
 
     axios
-      .post('https://seekhidden-backend.onrender.com/clients', payload, {
+      .post(`${import.meta.env.VITE_APP_API_URL}/clients`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

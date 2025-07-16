@@ -708,11 +708,20 @@ const ClientTable = () => {
             title: 'Confirm Delete',
             message: `Are you sure you want to delete ${selected.length} client(s)? This action cannot be undone.`,
             onConfirm: () => {
-              const updatedData = clientData.filter((item) => !selected.includes(item.id));
-              setClientData(updatedData);
-              toast.success(`${selected.length} client(s) deleted successfully`);
-              setSelected([]); // Only clear selection after deletion since items are removed
-              setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
+              Promise.all(selected.map((id) => axiosServices.delete(`${import.meta.env.VITE_APP_API_URL}/clients/${id}`)))
+                .then(() => {
+                  const updatedData = clientData.filter((item) => !selected.includes(item.id));
+                  setClientData(updatedData);
+                  toast.success(`${selected.length} client(s) deleted successfully`);
+                })
+                .catch((err) => {
+                  console.error('Delete failed:', err);
+                  toast.error('Failed to delete one or more clients');
+                })
+                .finally(() => {
+                  setSelected([]);
+                  setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
+                });
             }
           });
         }
