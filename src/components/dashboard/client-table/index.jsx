@@ -24,28 +24,30 @@ import {
   IconButton // ← add this
 } from '@mui/material';
 import axios from 'axios';
+import axiosServices from '../../../utils/axios';
 
 const ClientTable = () => {
-const [clientData, setClientData] = useState([]);
+  const [clientData, setClientData] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     axios
-      .get('https://seekhidden-backend.onrender.com/clients', {
+      .get(`${import.meta.env.VITE_APP_API_URL}/clients`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
       .then((res) => {
         if (res.data.success) {
+          console.log(res.data.data);
           const transformedData = res.data.data.map((item, index) => ({
-            id: index + 1, // Required for row keys
+            id: item._id, // Required for row keys
             status: 'active', // Default status
             clientName: item.internal_name || '',
             clientType: item.feed_bid_type || '',
             budgetCap: item.budget_threshold || '',
-            // advertiserName: '',
-            spend: '',
+            advertiserName: item.advertiser_name || '',
+            spend: item.budget_threshold || '',
             // reconSpend: '',
             // reconNetSpend: '',
             clicks: '',
@@ -64,13 +66,13 @@ const [clientData, setClientData] = useState([]);
             // reconForeignClicks: '',
             applies: '',
             // cp: '',
-            // cpc: '',
+            cpc: '',
             // ctaPercent: '',
-            // startDate: '',
-            // frequency: '',
+            startDate: item.start_date || '',
+            frequency: item.frequency || '',
             country: item.country || '',
-            // markUpPercent: '',
-            // markDownPercent: ''
+            markUpPercent: item?.markup?.value || '',
+            markDownPercent: item?.markdown?.value || ''
           }));
 
           setClientData(transformedData);
@@ -84,7 +86,7 @@ const [clientData, setClientData] = useState([]);
   const [selected, setSelected] = useState([]);
 
   // Define default columns that should always be visible
-  const defaultColumns = ['clientName', 'status', 'clientType', 'budgetCap', 'spend', 'clicks', 'applies', 'country'];
+  const defaultColumns = ['clientName', 'status', 'clientType', 'budgetCap' /*'spend', 'clicks', 'applies',*/, 'advertiserName', 'country'];
 
   // Add state for visible columns - initialize with default columns
   const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
@@ -122,198 +124,49 @@ const [clientData, setClientData] = useState([]);
     onConfirm: null
   });
 
-  // Update client data to include mode fields
-  // const [clientData, setClientData] = useState([
-  //   {
-  //     id: 1,
-  //     clientName: 'Acme Corp',
-  //     clientType: 'CPA',
-  //     status: 'active',
-  //     budgetCap: 10000.0,
-  //     advertiserName: 'Global Ads Inc.',
-  //     spend: 4500.0,
-  //     reconSpend: 4300.0,
-  //     reconNetSpend: 4200.0,
-  //     clicks: 1500,
-  //     validClicks: 1450,
-  //     invalidClicks: 50,
-  //     botClicks: 10,
-  //     latentClicks: 15,
-  //     duplicateClicks: 12,
-  //     foreignClicks: 13,
-  //     reconClicks: 1480,
-  //     reconValidClicks: 1430,
-  //     reconBotClicks: 8,
-  //     reconInvalidClicks: 42,
-  //     reconLatentClicks: 14,
-  //     reconDuplicateClicks: 11,
-  //     reconForeignClicks: 12,
-  //     applies: 1200,
-  //     cp: 3.75,
-  //     cpc: 3.0,
-  //     ctaPercent: 25.5,
-  //     startDate: '2023-01-15',
-  //     frequency: 'daily',
-  //     country: 'US',
-  //     markUpPercent: 15.0,
-  //     markUpPercentMode: 'percentage',
-  //     markDownPercent: 5.0,
-  //     markDownPercentMode: 'percentage'
-  //   },
-  //   {
-  //     id: 2,
-  //     clientName: 'Tech Solutions',
-  //     clientType: 'CPC',
-  //     status: 'inactive',
-  //     budgetCap: 20000.0,
-  //     advertiserName: 'Digital Marketing Co.',
-  //     spend: 0.0,
-  //     reconSpend: 0.0,
-  //     reconNetSpend: 0.0,
-  //     clicks: 0,
-  //     validClicks: 0,
-  //     invalidClicks: 0,
-  //     botClicks: 0,
-  //     latentClicks: 0,
-  //     duplicateClicks: 0,
-  //     foreignClicks: 0,
-  //     reconClicks: 0,
-  //     reconValidClicks: 0,
-  //     reconBotClicks: 0,
-  //     reconInvalidClicks: 0,
-  //     reconLatentClicks: 0,
-  //     reconDuplicateClicks: 0,
-  //     reconForeignClicks: 0,
-  //     applies: 0,
-  //     cp: 0,
-  //     cpc: 0,
-  //     ctaPercent: 0,
-  //     startDate: '2023-03-10',
-  //     frequency: 'weekly',
-  //     country: 'UK',
-  //     markUpPercent: 0.5,
-  //     markUpPercentMode: 'value',
-  //     markDownPercent: 3.0,
-  //     markDownPercentMode: 'percentage'
-  //   },
-  //   {
-  //     id: 3,
-  //     clientName: 'Marketing Plus',
-  //     clientType: 'CPA',
-  //     status: 'active',
-  //     budgetCap: 15000.0,
-  //     advertiserName: 'Ad Network Partners',
-  //     spend: 8000.0,
-  //     reconSpend: 7900.0,
-  //     reconNetSpend: 7800.0,
-  //     clicks: 2000,
-  //     validClicks: 1950,
-  //     invalidClicks: 50,
-  //     botClicks: 15,
-  //     latentClicks: 20,
-  //     duplicateClicks: 15,
-  //     foreignClicks: 10,
-  //     reconClicks: 1980,
-  //     reconValidClicks: 1930,
-  //     reconBotClicks: 12,
-  //     reconInvalidClicks: 47,
-  //     reconLatentClicks: 18,
-  //     reconDuplicateClicks: 13,
-  //     reconForeignClicks: 9,
-  //     applies: 1600,
-  //     cp: 4.0,
-  //     cpc: 3.2,
-  //     ctaPercent: 28.0,
-  //     startDate: '2023-02-20',
-  //     frequency: 'daily',
-  //     country: 'CA',
-  //     markUpPercent: 18.0,
-  //     markUpPercentMode: 'percentage',
-  //     markDownPercent: 6.0,
-  //     markDownPercentMode: 'percentage'
-  //   },
-  //   {
-  //     id: 4,
-  //     clientName: 'Digital Agency',
-  //     clientType: 'CPC',
-  //     status: 'paused',
-  //     budgetCap: 50000.0,
-  //     advertiserName: 'Performance Marketing Ltd',
-  //     spend: 25000.0,
-  //     reconSpend: 24800.0,
-  //     reconNetSpend: 24500.0,
-  //     clicks: 5000,
-  //     validClicks: 4850,
-  //     invalidClicks: 150,
-  //     botClicks: 30,
-  //     latentClicks: 40,
-  //     duplicateClicks: 35,
-  //     foreignClicks: 45,
-  //     reconClicks: 4950,
-  //     reconValidClicks: 4800,
-  //     reconBotClicks: 25,
-  //     reconInvalidClicks: 140,
-  //     reconLatentClicks: 38,
-  //     reconDuplicateClicks: 33,
-  //     reconForeignClicks: 42,
-  //     applies: 4000,
-  //     cp: 5.0,
-  //     cpc: 4.0,
-  //     ctaPercent: 30.5,
-  //     startDate: '2023-01-05',
-  //     frequency: 'monthly',
-  //     country: 'AU',
-  //     markUpPercent: 20.0,
-  //     markUpPercentMode: 'percentage',
-  //     markDownPercent: 8.0,
-  //     markDownPercentMode: 'percentage'
-  //   },
-  //   {
-  //     id: 5,
-  //     clientName: 'Global Advisors',
-  //     clientType: 'CPA',
-  //     status: 'active',
-  //     budgetCap: 30000.0,
-  //     advertiserName: 'Worldwide Advertisers',
-  //     spend: 12000.0,
-  //     reconSpend: 11800.0,
-  //     reconNetSpend: 11500.0,
-  //     clicks: 3000,
-  //     validClicks: 2900,
-  //     invalidClicks: 100,
-  //     botClicks: 20,
-  //     latentClicks: 25,
-  //     duplicateClicks: 20,
-  //     foreignClicks: 35,
-  //     reconClicks: 2950,
-  //     reconValidClicks: 2850,
-  //     reconBotClicks: 18,
-  //     reconInvalidClicks: 95,
-  //     reconLatentClicks: 23,
-  //     reconDuplicateClicks: 18,
-  //     reconForeignClicks: 32,
-  //     applies: 2500,
-  //     cp: 4.2,
-  //     cpc: 3.5,
-  //     ctaPercent: 27.3,
-  //     startDate: '2023-04-15',
-  //     frequency: 'weekly',
-  //     country: 'US',
-  //     markUpPercent: 17.5,
-  //     markUpPercentMode: 'percentage',
-  //     markDownPercent: 7.0,
-  //     markDownPercentMode: 'percentage'
-  //   }
-  // ]);
+  // create nested object from dot notation
+  const setNestedField = (path, value) => {
+    const keys = path.split('.');
+    const lastKey = keys.pop();
+    let obj = {};
+    let temp = obj;
+
+    keys.forEach((key) => {
+      if (!temp[key]) temp[key] = {};
+      temp = temp[key];
+    });
+
+    temp[lastKey] = value;
+    return obj;
+  };
+
+  // maps frontend field names to database field names
+  const fieldMap = {
+    clientName: 'internal_name',
+    clientType: 'feed_bid_type',
+    advertiserName: 'advertiser_name',
+    frequency: 'frequency',
+    country: 'country',
+    status: 'status',
+    markUpPercent: 'bid_margin.markup.value',
+    markDownPercent: 'bid_margin.markdown.value'
+  };
 
   // Handle field updates - updates the actual data
   const handleFieldUpdate = (id, field, value) => {
+    const backendField = fieldMap[field] || field;
     // Update local state
     setClientData((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
+    const updatePayload = setNestedField(backendField, value);
 
     // Here you would typically make an API call to update the data
-    console.log(`Updating ${field} for ID ${id} to ${value}`);
-    toast.success(`${field} updated successfully`);
+    axiosServices
+      .put(`${import.meta.env.VITE_APP_API_URL}/clients/${id}`, updatePayload)
+      .then(() => toast.success(`${field} updated successfully`))
+      .catch((err) => {
+        console.error('Update failed:', err.response?.data || err.message);
+        toast.error(`Failed to update ${field}`);
+      });
   };
 
   // Add budget update handler
@@ -1084,7 +937,6 @@ const [clientData, setClientData] = useState([]);
         rowActions={rowActions} // Add the row actions
         recordsFoundText="Records Found"
       />
-
 
       {/* Budget Settings Popup */}
       <Dialog open={budgetPopupOpen} onClose={() => setBudgetPopupOpen(false)} maxWidth="sm" fullWidth>
