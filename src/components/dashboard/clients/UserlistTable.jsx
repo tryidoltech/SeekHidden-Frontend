@@ -434,11 +434,13 @@
 // };
 
 // export default UserManagementTable;
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import { Calendar, Filter, AddSquare, Lock, Trash, Edit, Profile } from 'iconsax-react';
 import DynamicTable from '../../tables/datatable';
 import { useNavigate } from 'react-router';
+import { fetcher } from '../../../utils/axios';
+import useSWR from 'swr';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -458,7 +460,8 @@ function a11yProps(index) {
 const UserManagementTable = () => {
   const [tabValue, setTabValue] = useState(0);
   const navigate = useNavigate();
-
+  const { data, error, isLoading } = useSWR('/users', fetcher);
+  
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -479,71 +482,84 @@ const UserManagementTable = () => {
   };
 
   // Original client user data
-  const clientUserData = [
-    {
-      id: 1,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 3,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 4,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 5,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 6,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 7,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 8,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    },
-    {
-      id: 9,
-      name: 'Marco Faloppa',
-      email: 'test.email1234@gmail.com',
-      clients: 'JobRapido - US, JobRapido - US (CPA)',
-      status: 'active'
-    }
-  ];
+  
+  // const clientUserData = [
+  //   {
+  //     id: 1,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 6,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 7,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 8,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   },
+  //   {
+  //     id: 9,
+  //     name: 'Marco Faloppa',
+  //     email: 'test.email1234@gmail.com',
+  //     clients: 'JobRapido - US, JobRapido - US (CPA)',
+  //     status: 'active'
+  //   }
+  // ];
+    const users = data?.data || [];
+  const clientUserData = users.map(user => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  clients: user.client_id?.internal_name || 'N/A',
+  status: 'active'
+}));
+
+
+console.log(clientUserData);
+
 
   // Sample publisher user data
   const publisherUserData = [
@@ -659,6 +675,7 @@ const UserManagementTable = () => {
 
     return true;
   };
+    if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
