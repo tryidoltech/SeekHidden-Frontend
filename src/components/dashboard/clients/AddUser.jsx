@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Paper,
@@ -17,7 +17,9 @@ import {
 } from '@mui/material';
 import { ArrowLeft2, AddSquare } from 'iconsax-react';
 import { useNavigate } from 'react-router';
-
+import axiosServices, { fetcher } from '../../../utils/axios';
+import useSWR from 'swr';
+import axios from 'axios';
 function TabPanel({ children, value, index, ...other }) {
   return (
     <div role="tabpanel" hidden={value !== index} id={`user-tabpanel-${index}`} aria-labelledby={`user-tab-${index}`} {...other}>
@@ -35,7 +37,7 @@ function a11yProps(index) {
 
 const AddUser = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [selectedClient, setSelectedClient] = useState('ATTB AU, ATTB - BR');
+  const [selectedClient, setSelectedClient] = useState('');
   const [selectedPublisher, setSelectedPublisher] = useState('Publisher A, Publisher B');
 
   // Common form fields
@@ -57,6 +59,8 @@ const AddUser = () => {
   const [accessLevel, setAccessLevel] = useState('');
   const [publisherMetrics, setPublisherMetrics] = useState('');
 
+  const { data, error, isLoading } = useSWR('/clients', fetcher);
+
   const navigate = useNavigate();
 
   const handleTabChange = (event, newValue) => {
@@ -73,8 +77,15 @@ const AddUser = () => {
 
   const handleAddUser = () => {
     if (tabValue === 0) {
-      // Add client user logic
+      axiosServices.post(`${import.meta.env.VITE_APP_API_URL}/users/create`, {
+        name: name,
+        email: email,
+        password: password,
+        client_id: selectedClient,
+        role: 'client_user'
+      });
       console.log('Adding client user:', {
+        selectedClient,
         name,
         email,
         password,
@@ -102,7 +113,7 @@ const AddUser = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     handleAddUser();
-    navigate('/dashboard/clients');
+    // navigate('/dashboard/clients');
   };
 
   const handleCancel = () => {
@@ -125,6 +136,9 @@ const AddUser = () => {
   const handleBack = () => {
     navigate(-1);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  const clients = data?.data || [];
 
   return (
     <Box sx={{ p: 2, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
@@ -165,16 +179,13 @@ const AddUser = () => {
           <Paper elevation={0} sx={{ p: 3, backgroundColor: '#ffffff', borderRadius: 2, mb: 3 }}>
             <FormControl variant="outlined" size="small" sx={{ minWidth: 200, mb: 3 }}>
               <InputLabel id="client-select-label">Select Client</InputLabel>
-              <Select
-                labelId="client-select-label"
-                value={selectedClient}
-                label="Select Client"
-                onChange={handleClientChange}
-                sx={{ backgroundColor: '#eeeeee', borderRadius: 1 }}
-              >
-                <MenuItem value="ATTB AU, ATTB - BR">ATTB AU, ATTB - BR</MenuItem>
-                <MenuItem value="Client B">Client B</MenuItem>
-                <MenuItem value="Client C">Client C</MenuItem>
+              <Select labelId="client-select-label" value={selectedClient} label="Select Client" onChange={handleClientChange}>
+                <MenuItem value="">Select Client</MenuItem>
+                {clients.map((client) => (
+                  <MenuItem key={client._id} value={client._id}>
+                    {client.internal_name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
