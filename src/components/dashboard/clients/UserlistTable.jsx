@@ -211,7 +211,7 @@ const UserManagementTable = () => {
             rowsPerPage: 10
           }}
           title="Client Users"
-          searchFields={['name', 'email', 'clients',]}
+          searchFields={['name', 'email', 'clients']}
           getRowId={(row) => row.id}
           onRowClick={(row) => console.log('Row clicked:', row)}
           onRowSelect={(selected) => console.log('Selected rows:', selected)}

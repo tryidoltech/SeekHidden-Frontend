@@ -33,16 +33,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AddClient = () => {
-  // State for form fields
   const location = useLocation();
   const client = location.state?.client;
+
   console.log('Hello', client);
+
+  // State for form fields
   const [clientName, setClientName] = useState(client?.clientName || '');
   const [advertiserName, setAdvertiserName] = useState(client?.advertiserName || '');
-  const [exportedName, setExportedName] = useState(client?.clientName || '');
-  const [currency, setCurrency] = useState('');
-  const [country, setCountry] = useState('');
-  const [industry, setIndustry] = useState('');
+  const [exportedName, setExportedName] = useState(client?.clientNameExternal || '');
+  const [currency, setCurrency] = useState(client?.currency || '');
+  const [country, setCountry] = useState(client?.country || '');
+  const [industry, setIndustry] = useState(client?.industry || '');
   const [marginMode, setMarginMode] = useState('');
   const [markupType, setMarkupType] = useState('percentage');
   const [markdownType, setMarkdownType] = useState('percentage');
@@ -50,13 +52,13 @@ const AddClient = () => {
   // Settings section
   const [budget, setBudget] = useState(client?.budgetCap || '');
   const [markType, setMarkType] = useState('');
-  const [markup, setMarkup] = useState('');
-  const [markdown, setMarkdown] = useState('');
+  const [markup, setMarkup] = useState(client?.markUpPercent || '');
+  const [markdown, setMarkdown] = useState(client?.markDownPercent || '');
   const [frequency, setFrequency] = useState('');
   const [customFrequency, setCustomFrequency] = useState('');
-  const [timeZone, setTimeZone] = useState('');
-  const [clientType, setClientType] = useState('');
-  const [showDashboards, setShowDashboards] = useState('');
+  const [timeZone, setTimeZone] = useState(client?.timezone || '');
+  const [clientType, setClientType] = useState(client?.clientType || '');
+  const [showDashboards, setShowDashboards] = useState(client?.show_dashboard || '');
   const [clickFilters, setClickFilters] = useState('');
   const [clickFilterRedirectUrl, setClickFilterRedirectUrl] = useState('');
   const convertToDisplayDate = (isoStr) => {
@@ -65,13 +67,18 @@ const AddClient = () => {
   };
   // const [startDate, setStartDate] = useState(convertToDisplayDate(client?.startDate) || '');
   const [startDate, setStartDate] = useState(() => {
-  if (client?.startDate) {
-    return convertToDisplayDate(client.startDate);
-  }
-  return '';
-});
+    if (client?.startDate) {
+      return convertToDisplayDate(client.startDate);
+    }
+    return '';
+  });
 
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState(() => {
+    if (client?.end_date) {
+      return convertToDisplayDate(client.end_date);
+    }
+    return '';
+  });
   const [spendTypeCpa, setSpendTypeCpa] = useState('');
 
   // Feed URL and mapping states

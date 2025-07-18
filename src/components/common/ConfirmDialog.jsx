@@ -1,13 +1,6 @@
 // components/common/ConfirmDialog.js
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 
 const ConfirmDialog = ({ open, title, message, onConfirm, onClose }) => {
   return (

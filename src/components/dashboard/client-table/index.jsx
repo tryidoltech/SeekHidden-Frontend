@@ -53,6 +53,7 @@ const ClientTable = () => {
             id: item._id, // Required for row keys
             status: 'active', // Default status
             clientName: item.internal_name || '',
+            clientNameExternal: item.external_name || '',
             clientType: item.feed_bid_type || '',
             budgetCap: item.budget_threshold || '',
             advertiserName: item.advertiser_name || '',
@@ -83,7 +84,13 @@ const ClientTable = () => {
             markUpPercent: item?.markup?.value || '',
             markDownPercent: item?.markdown?.value || '',
             markUpMode: item?.markup?.type || '%',
-            markDownMode: item?.markdown?.type || '%'
+            markDownMode: item?.markdown?.type || '%',
+            currency: item.currency || '',
+            industry: item.industry || '',
+            timezone: item.timezone || '',
+            show_dashboard: item.show_dashboard ?? false,
+            end_date: formatDate(item.end_date) || '',
+            feed_refresh_frequency: item.feed_refresh_frequency || ''
           }));
 
           setClientData(transformedData);
@@ -688,7 +695,7 @@ const ClientTable = () => {
       case 'edit':
         if (selected.length === 1) {
           const selectedItem = clientData.find((item) => item.id === selected[0]);
-          console.log(selectedItem)
+          console.log(selectedItem);
           navigate(`/clients/add-client`, {
             state: { client: selectedItem, mode: 'edit' }
           });

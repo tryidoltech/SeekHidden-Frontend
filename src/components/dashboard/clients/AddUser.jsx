@@ -78,27 +78,28 @@ const AddUser = () => {
 
   const handleAddUser = () => {
     if (tabValue === 0) {
-      axiosServices.post(`${import.meta.env.VITE_APP_API_URL}/users/create`, {
-        name: name,
-        email: email,
-        password: password,
-        client_id: selectedClient,
-        role: 'client_user'
-      }).then(()=>{
-        toast.success("User created successfully")
-        setSelectedClient(""),
-        setName(""),
-        setEmail(""),
-        setPassword(""),
-        setShowDashboard(""),
-        setIsAdmin(""),
-        setHasPublisherAccess(""),
-        setFilterCampaignJob(""),
-        setMetricsAvailable(""),
-        setCampaigns(""),
-        setJobGroups("")
-      })
-      
+      axiosServices
+        .post(`${import.meta.env.VITE_APP_API_URL}/users/create`, {
+          name: name,
+          email: email,
+          password: password,
+          client_id: selectedClient,
+          role: 'client_user'
+        })
+        .then(() => {
+          toast.success('User created successfully');
+          setSelectedClient(''),
+            setName(''),
+            setEmail(''),
+            setPassword(''),
+            setShowDashboard(''),
+            setIsAdmin(''),
+            setHasPublisherAccess(''),
+            setFilterCampaignJob(''),
+            setMetricsAvailable(''),
+            setCampaigns(''),
+            setJobGroups('');
+        });
     } else {
       // Add publisher user logic
       console.log('Adding publisher user:', {
