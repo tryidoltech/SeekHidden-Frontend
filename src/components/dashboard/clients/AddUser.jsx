@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router';
 import axiosServices, { fetcher } from '../../../utils/axios';
 import useSWR from 'swr';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 function TabPanel({ children, value, index, ...other }) {
   return (
     <div role="tabpanel" hidden={value !== index} id={`user-tabpanel-${index}`} aria-labelledby={`user-tab-${index}`} {...other}>
@@ -83,20 +84,21 @@ const AddUser = () => {
         password: password,
         client_id: selectedClient,
         role: 'client_user'
-      });
-      console.log('Adding client user:', {
-        selectedClient,
-        name,
-        email,
-        password,
-        showDashboard,
-        isAdmin,
-        hasPublisherAccess,
-        filterCampaignJob,
-        metricsAvailable,
-        campaigns,
-        jobGroups
-      });
+      }).then(()=>{
+        toast.success("User created successfully")
+        setSelectedClient(""),
+        setName(""),
+        setEmail(""),
+        setPassword(""),
+        setShowDashboard(""),
+        setIsAdmin(""),
+        setHasPublisherAccess(""),
+        setFilterCampaignJob(""),
+        setMetricsAvailable(""),
+        setCampaigns(""),
+        setJobGroups("")
+      })
+      
     } else {
       // Add publisher user logic
       console.log('Adding publisher user:', {
