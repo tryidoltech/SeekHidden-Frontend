@@ -29,14 +29,17 @@ import {
 } from '@mui/material';
 import { ArrowLeft, Eye, Download, RotateCcw, Link2, Plus, Save, X, Edit, MapPin, Trash2, Search, ExternalLink } from 'lucide-react';
 import { toast } from 'react-toastify'; // Add this import
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AddClient = () => {
   // State for form fields
-  const [clientName, setClientName] = useState('');
-  const [advertiserName, setAdvertiserName] = useState('');
-  const [exportedName, setExportedName] = useState('');
+  const location = useLocation();
+  const client = location.state?.client;
+  console.log('Hello', client);
+  const [clientName, setClientName] = useState(client?.clientName || '');
+  const [advertiserName, setAdvertiserName] = useState(client?.advertiserName || '');
+  const [exportedName, setExportedName] = useState(client?.clientName || '');
   const [currency, setCurrency] = useState('');
   const [country, setCountry] = useState('');
   const [industry, setIndustry] = useState('');
@@ -45,7 +48,7 @@ const AddClient = () => {
   const [markdownType, setMarkdownType] = useState('percentage');
 
   // Settings section
-  const [budget, setBudget] = useState('');
+  const [budget, setBudget] = useState(client?.budgetCap || '');
   const [markType, setMarkType] = useState('');
   const [markup, setMarkup] = useState('');
   const [markdown, setMarkdown] = useState('');
@@ -56,7 +59,18 @@ const AddClient = () => {
   const [showDashboards, setShowDashboards] = useState('');
   const [clickFilters, setClickFilters] = useState('');
   const [clickFilterRedirectUrl, setClickFilterRedirectUrl] = useState('');
-  const [startDate, setStartDate] = useState('');
+  const convertToDisplayDate = (isoStr) => {
+    const [year, month, day] = isoStr.split('-');
+    return `${day}-${month}-${year}`;
+  };
+  // const [startDate, setStartDate] = useState(convertToDisplayDate(client?.startDate) || '');
+  const [startDate, setStartDate] = useState(() => {
+  if (client?.startDate) {
+    return convertToDisplayDate(client.startDate);
+  }
+  return '';
+});
+
   const [endDate, setEndDate] = useState('');
   const [spendTypeCpa, setSpendTypeCpa] = useState('');
 
@@ -436,13 +450,21 @@ const AddClient = () => {
       feed_node_mapping: feed_node_mapping
     };
 
-    axios
-      .post(`${import.meta.env.VITE_APP_API_URL}/clients`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+    const isEditMode = !!client; // or client?._id
+
+    const url = isEditMode ? `${import.meta.env.VITE_APP_API_URL}/clients/${client.id}` : `${import.meta.env.VITE_APP_API_URL}/clients`;
+
+    const method = isEditMode ? 'put' : 'post';
+
+    axios({
+      method,
+      url,
+      data: payload,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
       .then((response) => {
         console.log('Success:', response.data);
       })
@@ -2210,344 +2232,6 @@ const AddClient = () => {
             </Paper>
           </Box>
         )}
-
-        {/* Add Feed Dialog removed - now using inline section */}
-
-        {/* Feed Mapping Section */}
-        {/* {feeds.map(feed => (
-          <Paper key={feed.id} elevation={1} sx={{ mb: 3, p: 2, borderRadius: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <TextField
-                label="Feed URL"
-                type="url"
-                size="small"
-                value={editingFeedId === feed.id ? editingFeedUrl : feed.url}
-                onChange={e => editingFeedId === feed.id && setEditingFeedUrl(e.target.value)}
-                disabled={editingFeedId !== feed.id}
-                sx={{ flexGrow: 1 }}
-              />
-
-              {editingFeedId === feed.id
-                ? <>
-                  <Button
-                    size="small"
-                    onClick={() => handleSaveFeedUrl(feed.id)}
-                    disabled={!editingFeedUrl.trim()}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => setEditingFeedId(null)}
-                  >
-                    Cancel
-                  </Button>
-                </>
-                : <>
-                  <Button
-                    size="small"
-                    onClick={() => handleEditFeed(feed.id)}
-                  >
-                    Edit Feed
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => handleViewFeedNodes(feed.id)}
-                  >
-                    View Nodes
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => navigate('/clients/add-client/inspect-feed', { state: { feed } })}
-                  >
-                    Inspect Feed
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => handleMapFeed(feed.id)}
-                  >
-                    Map Feed
-                  </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={() => handleRemoveFeed(feed.id)}
-                  >
-                    Delete
-                  </Button>
-                </>
-              }
-            </Box>
-
-            <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={3}>
-                <Typography variant="body2" color="textSecondary">
-                  Total Jobs: <strong>{feed.totalJobs}</strong>
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" color="textSecondary">
-                  Feed Type: <strong>{feed.feedType}</strong>
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" color="textSecondary">
-                  Last Updated:{' '}
-                  <strong>{new Date(feed.lastUpdated).toLocaleDateString()}</strong>
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" color="textSecondary">
-                  Nodes Found: <strong>{feed.nodes.length}</strong>
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Divider sx={{ my: 2 }} />
-
-            {mappingFeedId === feed.id && (
-              <Grid container spacing={3}>
-                <Grid item xs={4}>
-                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                    Default Career Fields
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {Object.keys(mappings).map((field) => {
-                      const isDefaultField = defaultFields.includes(field);
-
-                      return (
-                        <Box key={field} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {editingField === field && !isDefaultField ? (
-                            <TextField
-                              fullWidth
-                              size="small"
-                              value={editingFieldName}
-                              onChange={(e) => setEditingFieldName(e.target.value)}
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleConfirmEditField();
-                                } else if (e.key === 'Escape') {
-                                  handleCancelEditField();
-                                }
-                              }}
-                              sx={{ backgroundColor: 'white' }}
-                              autoFocus
-                            />
-                          ) : (
-                            <TextField
-                              fullWidth
-                              size="small"
-                              label={field}
-                              value={field}
-                              InputProps={{ readOnly: true }}
-                              sx={{
-                                backgroundColor: isDefaultField ? '#f9f9f9' : '#fff3e0'
-                              }}
-                            />
-                          )}
-
-                          <Box sx={{ display: 'flex', gap: 0.5, minWidth: 'fit-content' }}>
-                            {editingField === field && !isDefaultField ? (
-                              <>
-                                <IconButton
-                                  size="small"
-                                  onClick={handleConfirmEditField}
-                                  disabled={!editingFieldName.trim() || (editingFieldName.trim() !== editingField && mappings.hasOwnProperty(editingFieldName.trim()))}
-                                  sx={{ color: 'green' }}
-                                >
-                                  ✓
-                                </IconButton>
-                                <IconButton
-                                  size="small"
-                                  onClick={handleCancelEditField}
-                                  sx={{ color: 'red' }}
-                                >
-                                  ✕
-                                </IconButton>
-                              </>
-                            ) : (
-                              !isDefaultField && (
-                                <>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => handleEditField(field)}
-                                    sx={{ color: '#666' }}
-                                  >
-                                    ✏️
-                                  </IconButton>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => handleDeleteField(field)}
-                                    sx={{ color: 'red' }}
-                                  >
-                                    🗑️
-                                  </IconButton>
-                                </>
-                              )
-                            )}
-                          </Box>
-                        </Box>
-                      );
-                    })}
-
-                    {isAddingField && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <TextField
-                          fullWidth
-                          size="small"
-                          placeholder="Enter field name"
-                          value={newFieldName}
-                          onChange={(e) => setNewFieldName(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-
-                              handleConfirmAddField();
-                            } else if (e.key === 'Escape') {
-                              handleCancelAddField();
-                            }
-                          }}
-                          sx={{ backgroundColor: 'white' }}
-                          autoFocus
-                        />
-                        <Box sx={{ display: 'flex', gap: 0.5, minWidth: 'fit-content' }}>
-                          <IconButton
-                            size="small"
-                            onClick={handleConfirmAddField}
-                            disabled={!newFieldName.trim() || mappings.hasOwnProperty(newFieldName.trim())}
-                            sx={{ color: 'green' }}
-                          >
-                            ✓
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={handleCancelAddField}
-                            sx={{ color: 'red' }}
-                          >
-                            ✕
-                         
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                    Feed Nodes
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {Object.keys(mappings).map((field) => (
-                      <FormControl key={field} fullWidth size="small">
-                        <InputLabel>Select Node</InputLabel>
-                        <Select
-                          value={mappings[field]}
-                          label="Select Node"
-                          onChange={(e) => handleMappingChange(field, e.target.value)}
-                        >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {availableNodes.map((node) => {
-                            const takenByOther = Object.entries(mappings)
-                              .some(([otherField, val]) => val === node && otherField !== field);
-
-                            return (
-                              <MenuItem
-                                key={node}
-                                value={node}
-                                disabled={takenByOther}
-                              >
-                                {node}
-                              </MenuItem>
-                            )
-                          })}
-                        </FormControl>
-                      </Box>
-                    ))}
-
-                    {isAddingField && (
-                      <FormControl fullWidth size="small" disabled>
-                        <InputLabel>Select Node</InputLabel>
-                        <Select
-                          value=""
-                          label="Select Node"
-                          sx={{ backgroundColor: '#f5f5f5' }}
-                        >
-                          <MenuItem value="">
-                            <em>Add field first</em>
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    )}
-                  </Box>
-
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, my: 3 }}>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={handleAddField}
-                      disabled={isAddingField || editingField !== null}
-                      sx={{
-                        textTransform: 'none',
-                        borderColor: '#ddd',
-                        color: '#666'
-                      }}
-                    >
-                      Add Field
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={handleMapFields}
-                      sx={{
-                        backgroundColor: '#000',
-                        textTransform: 'none',
-                        '&:hover': { backgroundColor: '#333' }
-                      }}
-                    >
-                      Map
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={handleResetMappings}
-                      sx={{
-                        textTransform: 'none',
-                        borderColor: '#ddd',
-                        color: '#666'
-                      }}
-                      startIcon={<RotateCcw size={16} />}
-                    >
-                      Reset
-                    </Button>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-                    Unmapped Feed Nodes
-                    </Typography>
-                  <Box sx={{
-                    backgroundColor: '#f9f9f9',
-                    p: 2,
-                    borderRadius: 1,
-                    maxHeight: 300,
-                    overflowY: 'auto'
-                  }}>
-                    {availableNodes
-                      .filter(node => !Object.values(mappings).includes(node))
-                      .map((node) => (
-                        <Chip
-                          key={node}
-                          label={node}
-                          size="small"
-                          sx={{ m: 0.5 }}
-                          variant="outlined"
-                        />
-                      ))}
-                  </Box>
-                </Grid>
-              </Grid>
-            )}
-          </Paper>
-        ))}
-
         {/* Client Details Section */}
         <Paper
           elevation={0}

@@ -688,6 +688,7 @@ const ClientTable = () => {
       case 'edit':
         if (selected.length === 1) {
           const selectedItem = clientData.find((item) => item.id === selected[0]);
+          console.log(selectedItem)
           navigate(`/clients/add-client`, {
             state: { client: selectedItem, mode: 'edit' }
           });
