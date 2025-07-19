@@ -146,6 +146,7 @@ export const JWTProvider = ({ children }) => {
 
   const logout = () => {
     setSession(null);
+    localStorage.clear();
     axios.post(`${baseUrl}/auth/logout`);
     dispatch({ type: LOGOUT });
   };

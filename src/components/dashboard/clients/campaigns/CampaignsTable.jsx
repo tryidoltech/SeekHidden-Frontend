@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AddSquare, Filter } from 'iconsax-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 // Add these imports for the budget popup
 import {
@@ -22,8 +22,12 @@ import {
   InputAdornment
 } from '@mui/material';
 import DynamicTable from '../../../tables/datatable';
+import axiosServices, { fetcher } from '../../../../utils/axios';
+import useSWR from 'swr';
 
 const CampaignsTable = () => {
+  const clientId = localStorage.getItem('clientId');
+  console.log(clientId);
   const navigate = useNavigate();
   const [selected, setSelected] = useState([]);
 
@@ -65,305 +69,54 @@ const CampaignsTable = () => {
     message: '',
     onConfirm: null
   });
-
-  const [campaignData, setCampaignData] = useState([
-    {
-      id: 1,
-      campaignName: 'Summer Sale 2024',
-      clientName: 'Acme Corp',
-      clientType: 'CPA',
-      status: 'active',
-      budgetCap: 1000.0,
-      advertiserName: 'Acme Advertising LLC',
-      spend: 450.0,
-      reconSpend: 430.0,
-      reconNetSpend: 415.0,
-      clicks: 150,
-      validClicks: 145,
-      invalidClicks: 5,
-      botClicks: 2,
-      latentClicks: 1,
-      duplicateClicks: 1,
-      foreignClicks: 1,
-      reconClicks: 148,
-      reconValidClicks: 143,
-      reconBotClicks: 2,
-      reconInvalidClicks: 3,
-      reconLatentClicks: 1,
-      reconDuplicateClicks: 1,
-      reconForeignClicks: 1,
-      applies: 45,
-      cpa: 9.56,
-      cpc: 3.0,
-      cta: 30.0,
-      startDate: '2024-01-15',
-      frequency: 'Daily',
-      country: 'US',
-      markUpPercent: 15.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 5.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 2,
-      campaignName: 'Tech Product Launch',
-      clientName: 'Tech Solutions',
-      clientType: 'CPC',
-      status: 'inactive',
-      budgetCap: 2000.0,
-      advertiserName: 'TechSol Media Group',
-      spend: 0.0,
-      reconSpend: 0.0,
-      reconNetSpend: 0.0,
-      clicks: 0,
-      validClicks: 0,
-      invalidClicks: 0,
-      botClicks: 0,
-      latentClicks: 0,
-      duplicateClicks: 0,
-      foreignClicks: 0,
-      reconClicks: 0,
-      reconValidClicks: 0,
-      reconBotClicks: 0,
-      reconInvalidClicks: 0,
-      reconLatentClicks: 0,
-      reconDuplicateClicks: 0,
-      reconForeignClicks: 0,
-      applies: 0,
-      cpa: 0.0,
-      cpc: 2.5,
-      cta: 0.0,
-      startDate: '2024-02-01',
-      frequency: 'Weekly',
-      country: 'CA',
-      markUpPercent: 0.4,
-      markUpPercentMode: 'value',
-      markDownPercent: 3.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 3,
-      campaignName: 'Holiday Marketing Blitz',
-      clientName: 'Marketing Plus',
-      clientType: 'CPA',
-      status: 'active',
-      budgetCap: 1500.0,
-      advertiserName: 'MarketPlus Digital',
-      spend: 800.0,
-      reconSpend: 790.0,
-      reconNetSpend: 775.0,
-      clicks: 200,
-      validClicks: 195,
-      invalidClicks: 5,
-      botClicks: 3,
-      latentClicks: 1,
-      duplicateClicks: 1,
-      foreignClicks: 0,
-      reconClicks: 198,
-      reconValidClicks: 193,
-      reconBotClicks: 3,
-      reconInvalidClicks: 2,
-      reconLatentClicks: 1,
-      reconDuplicateClicks: 1,
-      reconForeignClicks: 0,
-      applies: 65,
-      cpa: 12.15,
-      cpc: 4.0,
-      cta: 32.5,
-      startDate: '2024-01-20',
-      frequency: 'Daily',
-      country: 'UK',
-      markUpPercent: 18.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 7.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 4,
-      campaignName: 'Brand Awareness Q2',
-      clientName: 'Digital Agency',
-      clientType: 'CPC',
-      status: 'paused',
-      budgetCap: 5000.0,
-      advertiserName: 'Digital Agency Pro',
-      spend: 2500.0,
-      reconSpend: 2480.0,
-      reconNetSpend: 2450.0,
-      clicks: 500,
-      validClicks: 485,
-      invalidClicks: 15,
-      botClicks: 8,
-      latentClicks: 3,
-      duplicateClicks: 2,
-      foreignClicks: 2,
-      reconClicks: 495,
-      reconValidClicks: 480,
-      reconBotClicks: 7,
-      reconInvalidClicks: 8,
-      reconLatentClicks: 3,
-      reconDuplicateClicks: 2,
-      reconForeignClicks: 3,
-      applies: 120,
-      cpa: 20.83,
-      cpc: 5.0,
-      cta: 24.0,
-      startDate: '2024-03-01',
-      frequency: 'Bi-weekly',
-      country: 'AU',
-      markUpPercent: 20.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 8.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 5,
-      campaignName: 'Global Expansion',
-      clientName: 'Global Advisors',
-      clientType: 'CPA',
-      status: 'active',
-      budgetCap: 3000.0,
-      advertiserName: 'Global Media Network',
-      spend: 1200.0,
-      reconSpend: 1180.0,
-      reconNetSpend: 1160.0,
-      clicks: 300,
-      validClicks: 290,
-      invalidClicks: 10,
-      botClicks: 5,
-      latentClicks: 2,
-      duplicateClicks: 2,
-      foreignClicks: 1,
-      reconClicks: 298,
-      reconValidClicks: 288,
-      reconBotClicks: 4,
-      reconInvalidClicks: 6,
-      reconLatentClicks: 2,
-      reconDuplicateClicks: 2,
-      reconForeignClicks: 2,
-      applies: 85,
-      cpa: 14.12,
-      cpc: 4.0,
-      cta: 28.3,
-      startDate: '2024-02-15',
-      frequency: 'Daily',
-      country: 'DE',
-      markUpPercent: 16.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 4.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 6,
-      campaignName: 'Media Partnership Drive',
-      clientName: 'Media Partners',
-      clientType: 'CPC',
-      status: 'active',
-      budgetCap: 2500.0,
-      advertiserName: 'MediaPartners United',
-      spend: 1800.0,
-      reconSpend: 1750.0,
-      reconNetSpend: 1720.0,
-      clicks: 400,
-      validClicks: 390,
-      invalidClicks: 10,
-      botClicks: 6,
-      latentClicks: 2,
-      duplicateClicks: 1,
-      foreignClicks: 1,
-      reconClicks: 398,
-      reconValidClicks: 388,
-      reconBotClicks: 5,
-      reconInvalidClicks: 5,
-      reconLatentClicks: 2,
-      reconDuplicateClicks: 1,
-      reconForeignClicks: 2,
-      applies: 110,
-      cpa: 16.36,
-      cpc: 4.5,
-      cta: 27.5,
-      startDate: '2024-01-10',
-      frequency: 'Daily',
-      country: 'FR',
-      markUpPercent: 14.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 6.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 7,
-      campaignName: 'Creative Showcase',
-      clientName: 'Creative Solutions',
-      clientType: 'CPA',
-      status: 'paused',
-      budgetCap: 1800.0,
-      advertiserName: 'Creative Solutions Inc',
-      spend: 900.0,
-      reconSpend: 880.0,
-      reconNetSpend: 860.0,
-      clicks: 180,
-      validClicks: 175,
-      invalidClicks: 5,
-      botClicks: 3,
-      latentClicks: 1,
-      duplicateClicks: 1,
-      foreignClicks: 0,
-      reconClicks: 178,
-      reconValidClicks: 173,
-      reconBotClicks: 2,
-      reconInvalidClicks: 3,
-      reconLatentClicks: 1,
-      reconDuplicateClicks: 1,
-      reconForeignClicks: 1,
-      applies: 55,
-      cpa: 16.36,
-      cpc: 5.0,
-      cta: 30.6,
-      startDate: '2024-03-05',
-      frequency: 'Weekly',
-      country: 'ES',
-      markUpPercent: 13.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 2.0,
-      markDownPercentMode: 'percentage'
-    },
-    {
-      id: 8,
-      campaignName: 'Data Analytics Campaign',
-      clientName: 'Data Insights',
-      clientType: 'CPC',
-      status: 'inactive',
-      budgetCap: 2200.0,
-      advertiserName: 'DataInsights Corp',
-      spend: 0.0,
-      reconSpend: 0.0,
-      reconNetSpend: 0.0,
-      clicks: 0,
-      validClicks: 0,
-      invalidClicks: 0,
-      botClicks: 0,
-      latentClicks: 0,
-      duplicateClicks: 0,
-      foreignClicks: 0,
-      reconClicks: 0,
-      reconValidClicks: 0,
-      reconBotClicks: 0,
-      reconInvalidClicks: 0,
-      reconLatentClicks: 0,
-      reconDuplicateClicks: 0,
-      reconForeignClicks: 0,
-      applies: 0,
-      cpa: 0.0,
-      cpc: 3.25,
-      cta: 0.0,
-      startDate: '2024-04-01',
-      frequency: 'Monthly',
-      country: 'IT',
-      markUpPercent: 10.0,
-      markUpPercentMode: 'percentage',
-      markDownPercent: 1.0,
-      markDownPercentMode: 'percentage'
+  const { data, error, isLoading } = useSWR('/campaigns', fetcher);
+  console.log(data);
+  const [campaignData, setCampaignData] = useState([]);
+  useEffect(() => {
+    if (data?.data) {
+      const transformed = data.data.map((campaign) => {
+        const client = campaign.client_id;
+        return {
+          id: campaign._id,
+          campaignName: campaign.name,
+          clientName: client.internal_name,
+          clientType: client.feed_bid_type,
+          status: 'active', // You can pull from actual status field if present
+          budgetCap: campaign.budget,
+          advertiserName: client.advertiser_name,
+          spend: campaign.budget, // Assuming budget = spend
+          reconSpend: 430.0, // Placeholder
+          reconNetSpend: 415.0, // Placeholder
+          clicks: 150,
+          validClicks: 145,
+          invalidClicks: 5,
+          botClicks: 2,
+          latentClicks: 1,
+          duplicateClicks: 1,
+          foreignClicks: 1,
+          reconClicks: 148,
+          reconValidClicks: 143,
+          reconBotClicks: 2,
+          reconInvalidClicks: 3,
+          reconLatentClicks: 1,
+          reconDuplicateClicks: 1,
+          reconForeignClicks: 1,
+          applies: 45,
+          cpa: 9.56,
+          cpc: 3.0,
+          cta: 30.0,
+          startDate: campaign.start_date,
+          frequency: client.budget?.frequency || '',
+          country: client.country || 'N/A',
+          markUpPercent: client.bid_margin?.markup?.value ?? 0,
+          markUpPercentMode: client.bid_margin?.markup?.type ?? 'percentage',
+          markDownPercent: client.bid_margin?.markdown?.value ?? 0,
+          markDownPercentMode: client.bid_margin?.markdown?.type ?? 'percentage'
+        };
+      });
+      setCampaignData(transformed);
     }
-  ]);
+  }, [data]);
 
   // Handle field updates - updates the actual data
   const handleFieldUpdate = (id, field, value) => {
@@ -937,12 +690,27 @@ const CampaignsTable = () => {
             open: true,
             title: 'Confirm Delete',
             message: `Are you sure you want to delete ${selected.length} campaign(s)? This action cannot be undone.`,
-            onConfirm: () => {
-              const updatedData = campaignData.filter((item) => !selected.includes(item.id));
-              setCampaignData(updatedData);
-              toast.success(`${selected.length} campaign(s) deleted successfully`);
-              setSelected([]); // Only clear selection after deletion since items are removed
-              setConfirmDialog({ open: false, title: '', message: '', onConfirm: null });
+            onConfirm: async () => {
+              try {
+                // Send DELETE requests for each selected ID
+                await Promise.all(selected.map((id) => axiosServices.delete(`${import.meta.env.VITE_APP_API_URL}/campaigns/${id}`)));
+
+                // Update frontend data after success
+                const updatedData = campaignData.filter((item) => !selected.includes(item.id));
+                setCampaignData(updatedData);
+                toast.success(`${selected.length} campaign(s) deleted successfully`);
+              } catch (error) {
+                console.error('Error deleting campaigns:', error);
+                toast.error('Failed to delete one or more campaigns');
+              } finally {
+                setSelected([]); // Clear selected rows
+                setConfirmDialog({
+                  open: false,
+                  title: '',
+                  message: '',
+                  onConfirm: null
+                });
+              }
             }
           });
         }
@@ -1032,7 +800,7 @@ const CampaignsTable = () => {
           icon: <AddSquare size="20" />,
           variant: 'contained',
           color: 'primary',
-          onClick: () => navigate('/campaigns/add-campaign')
+          onClick: () => navigate(`/campaigns/add-campaign?clientId=${clientId}`)
         }
       ]
     },

@@ -22,14 +22,17 @@ import {
   Chip
 } from '@mui/material';
 import { ArrowLeft2, AddSquare, Calendar, Add, Trash } from 'iconsax-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axiosServices from '../../../../utils/axios';
 
 const CampaignForm = () => {
+  const [searchParams] = useSearchParams();
+  const clientId = searchParams.get('clientId');
+  console.log(clientId);
   const navigate = useNavigate();
   const { id } = useParams();
   const isEdit = Boolean(id);
-
   // State for each field from original AddCampaign
   const [name, setName] = useState('');
   const [budget, setBudget] = useState('');
@@ -47,6 +50,9 @@ const CampaignForm = () => {
       logicalOperator: 'AND' // AND, OR
     }
   ]);
+  const [filter, setFilter] = useState();
+
+  console.log(filterRules);
 
   // Additional state
   const [totalJobCount, setTotalJobCount] = useState(0);
@@ -202,13 +208,25 @@ const CampaignForm = () => {
 
   // Load data when editing
   useEffect(() => {
-    if (isEdit && id && mockCampaignData[id]) {
-      const data = mockCampaignData[id];
-      setName(data.name);
-      setBudget(data.budget);
-      setCurrency(data.currency);
-      setStartDate(data.startDate);
-      setEndDate(data.endDate);
+    if (isEdit && id) {
+      // Fetch single campaign data based on id from URL
+      axiosServices
+        .get(`${import.meta.env.VITE_APP_API_URL}/campaigns/${id}`)
+        .then((res) => {
+          const data = res.data?.data;
+
+          if (data) {
+            setName(data.name);
+            setBudget(data.budget);
+            setCurrency(data.currency || 'USD');
+            setStartDate(data.start_date?.slice(0, 10)); // make sure date format is yyyy-mm-dd
+            setEndDate(data.end_date?.slice(0, 10));
+            setFilterRules(data.filters || []);
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to fetch campaign details', err);
+        });
     }
   }, [isEdit, id]);
 
@@ -257,6 +275,8 @@ const CampaignForm = () => {
 
   const handleApplyFilters = () => {
     applyFilterRules();
+    setFilter(filterRules);
+    console.log(filter);
     toast.info('Filters applied');
   };
 
@@ -310,9 +330,32 @@ const CampaignForm = () => {
     };
 
     if (isEdit) {
+      axiosServices.put(`${import.meta.env.VITE_APP_API_URL}/campaigns/${id}`,{
+      name: campaignData.name,
+      budget: campaignData.budget,
+      currency: campaignData.currency,
+      start_date: campaignData.startDate,
+      end_date: campaignData.endDate,
+      filters: campaignData.filterRules,
+      rule_options: campaignData.ruleOptions,
+      budget_type: campaignData.budgetType,
+      target: campaignData.target,
+      threshold: campaignData.threshold,
+      frequency_enabled: campaignData.frequencyEnabled,
+      filtered_jobs_count: campaignData.filteredJobsCount
+    })
       console.log('Updating campaign:', campaignData);
       toast.success('Campaign updated successfully!');
     } else {
+      axiosServices.post(`${import.meta.env.VITE_APP_API_URL}/campaigns`, {
+        client_id: clientId,
+        name: campaignData.name,
+        budget: campaignData.budget,
+        start_date: campaignData.startDate,
+        end_date: campaignData.endDate,
+        currency: campaignData.currency,
+        filters: filter
+      });
       console.log('Creating campaign:', campaignData);
       toast.success('Campaign created successfully!');
     }

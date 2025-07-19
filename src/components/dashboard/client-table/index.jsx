@@ -670,7 +670,8 @@ const ClientTable = () => {
     {
       label: 'View Campaigns',
       onClick: (row) => {
-        navigate('/campaigns', { state: { clientId: row.id } });
+        localStorage.setItem('clientId', row.id);
+        navigate('/campaigns');
       }
     },
     {
